@@ -1,9 +1,8 @@
-import React from 'react';
-
 export default function Hello() {
   return (
     <>
-      <h3 className="bg-mai">hello</h3>
+      <h2>hi</h2>
+      <h3>hello</h3>
     </>
   );
 }

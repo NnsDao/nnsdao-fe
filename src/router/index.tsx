@@ -1,10 +1,9 @@
-import type { RouteObject } from 'react-router-dom';
-import { useRoutes } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Home from '../pages/Home';
 import DaoDetail from '../pages/Home/components/DaoDetail';
 import DaoList from '../pages/Home/components/DaoList';
 
-const routes: RouteObject[] = [
+const routes = createBrowserRouter([
   {
     path: '/',
     element: <Home />,
@@ -16,8 +15,8 @@ const routes: RouteObject[] = [
       },
     ],
   },
-];
+]);
 export default function AppRouter() {
   window.scroll(0, 0);
-  return useRoutes(routes);
+  return <RouterProvider router={routes}></RouterProvider>;
 }
