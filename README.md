@@ -1,6 +1,4 @@
-# FE-template-react
-
-> It is a simple starter template build on Internet Computer
+# nnsdao-fe
 
 ## Installation
 
@@ -21,9 +19,9 @@ nvm use && npm ci
 ## Deploy
 
 ```bash
-zsh script/deploy.sh  # online
+zsh script/deploy-prod.sh # prod canister
 
-zsh script/deploy.sh test  # test canister
+zsh script/deploy-test.sh  # test canister
 ```
 
 ## Command

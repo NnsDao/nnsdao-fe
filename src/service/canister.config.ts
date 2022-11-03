@@ -1,20 +1,29 @@
 import { isTestCanister } from '../common/helper';
 
-export default {
-  ndp: {
-    cid: isTestCanister ? 'vgqnj-miaaa-aaaal-qaapa-cai' : 'vgqnj-miaaa-aaaal-qaapa-cai',
-    idl: null,
+import { idlFactory as dao_manager_IDL } from '@nnsdao/nnsdao-kit/dao_manager/index';
+import { idlFactory as nid_IDL } from '@nnsdao/nnsdao-kit/nid/index';
+import { idlFactory as nnsdao_IDL } from '@nnsdao/nnsdao-kit/nnsdao/index';
+export { nnsdao_IDL };
+
+export const canister = {
+  nnsdao: {
+    cid: isTestCanister ? '67bzx-5iaaa-aaaam-aah5a-cai' : '67bzx-5iaaa-aaaam-aah5a-cai',
+    idl: nnsdao_IDL,
   },
-  logger: {
-    cid: 'rn2mj-6qaaa-aaaak-aaisa-cai',
-    idl: null,
+  dao_manager: {
+    cid: isTestCanister ? 'w3p32-waaaa-aaaah-aboyq-cai' : 'w3p32-waaaa-aaaah-aboyq-cai',
+    idl: dao_manager_IDL,
   },
-  proxy: {
-    cid: 'rdj7q-xaaaa-aaaaj-qabja-cai',
-    idl: null,
+  nid: {
+    cid: 'nfawh-syaaa-aaaah-abtpq-cai',
+    idl: nid_IDL,
   },
-  proxyLog: {
-    cid: '67bzx-5iaaa-aaaam-aah5a-cai',
-    idl: null,
-  },
+};
+
+// plug create actor whitelist
+export const canisterIdList = ['w3p32-waaaa-aaaah-aboyq-cai'];
+export default canister;
+
+export const getTotalCanisterIdList = (): string[] => {
+  return canisterIdList.concat(Object.values(canister).map(item => item.cid));
 };
