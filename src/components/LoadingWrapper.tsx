@@ -8,7 +8,6 @@ import { PulseLoader } from 'react-spinners';
 export default (WrappedComponent, queryFn: (...arg: any[]) => UseQueryResult) => {
   const hocComponent = ({ ...props }) => {
     const data = queryFn();
-
     if (data.data) {
       return (
         <Container maxWidth="xl" sx={{ position: 'relative' }}>
@@ -23,28 +22,32 @@ export default (WrappedComponent, queryFn: (...arg: any[]) => UseQueryResult) =>
     }
     if (data.isLoading && !data.isFetched) {
       return (
-        <Stack spacing={2}>
-          <Typography variant="button" display="block" gutterBottom>
-            loading...
-          </Typography>
-          <PulseLoader color="#2196f3"></PulseLoader>
-        </Stack>
+        <Container maxWidth="xl" sx={{ position: 'relative' }}>
+          <Stack spacing={2}>
+            <Typography variant="button" display="block" gutterBottom>
+              loading...
+            </Typography>
+            <PulseLoader color="#2196f3"></PulseLoader>
+          </Stack>
+        </Container>
       );
     }
     return (
-      <Stack spacing={2} direction="row" alignItems="center">
-        <Typography variant="caption" display="block" gutterBottom>
-          Error Occurs!
-        </Typography>
-        <LoadingButton
-          loading={data.isFetching}
-          onClick={() => data.refetch()}
-          loadingIndicator="Loading…"
-          startIcon={<RefreshIcon />}
-          variant="outlined">
-          Refresh
-        </LoadingButton>
-      </Stack>
+      <Container maxWidth="xl" sx={{ position: 'relative' }}>
+        <Stack spacing={2} direction="row" alignItems="center">
+          <Typography variant="caption" display="block" gutterBottom>
+            Error Occurs!
+          </Typography>
+          <LoadingButton
+            loading={data.isFetching}
+            onClick={() => data.refetch()}
+            loadingIndicator="Loading…"
+            startIcon={<RefreshIcon />}
+            variant="outlined">
+            Refresh
+          </LoadingButton>
+        </Stack>
+      </Container>
     );
   };
 

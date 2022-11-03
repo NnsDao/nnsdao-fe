@@ -8,7 +8,7 @@ function App() {
   return (
     // <Container maxWidth="xl" disableGutters>
     <Grid container spacing={0} alignItems="stretch" minHeight={'100vh'}>
-      <Grid xs={1}>
+      <Grid xs={1} alignItems="stretch" sx={{ textAlign: 'center', backgroundColor: '#fff' }}>
         <LeftSidePanel />
       </Grid>
       <Grid xs={11}>

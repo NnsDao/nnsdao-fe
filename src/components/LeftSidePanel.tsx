@@ -1,3 +1,5 @@
+import { Box } from '@mui/material';
+
 export default function LeftSidePanel() {
-  return <div>left side panel</div>;
+  return <Box>left side panel</Box>;
 }
