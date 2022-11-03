@@ -3,19 +3,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getDaoManagerActor } from '../../service';
 import { daoManagerKeys } from './queries';
 
-export const totalDaoList = async ({ queryKey }) => {
-  const { module, scope } = queryKey[0];
-  const actor = await getDaoManagerActor(false);
-  try {
-    const res = await actor.dao_list();
-    console.log('dao_list', res);
-    return res;
-  } catch (error) {
-    console.log('dao_list', error);
-    return Promise.reject(null);
-  }
-};
-
 export const daoStatus = async ({ queryKey }) => {
   const { module, scope, cid } = queryKey[0];
   const actor = await getDaoManagerActor(false);
@@ -58,11 +45,26 @@ export async function createDao(params: CreateDaoOptions) {
  */
 
 export const useTotalDaoLists = () => {
-  return useQuery(daoManagerKeys.lists(), totalDaoList, {
-    // refetchInterval: 6e4,
-    staleTime: Infinity,
-    refetchOnWindowFocus: import.meta.env.PROD,
-  });
+  return useQuery(
+    daoManagerKeys.lists(),
+    async ({ queryKey }) => {
+      const { module, scope } = queryKey[0];
+      const actor = await getDaoManagerActor(false);
+      try {
+        const res = await actor.dao_list();
+        console.log('dao_list', res);
+        return res;
+      } catch (error) {
+        console.log('dao_list', error);
+        return Promise.reject(null);
+      }
+    },
+    {
+      // refetchInterval: 6e4,
+      staleTime: 0,
+      refetchOnWindowFocus: import.meta.env.PROD,
+    }
+  );
 };
 export const useDaoStatus = (cid: string) => {
   return useQuery(daoManagerKeys.status(cid), daoStatus, {
