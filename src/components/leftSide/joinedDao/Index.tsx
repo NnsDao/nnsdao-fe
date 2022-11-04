@@ -66,7 +66,7 @@ export default function JoinedDao(props) {
 
   return (
     <>
-      <Grid container direction="column" alignItems="center" spacing={0} overflow={'hidden'}>
+      <Grid container direction="column" alignItems="center" spacing={0}>
         {data.map((item, index) => (
           <Box key={item.canister}>
             <Tooltip title={item.name} TransitionComponent={Zoom} placement="right" TransitionProps={{ timeout: 200 }}>

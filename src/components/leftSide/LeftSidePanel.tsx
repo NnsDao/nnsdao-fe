@@ -6,8 +6,8 @@ export default function LeftSidePanel() {
   // const JoinedDaoWrap = LoadingWrapper(joinedDao, useTotalDaoLists);
   return (
     <>
-      <Grid container direction="column" alignItems="center" spacing={5}>
-        <Grid xl={1} sx={{ marginTop: '24px' }}>
+      <Grid container direction="column" alignItems="center" spacing={0}>
+        <Grid xl={1} sx={{ marginY: '24px' }}>
           <Avatar
             alt="Remy Sharp"
             src={nnsdaoLogo}
@@ -18,10 +18,10 @@ export default function LeftSidePanel() {
             }}
           />
         </Grid>
-        <Grid xl={10} overflow="hidden">
+        <Grid xl={10} overflow="auto" disableEqualOverflow height={'500px'}>
           <JoinedDao />
         </Grid>
-        <Grid xl={1} sx={{ marginBottom: '24px' }}>
+        <Grid xl={1} sx={{ marginY: '50px' }}>
           <Avatar
             alt="Remy Sharp"
             src={nnsdaoLogo}
