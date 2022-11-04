@@ -20,7 +20,11 @@
     "types": ["vite/client"],
     "baseUrl": ".",
     "paths": {
-      "@nnsdao/nnsdao-kit/*": ["./node_modules/@nnsdao/nnsdao-kit/src/*"]
+      "@nnsdao/nnsdao-kit/*": ["./node_modules/@nnsdao/nnsdao-kit/src/*"],
+      "@/*": ["./src/*"],
+      "@common/*": ["./src/common/*"],
+      "@idlFactory/*": ["src/service/*"],
+      "@static/*": ["./src/static/*"]
     }
   },
   "include": ["src"],

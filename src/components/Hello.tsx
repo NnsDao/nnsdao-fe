@@ -1,5 +1,6 @@
 export default function Hello(props) {
   const data = props.data;
+
   return (
     <>
       <ol>

@@ -25,14 +25,14 @@ export default defineConfig(({ command, mode }) => {
       //   brotliSize: true,
       // })
     ],
-    // resolve: {
-    //   alias: {
-    //     // Here we tell Vite the "fake" modules that we want to define
-    //     '@': path.resolve(__dirname, './src/'),
-    //     '@common': path.resolve(__dirname, './src/common'),
-    //     '@idlFactory': path.resolve(__dirname, './src/idlFactory'),
-    //   },
-    // },
+    resolve: {
+      alias: {
+        // Here we tell Vite the "fake" modules that we want to define
+        '@': path.resolve(__dirname, './src'),
+        '@common': path.resolve(__dirname, './src/common'),
+        '@idlFactory': path.resolve(__dirname, './src/idlFactory'),
+      },
+    },
     build: {
       outDir: 'dist',
       cssCodeSplit: true,
