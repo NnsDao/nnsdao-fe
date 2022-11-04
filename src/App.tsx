@@ -1,7 +1,7 @@
 import Grid from '@mui/material/Unstable_Grid2';
 
 import './App.css';
-import LeftSidePanel from './components/LeftSidePanel';
+import LeftSidePanel from './components/leftSide/LeftSidePanel';
 import AppRouter from './router';
 
 function App() {

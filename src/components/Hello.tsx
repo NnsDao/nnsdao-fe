@@ -6,9 +6,9 @@ export default function Hello(props) {
       <ol>
         {data
           .map(item => item.canister_id.toText())
-          .map(cid => {
+          .map((cid, index) => {
             return (
-              <li key={cid}>
+              <li key={index}>
                 <code>{cid}</code>
               </li>
             );
