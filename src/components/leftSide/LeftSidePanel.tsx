@@ -14,7 +14,7 @@ export default function LeftSidePanel() {
           cursor: 'pointer',
         }}
       />
-      <Box sx={{ maxHeight: 'calc( 100% - 126px)', background: 'red' }}>
+      <Box sx={{ height: 'calc( 100% - 126px)', overflow: 'hidden' }}>
         <JoinedDao />
       </Box>
       <Avatar

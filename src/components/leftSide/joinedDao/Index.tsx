@@ -14,7 +14,15 @@ export default function JoinedDao(props) {
   };
 
   return (
-    <Stack spacing={1} sx={{ height: '100%', overflowY: 'scroll' }}>
+    <Stack
+      spacing={1}
+      sx={{
+        height: '100%',
+        overflowY: 'auto',
+        padding: '15px',
+        width: '100%',
+        boxSizing: 'content-box',
+      }}>
       {data.map((item, index) => (
         <Box key={item.canister}>
           <Tooltip title={item.name} TransitionComponent={Zoom} placement="right" TransitionProps={{ timeout: 200 }}>
