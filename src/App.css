@@ -10,3 +10,13 @@
   min-height: 100vh;
   background-color: #fff;
 }
+::-webkit-input-placeholder {
+  color: #000;
+}
+
+:-moz-placeholder {
+  color: #000;
+}
+.MuiButtonBase-root-MuiButton-root {
+  text-transform: none !important;
+}

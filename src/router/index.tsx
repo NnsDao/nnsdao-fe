@@ -15,7 +15,7 @@ const Task = React.lazy(() => import('@/pages/home/daoDetail/task/Index'));
 const TimeLine = React.lazy(() => import('@/pages/home/daoDetail/timeLine/Index'));
 const User = React.lazy(() => import('@/pages/home/daoDetail/user/Index'));
 const UserPay = React.lazy(() => import('@/pages/home/daoDetail/userPay/Index'));
-const DaoList = React.lazy(() => import('@/pages/home/dashBoard/DaoList'));
+const DaoList = React.lazy(() => import('@/pages/home/daoList/Index'));
 const Home = React.lazy(() => import('@/pages/home/Index'));
 
 const routes = createBrowserRouter([

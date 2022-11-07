@@ -28,13 +28,15 @@ export default function JoinedDao(props) {
           <Tooltip title={item.name} TransitionComponent={Zoom} placement="right" TransitionProps={{ timeout: 200 }}>
             <Avatar
               alt="Remy Sharp"
-              src={item.avatar}
+              src={String(item.avatar)}
               onClick={() => toDetailPage(item)}
               sx={{
                 width: 47,
                 height: 47,
                 cursor: 'pointer',
                 margin: '10px',
+                padding: '2px',
+                border: '2px solid #fff',
                 '&:hover': { border: '2px solid #39a8d3' },
               }}
             />

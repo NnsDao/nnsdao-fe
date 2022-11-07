@@ -1,6 +1,8 @@
 import nnsdaoLogo from '@/public/home/nnsdaoLogo.ico';
-import { Avatar, Box, Stack } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { Avatar, Box, Stack, Tooltip, Zoom } from '@mui/material';
 import JoinedDao from './joinedDao/Index';
+
 export default function LeftSidePanel() {
   // const JoinedDaoWrap = LoadingWrapper(joinedDao, useTotalDaoLists);
   return (
@@ -9,23 +11,18 @@ export default function LeftSidePanel() {
         alt="Remy Sharp"
         src={nnsdaoLogo}
         sx={{
-          width: 63,
-          height: 63,
+          width: 60,
+          height: 60,
           cursor: 'pointer',
+          margin: '24px 0 80px 0',
         }}
       />
-      <Box sx={{ height: 'calc( 100% - 126px)', overflow: 'hidden' }}>
+      <Box sx={{ height: 'calc( 100% - 260px)', overflow: 'hidden' }}>
         <JoinedDao />
       </Box>
-      <Avatar
-        alt="Remy Sharp"
-        src={nnsdaoLogo}
-        sx={{
-          width: 63,
-          height: 63,
-          cursor: 'pointer',
-        }}
-      />
+      <Tooltip title={'Logout'} TransitionComponent={Zoom} placement="right" TransitionProps={{ timeout: 200 }}>
+        <LogoutIcon sx={{ width: 40, height: 40, marginY: '40px', cursor: 'pointer' }} />
+      </Tooltip>
     </Stack>
   );
 }
