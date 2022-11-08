@@ -104,7 +104,7 @@ export default function List() {
             </Grid>
           </Grid>
 
-          <Grid container justifyContent="space-between">
+          <Grid container justifyContent="space-between" alignItems="center">
             <Grid container justifyContent="space-between">
               <Avatar></Avatar>
               <Avatar></Avatar>
