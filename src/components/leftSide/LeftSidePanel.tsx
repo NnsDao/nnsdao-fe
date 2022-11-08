@@ -6,7 +6,7 @@ import JoinedDao from './joinedDao/Index';
 export default function LeftSidePanel() {
   // const JoinedDaoWrap = LoadingWrapper(joinedDao, useTotalDaoLists);
   return (
-    <Stack spacing={0} alignItems="center" height={'100vh'}>
+    <Stack spacing={0} alignItems="center" height={'100vh'} position="fixed" sx={{ background: '#fff' }}>
       <Avatar
         alt="Remy Sharp"
         src={nnsdaoLogo}

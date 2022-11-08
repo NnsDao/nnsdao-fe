@@ -10,7 +10,7 @@ function App() {
     // <Container maxWidth="xl" disableGutters>
     <Box className="APP">
       <Grid container spacing={0} alignItems="stretch" minHeight={'100vh'}>
-        <Grid xs={2} lg={1} alignItems="stretch" sx={{ textAlign: 'center', backgroundColor: '#fff' }}>
+        <Grid xs={2} lg={1} alignItems="stretch" sx={{ textAlign: 'center' }}>
           <LeftSidePanel />
         </Grid>
         <Grid xs={10} lg={11}>
