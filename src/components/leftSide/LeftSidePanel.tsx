@@ -5,6 +5,10 @@ import JoinedDao from './joinedDao/Index';
 
 export default function LeftSidePanel() {
   // const JoinedDaoWrap = LoadingWrapper(joinedDao, useTotalDaoLists);
+  // const navigate = useNavigate();
+  // const toHome = () => {
+  //   navigate(`/home`);
+  // };
   return (
     <Stack spacing={0} alignItems="center" height={'100vh'} position="fixed" sx={{ background: '#fff' }}>
       <Avatar
@@ -16,6 +20,7 @@ export default function LeftSidePanel() {
           cursor: 'pointer',
           margin: '24px 0 80px 0',
         }}
+        // onClick={toHome}
       />
       <Box sx={{ height: 'calc( 100% - 260px)', overflow: 'hidden' }}>
         <JoinedDao />

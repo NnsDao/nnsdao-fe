@@ -1,12 +1,19 @@
 import { Avatar, Box, Button } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function List() {
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const toDaoDetail = item => {
+    navigate(`/daoDetail/${item.name}`);
+  };
   const data = Array.from({ length: 20 }).map((item, i) => ({
     avatar: i + 1,
     name: i + 1,
     status: i + 1,
   }));
+
   return (
     <Grid container spacing={-2}>
       {data.map(item => (
@@ -20,7 +27,8 @@ export default function List() {
           bgcolor="#fff"
           borderRadius="12px"
           padding="30px 30px 22px 30px"
-          boxShadow=" 0px 0px 20px rgba(76, 87, 125, 0.02)">
+          boxShadow=" 0px 0px 20px rgba(76, 87, 125, 0.02)"
+          onClick={() => toDaoDetail(item)}>
           <Grid container justifyContent="space-between">
             <Box sx={{ padding: '12px', background: '#F5F8FA', borderRadius: '6px' }}>logo</Box>
             <Box>{item.status}</Box>

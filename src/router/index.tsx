@@ -1,3 +1,4 @@
+import OverView from '@/pages/home/daoDetail/overView/Index';
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 const Activity = React.lazy(() => import('@/pages/home/daoDetail/activity/Index'));
@@ -13,7 +14,7 @@ const ProposalsDetail = React.lazy(() => import('@/pages/home/daoDetail/proposal
 const Setting = React.lazy(() => import('@/pages/home/daoDetail/setting/Index'));
 const Task = React.lazy(() => import('@/pages/home/daoDetail/task/Index'));
 const TimeLine = React.lazy(() => import('@/pages/home/daoDetail/timeLine/Index'));
-const User = React.lazy(() => import('@/pages/home/daoDetail/user/Index'));
+const Users = React.lazy(() => import('@/pages/home/daoDetail/users/Index'));
 const UserPay = React.lazy(() => import('@/pages/home/daoDetail/userPay/Index'));
 const DaoList = React.lazy(() => import('@/pages/home/daoList/Index'));
 const Home = React.lazy(() => import('@/pages/home/Index'));
@@ -28,21 +29,22 @@ const routes = createBrowserRouter([
         path: '/daoDetail/:cid',
         element: <DaoDetail />,
         children: [
-          { index: true, element: <DaoList /> },
-          { path: 'activity', element: <Activity /> },
-          { path: 'budget', element: <Budget /> },
-          { path: 'budgetSet', element: <BudgetSet /> },
-          { path: 'chat', element: <Chat /> },
-          { path: 'create', element: <Create /> },
-          { path: 'nfts', element: <Nfts /> },
-          { path: 'proposals', element: <Proposals /> },
-          { path: 'proposalsCreate', element: <ProposalsCreate /> },
-          { path: 'proposalsDetail', element: <ProposalsDetail /> },
-          { path: 'setting', element: <Setting /> },
-          { path: 'task', element: <Task /> },
-          { path: 'timeLine', element: <TimeLine /> },
-          { path: 'user', element: <User /> },
-          { path: 'userPay', element: <UserPay /> },
+          { index: true, element: <OverView /> },
+          { path: 'OverView', element: <OverView /> },
+          { path: 'Users', element: <Users /> },
+          { path: 'Proposals', element: <Proposals /> },
+          { path: 'Chat', element: <Chat /> },
+          { path: 'Activity', element: <Activity /> },
+          { path: 'Budget', element: <Budget /> },
+          { path: 'BudgetSet', element: <BudgetSet /> },
+          { path: 'Create', element: <Create /> },
+          { path: 'Nfts', element: <Nfts /> },
+          { path: 'ProposalsCreate', element: <ProposalsCreate /> },
+          { path: 'ProposalsDetail', element: <ProposalsDetail /> },
+          { path: 'Setting', element: <Setting /> },
+          { path: 'Task', element: <Task /> },
+          { path: 'TimeLine', element: <TimeLine /> },
+          { path: 'UserPay', element: <UserPay /> },
         ],
       },
     ],
