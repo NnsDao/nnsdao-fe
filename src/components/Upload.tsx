@@ -5,9 +5,9 @@ import Typography from '@mui/material/Typography';
 
 function Upload(props) {
   async function uploadFile() {
-    const ipfs = await IpfsCore.create();
-    const { cid } = await ipfs.add('Hello world');
-    console.info(cid);
+    // const ipfs = await IpfsCore.create();
+    // const { cid } = await ipfs.add('Hello world');
+    // console.info(cid);
     // QmXXY5ZxbtuYj6DnfApLiGstzPN7fvSyigrRee3hDWPCaf
   }
   return (
