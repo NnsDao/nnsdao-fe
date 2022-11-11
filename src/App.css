@@ -20,3 +20,6 @@
 .MuiButtonBase-root-MuiButton-root {
   text-transform: none !important;
 }
+.MuiButtonBase-root {
+  text-transform: none !important;
+}

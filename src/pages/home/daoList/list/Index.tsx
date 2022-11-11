@@ -118,7 +118,7 @@ export default function List() {
               <Avatar></Avatar>
               <Avatar></Avatar>
             </Grid>
-            <Button variant="contained">join</Button>
+            <Button variant="contained">Join</Button>
           </Grid>
         </Grid>
       ))}

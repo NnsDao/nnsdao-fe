@@ -4,15 +4,11 @@ import NavLeft from './components/navLeft/Index';
 
 export default function DaoDetail() {
   return (
-    <Grid
-      container
-      direction="column"
-      justifyContent="space-between"
-      alignItems="center"
-      paddingTop="64px"
-      paddingBottom="21px">
-      <NavLeft />
-      <Grid xs={8}>
+    <Grid container paddingTop="64px" paddingBottom="21px">
+      <Grid xs={2.5}>
+        <NavLeft />
+      </Grid>
+      <Grid xs={9.5}>
         <Outlet></Outlet>
       </Grid>
     </Grid>

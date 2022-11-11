@@ -8,7 +8,7 @@ import AppRouter from './router';
 function App() {
   return (
     // <Container maxWidth="xl" disableGutters>
-    <Box className="APP">
+    <Box>
       <Grid container spacing={0} alignItems="stretch" minHeight={'100vh'}>
         <Grid xs={2} lg={1} alignItems="stretch" sx={{ textAlign: 'center' }}>
           <LeftSidePanel />

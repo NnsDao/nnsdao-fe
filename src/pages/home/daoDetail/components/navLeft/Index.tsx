@@ -17,6 +17,7 @@ export default function NavLeft() {
         spacing={0}
         alignItems="center"
         sx={{ background: '#fff' }}
+        borderRadius="12px"
         paddingTop="30px"
         paddingBottom="21px"
         paddingX={'12px'}
