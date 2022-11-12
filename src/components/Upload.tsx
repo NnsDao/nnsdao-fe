@@ -1,23 +1,9 @@
+import fleekStorage from '@fleekhq/fleek-storage-js';
 import { CloudUploadOutlined } from '@mui/icons-material';
-import { Paper, Stack } from '@mui/material';
+import { Avatar, Paper, Stack } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { IPFS } from 'ipfs-core-types';
 import React from 'react';
-
-async function IPFSCient() {
-  // @ts-ignore
-  let client: IPFS = null;
-
-  return (async () => {
-    if (client) {
-      return client;
-    }
-    client = await globalThis.IpfsCore.create();
-    globalThis.IPFSClient = client;
-    return client;
-  })();
-}
 
 function readFileContents(file) {
   return new Promise(resolve => {
@@ -29,57 +15,61 @@ function readFileContents(file) {
 
 function Upload(props) {
   const uploaderRef = React.useRef<any>();
-
+  const [src, setSrc] = React.useState('');
   async function uploadFile() {
     const file = uploaderRef.current.files[0];
     const buffer = await readFileContents(file);
-    const node = await IPFSCient();
-    const textRes = await node.add('hello ipfs');
-    // CID (Content IDentifier) uniquely addresses the data
-    // and can be used to get it again.
-    console.log('textRes', textRes);
-    const results = await node.add(
-      {
-        path: file.name,
-        content: buffer,
+
+    const uploadedFile = await fleekStorage.upload({
+      apiKey: 'tY/tQQtffm+CEqHFHmQXqQ==',
+      apiSecret: 'fgjadsHiuaBA5kT1QSlVIcemrp97XZWW9sEBL6YS3+E=',
+      key: (Date.now() * Math.random() * 1e4).toString(16),
+      // @ts-ignore
+      ContentType: file.type,
+      data: buffer,
+      httpUploadProgressCallback: event => {
+        console.log(Math.round((event.loaded / event.total) * 100) + '%');
       },
-      {
-        wrap: true,
-        progress: bytesLoaded => {
-          let percent = (bytesLoaded / file.size) * 100;
-          console.log('progress', percent);
-        },
-      }
+    });
+    //
+    setSrc(`${uploadedFile.publicUrl}?hash=${uploadedFile.hash}`);
+    console.log('file url', uploadedFile);
+  }
+  const UploadButton = () => {
+    return (
+      <IconButton color="primary" size="large" component="label">
+        <CloudUploadOutlined fontSize="inherit"></CloudUploadOutlined>
+        <input
+          type="file"
+          name="uploader"
+          ref={uploaderRef}
+          id="uploader"
+          hidden
+          accept="image/*"
+          onChange={uploadFile}
+        />
+      </IconButton>
     );
-
-    // add your data to IPFS - this can be a string, a Buffer,
-    // a stream of Buffers, etc
-
-    console.log('results', results);
+  };
+  if (!src) {
+    return (
+      <Paper
+        sx={{
+          width: '100px',
+          height: '100px',
+          textAlign: 'center',
+        }}>
+        <Stack justifyContent="center" direction="column" spacing={0} alignItems="center" height="100%">
+          <UploadButton></UploadButton>
+          <Typography variant="body1">upload</Typography>
+        </Stack>
+      </Paper>
+    );
   }
   return (
-    <Paper
-      sx={{
-        width: '100px',
-        height: '100px',
-        textAlign: 'center',
-      }}>
-      <Stack justifyContent="center" direction="column" spacing={0} alignItems="center" height="100%">
-        <IconButton color="primary" size="large" sx={{ position: 'relative' }}>
-          <CloudUploadOutlined fontSize="inherit"></CloudUploadOutlined>
-          <input
-            type="file"
-            name="uploader"
-            ref={uploaderRef}
-            id="uploader"
-            hidden
-            accept="image/*"
-            onChange={uploadFile}
-          />
-          <label htmlFor="uploader" style={{ width: '100%', height: '100%', position: 'absolute' }}></label>
-        </IconButton>
-        <Typography variant="body1">upload</Typography>
-      </Stack>
+    <Paper sx={{ position: 'relative' }}>
+      <Avatar src={src} sizes="large"></Avatar>
+      <UploadButton />
     </Paper>
   );
 }
