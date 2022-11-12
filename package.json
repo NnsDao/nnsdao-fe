@@ -51,11 +51,12 @@
     "eslint-plugin-react": "^7.31.10",
     "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^8.0.2",
+    "ipfs-core-types": "^0.13.0",
     "postcss": "^8.4.18",
     "postcss-import": "^14.1.0",
     "prettier": "^2.6.2",
     "rollup-plugin-visualizer": "^5.8.3",
     "typescript": "^4.8.4",
-    "vite": "^3.2.3"
+    "vite": "^2.9.15"
   }
 }

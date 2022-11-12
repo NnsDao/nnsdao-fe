@@ -1,6 +1,7 @@
 import OverView from '@/pages/home/daoDetail/overView/Index';
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Home from '../pages/home';
 const Activity = React.lazy(() => import('@/pages/home/daoDetail/activity/Index'));
 const Budget = React.lazy(() => import('@/pages/home/daoDetail/budget/Index'));
 const BudgetSet = React.lazy(() => import('@/pages/home/daoDetail/budgetSet/Index'));
@@ -17,7 +18,6 @@ const TimeLine = React.lazy(() => import('@/pages/home/daoDetail/timeLine/Index'
 const Users = React.lazy(() => import('@/pages/home/daoDetail/users/Index'));
 const UserPay = React.lazy(() => import('@/pages/home/daoDetail/userPay/Index'));
 const DaoList = React.lazy(() => import('@/pages/home/daoList/Index'));
-const Home = React.lazy(() => import('@/pages/home/Index'));
 
 const routes = createBrowserRouter([
   {
