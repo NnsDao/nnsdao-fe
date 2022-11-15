@@ -7,7 +7,7 @@ export default function Assets() {
   return (
     <Grid container justifyContent="space-between" alignItems="center">
       <Grid container alignItems="center" sx={{ fontFamily: 'Roboto', fontWeight: 500, fontSize: '20px' }}>
-        DAOs dApp &nbsp;
+        DAOs DAPP &nbsp;
         <Box sx={{ fontWeight: 700, fontSize: '12px', lineHeight: '23px', color: '#A1A5B7' }}> Active</Box>
       </Grid>
       <Grid container alignItems="center" spacing={-2}>
