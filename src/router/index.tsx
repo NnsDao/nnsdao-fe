@@ -24,35 +24,33 @@ const routes: RouteObject[] = [
   {
     path: '/',
     element: <Home></Home>,
+    index: true,
+  },
+  {
+    path: '/daoDetail/:cid',
+    element: <DaoDetail />,
     children: [
-      { index: true, element: <DaoList /> },
-      {
-        path: '/daoDetail/:cid',
-        element: <DaoDetail />,
-        children: [
-          { index: true, element: <OverView /> },
-          { path: 'OverView', element: <OverView /> },
-          { path: 'Users', element: <Users /> },
-          { path: 'Proposals', element: <Proposals /> },
-          { path: 'Chat', element: <Chat /> },
-          { path: 'Activity', element: <Activity /> },
-          { path: 'Budget', element: <Budget /> },
-          { path: 'BudgetSet', element: <BudgetSet /> },
-          { path: 'Create', element: <Create /> },
-          { path: 'Nfts', element: <Nfts /> },
-          { path: 'ProposalsCreate', element: <ProposalsCreate /> },
-          { path: 'ProposalsDetail', element: <ProposalsDetail /> },
-          { path: 'Setting', element: <Setting /> },
-          { path: 'Task', element: <Task /> },
-          { path: 'TimeLine', element: <TimeLine /> },
-          { path: 'UserPay', element: <UserPay /> },
-        ],
-      },
+      { index: true, element: <OverView /> },
+      { path: 'OverView', element: <OverView /> },
+      { path: 'Users', element: <Users /> },
+      { path: 'Proposals', element: <Proposals /> },
+      { path: 'Chat', element: <Chat /> },
+      { path: 'Activity', element: <Activity /> },
+      { path: 'Budget', element: <Budget /> },
+      { path: 'BudgetSet', element: <BudgetSet /> },
+      { path: 'Create', element: <Create /> },
+      { path: 'Nfts', element: <Nfts /> },
+      { path: 'ProposalsCreate', element: <ProposalsCreate /> },
+      { path: 'ProposalsDetail', element: <ProposalsDetail /> },
+      { path: 'Setting', element: <Setting /> },
+      { path: 'Task', element: <Task /> },
+      { path: 'TimeLine', element: <TimeLine /> },
+      { path: 'UserPay', element: <UserPay /> },
     ],
   },
 ];
 export default function AppRouter() {
-  window.scroll(0, 0);
+  // window.scroll(0, 0);
 
-  return <>{useRoutes(routes)}</>;
+  return <React.Fragment>{useRoutes(routes)}</React.Fragment>;
 }

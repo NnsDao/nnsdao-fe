@@ -3,18 +3,17 @@ import PersonIcon from '@mui/icons-material/Person';
 import SearchIcon from '@mui/icons-material/Search';
 import { Divider, IconButton, Paper, Stack, Typography } from '@mui/material';
 import InputBase from '@mui/material/InputBase';
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { useDebounce } from 'usehooks-ts';
 
-export default function DashBoard(props) {
-  const [searchStr, setSearch] = useState('');
-  const submit = e => {
-    e.preventDefault();
-    e.stopPropagation();
-    props.onchange(searchStr);
-    // console.log();
-  };
+export default function DashBoard({ search: setSearch }) {
+  const [inputVal, setInputVal] = React.useState('');
+  const debouncedVal = useDebounce(inputVal, 300);
+  useEffect(() => {
+    setSearch(debouncedVal);
+  }, [debouncedVal]);
   const search = e => {
-    setSearch(e.currentTarget.value);
+    setInputVal(e.currentTarget.value);
   };
   return (
     <React.Fragment>

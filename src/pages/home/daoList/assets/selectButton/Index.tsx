@@ -10,7 +10,7 @@ export default function SelectButton() {
   let MenuItemConfig: any = totalList.data?.length
     ? // @ts-ignore
       [...new Set(totalList.data.map(item => item.tags).flat(Infinity))]
-    : ['Acticve', 'In Progress', 'to do', 'Overdue', 'Completed'];
+    : ['Active', 'Stopped'];
   const open = Boolean(anchorEl);
 
   const handleClose = () => {

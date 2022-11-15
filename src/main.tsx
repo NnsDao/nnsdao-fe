@@ -9,10 +9,11 @@ import App from './App';
 import GlobalStateProvider from './hooks/globalState';
 import { UserStoreProvider } from './hooks/userStore';
 import './index.css';
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5e3,
+      staleTime: 3e4,
       refetchOnWindowFocus: false,
       cacheTime: Infinity,
       retry: false,
