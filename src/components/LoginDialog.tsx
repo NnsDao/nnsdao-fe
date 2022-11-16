@@ -76,7 +76,7 @@ function LoginDialog({ open, toggleOpen }) {
                 />
               </ListItemIcon>
               <ListItemText>Plug Identity</ListItemText>
-              {userInfo.loginType == 'plug' ? <CheckCircleIcon color="primary"></CheckCircleIcon> : null}
+              {userInfo.loginType == 'plug' && userInfo.isLogin && <CheckCircleIcon color="primary"></CheckCircleIcon>}
             </ListItemButton>
           </ListItem>
           <ListItem>
@@ -90,7 +90,7 @@ function LoginDialog({ open, toggleOpen }) {
                   }}></div>
               </ListItemIcon>
               <ListItemText>Stoic Identity</ListItemText>
-              {userInfo.loginType == 'stoic' ? <CheckCircleIcon color="primary"></CheckCircleIcon> : null}
+              {userInfo.loginType == 'stoic' && userInfo.isLogin && <CheckCircleIcon color="primary"></CheckCircleIcon>}
             </ListItemButton>
           </ListItem>
         </List>

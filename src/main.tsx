@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
+import { isDev } from './common/helper';
 import GlobalStateProvider from './hooks/globalState';
 import { UserStoreProvider } from './hooks/userStore';
 import './index.css';
@@ -14,7 +15,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 3e4,
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: !isDev,
       cacheTime: Infinity,
       retry: false,
     },

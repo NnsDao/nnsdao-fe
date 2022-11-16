@@ -1,9 +1,11 @@
 import { Avatar, AvatarGroup, Box, Button, Chip, Paper, Stack, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import { DaoInfo } from '@nnsdao/nnsdao-kit/src/dao_manager/types';
+import type { DaoInfo } from '@nnsdao/nnsdao-kit/src/dao_manager/types';
+import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useGetDaoInfo, useJoin, useMemberList } from '../../../../api/nnsdao';
+import { useGlobalState } from '../../../../hooks/globalState';
 import { useUserStore } from '../../../../hooks/userStore';
 
 export default function List(props) {
@@ -18,22 +20,36 @@ export default function List(props) {
     <Grid container spacing={{ lg: 3, sm: 2 }}>
       {list.map(item => (
         <Grid key={item.canister_id.toText()} xs={12} sm={6} md={4} xl={3}>
-          <Card cid={item.canister_id.toText()} status={item.status}></Card>
+          <Card metadata={item}></Card>
         </Grid>
       ))}
     </Grid>
   );
 }
 
-const Card = ({ cid, status }) => {
+const Card = ({ metadata }) => {
+  const cid = metadata.canister_id.toText();
   // console.log('card,cid', cid);
   const [userInfo, dispatch] = useUserStore();
   const info = useGetDaoInfo(cid);
   const daoMember = useMemberList(cid);
   const data = info.data;
-  const chipState: string = Object.keys(status)?.[0];
+  const chipState: string = Object.keys(metadata.status)?.[0];
   const navigate = useNavigate();
   const joinMutation = useJoin(cid);
+  const [globalState, dispatchAction] = useGlobalState();
+
+  useEffect(() => {
+    console.log('globalState.joinedDaoList', globalState);
+
+    if (info.data && !globalState.joinedDaoList?.find(item => item?.canister_id == userInfo.principalId)) {
+      dispatchAction({
+        type: 'changeDaoList',
+        data: [...globalState.joinedDaoList, info.data],
+      });
+    }
+  }, [info.data]);
+
   function joinDao(e) {
     e.stopPropagation();
     e.preventDefault();
@@ -102,7 +118,7 @@ const Card = ({ cid, status }) => {
                 color: '#5E6278',
                 paddingBottom: '3px',
               }}>
-              Feb 6, 2021
+              {new Date((data?.create_at || 0) / 1e6).toLocaleString()}
             </Box>
             <Box
               sx={{

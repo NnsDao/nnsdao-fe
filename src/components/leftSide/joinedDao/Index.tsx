@@ -1,16 +1,20 @@
 import { Avatar, Stack, Tooltip, Zoom } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useGlobalState } from '../../../hooks/globalState';
+// const observer = new QueryObserver(queryClient, { queryKey: daoManagerKeys.lists() });
 
 export default function JoinedDao() {
+  const [globalState, dispatchAction] = useGlobalState();
   const navigate = useNavigate();
   const toDetailPage = item => {
-    navigate(`/daoDetail/:${item.canister}`);
+    item.canister_id && navigate(`/daoDetail/:${item.canister_id}`);
   };
-  const data = Array.from({ length: 12 }).map((item, i) => ({
-    canister: i + 1,
-    avatar: i + 1,
-    name: i + 1,
-  }));
+  const placeHoder = [
+    {
+      name: 'Join Dao...',
+    },
+  ];
+  const data = (globalState.joinedDaoList?.length && globalState.joinedDaoList) || placeHoder;
   return (
     <Stack
       spacing={1}
@@ -23,14 +27,14 @@ export default function JoinedDao() {
       }}>
       {data.map((item, index) => (
         <Tooltip
-          key={item.canister}
+          key={item?.name}
           title={item.name}
           TransitionComponent={Zoom}
           placement="right"
           TransitionProps={{ timeout: 200 }}>
           <Avatar
             alt="Remy Sharp"
-            src={String(item.avatar)}
+            src={item.avatar}
             onClick={() => toDetailPage(item)}
             sx={{
               width: 47,

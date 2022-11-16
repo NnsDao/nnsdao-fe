@@ -96,7 +96,6 @@ export const useGetProposalList = (cid: string, selector?: (data) => any) => {
   const defaultSelector = data => data;
   const queryClient = useQueryClient();
   return useQuery(nnsdaoKeys.proposal_lists(cid), getProposalList, {
-    staleTime: 6e4,
     select: selector || defaultSelector,
   });
 };
@@ -117,7 +116,6 @@ export const useGetProposal = (cid: string, id: string) => {
       return Promise.reject(res.Err);
     },
     {
-      staleTime: 6e4,
       initialData: () => {
         const list: any[] = queryClient.getQueryData(listKey) ?? [];
         const item = list.find(([ID]) => ID == id);
@@ -147,15 +145,11 @@ export const useGetProposal = (cid: string, id: string) => {
 };
 
 export const useGetUserInfo = (cid: string) => {
-  return useQuery(nnsdaoKeys.userInfo(cid), user_info, {
-    staleTime: Infinity,
-  });
+  return useQuery(nnsdaoKeys.userInfo(cid), user_info, {});
 };
 
 export const useGetDaoInfo = (cid: string) => {
-  return useQuery(nnsdaoKeys.daoInfo(cid), getDaoInfo, {
-    staleTime: Infinity,
-  });
+  return useQuery(nnsdaoKeys.daoInfo(cid), getDaoInfo, {});
 };
 
 export const useVote = () => {
@@ -188,7 +182,6 @@ export const useQuit = (cid: string) => {
 export const useMemberList = (cid: string, selector?: (data: MemberItems[]) => MemberItems[]) => {
   const defaultSelector = React.useCallback((data: MemberItems[]) => data, []);
   return useQuery(nnsdaoKeys.member_list(cid), member_list, {
-    staleTime: 6e4,
     select: selector || defaultSelector,
   });
 };

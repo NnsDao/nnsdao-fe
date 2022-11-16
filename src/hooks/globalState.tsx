@@ -1,31 +1,27 @@
-import React, { createContext, useContext, useReducer } from 'react';
+import type { DaoInfo as TDaoInfo } from '@nnsdao/nnsdao-kit/src/nnsdao/types';
+import { createContext, useContext, useReducer } from 'react';
 
 const initialState = {
-  isLogin: false,
-  count: 0,
+  joinedDaoList: [] as TDaoInfo[],
 };
 const StateContext = createContext(null as any);
 
-const reducer = (state: typeof initialState, action: { type: any; value: any }) => {
+type TState = typeof initialState;
+const reducer = (state: TState, action: { type: string; data: any }) => TState => {
   switch (action.type) {
-    case 'changeLogin':
+    case 'changeDaoList':
       return {
         ...state,
-        isLogin: action.value,
-      };
-
-    default:
-      return {
-        ...state,
-        count: state.count + 1,
+        joinedDaoList: action.data,
       };
   }
 };
 
-// @ts-ignore
-const GlobalStateProvider = ({ children }) => (
-  <StateContext.Provider value={useReducer(reducer, initialState)}>{children}</StateContext.Provider>
-);
+const GlobalStateProvider = ({ children }) => {
+  // @ts-ignore
+  const store = useReducer(reducer, initialState);
+  return <StateContext.Provider value={store}>{children}</StateContext.Provider>;
+};
 export default GlobalStateProvider;
 
-export const useGlobalState = () => useContext(StateContext);
+export const useGlobalState = () => useContext(StateContext) as [TState, (...arg: any[]) => void];
