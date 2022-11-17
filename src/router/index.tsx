@@ -1,8 +1,8 @@
 import OverView from '@/pages/home/daoDetail/overView/Index';
 import React from 'react';
 
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Home from '../pages/home/Index';
+import { RouteObject, useRoutes } from 'react-router-dom';
+import Home from '../pages/home/index';
 const Activity = React.lazy(() => import('@/pages/home/daoDetail/activity/Index'));
 const Budget = React.lazy(() => import('@/pages/home/daoDetail/budget/Index'));
 const BudgetSet = React.lazy(() => import('@/pages/home/daoDetail/budgetSet/Index'));
@@ -20,38 +20,37 @@ const Users = React.lazy(() => import('@/pages/home/daoDetail/users/Index'));
 const UserPay = React.lazy(() => import('@/pages/home/daoDetail/userPay/Index'));
 const DaoList = React.lazy(() => import('@/pages/home/daoList/Index'));
 
-const routes = createBrowserRouter([
+const routes: RouteObject[] = [
   {
     path: '/',
     element: <Home></Home>,
+    index: true,
+  },
+  {
+    path: '/daoDetail/:cid',
+    element: <DaoDetail />,
     children: [
-      { index: true, element: <DaoList /> },
-      {
-        path: '/daoDetail/:cid',
-        element: <DaoDetail />,
-        children: [
-          { index: true, element: <OverView /> },
-          { path: 'OverView', element: <OverView /> },
-          { path: 'Users', element: <Users /> },
-          { path: 'Proposals', element: <Proposals /> },
-          { path: 'Chat', element: <Chat /> },
-          { path: 'Activity', element: <Activity /> },
-          { path: 'Budget', element: <Budget /> },
-          { path: 'BudgetSet', element: <BudgetSet /> },
-          { path: 'Create', element: <Create /> },
-          { path: 'Nfts', element: <Nfts /> },
-          { path: 'ProposalsCreate', element: <ProposalsCreate /> },
-          { path: 'ProposalsDetail', element: <ProposalsDetail /> },
-          { path: 'Setting', element: <Setting /> },
-          { path: 'Task', element: <Task /> },
-          { path: 'TimeLine', element: <TimeLine /> },
-          { path: 'UserPay', element: <UserPay /> },
-        ],
-      },
+      { index: true, element: <OverView /> },
+      { path: 'OverView', element: <OverView /> },
+      { path: 'Users', element: <Users /> },
+      { path: 'Proposals', element: <Proposals /> },
+      { path: 'Chat', element: <Chat /> },
+      { path: 'Activity', element: <Activity /> },
+      { path: 'Budget', element: <Budget /> },
+      { path: 'BudgetSet', element: <BudgetSet /> },
+      { path: 'Create', element: <Create /> },
+      { path: 'Nfts', element: <Nfts /> },
+      { path: 'ProposalsCreate', element: <ProposalsCreate /> },
+      { path: 'ProposalsDetail', element: <ProposalsDetail /> },
+      { path: 'Setting', element: <Setting /> },
+      { path: 'Task', element: <Task /> },
+      { path: 'TimeLine', element: <TimeLine /> },
+      { path: 'UserPay', element: <UserPay /> },
     ],
   },
-]);
+];
 export default function AppRouter() {
-  window.scroll(0, 0);
-  return <RouterProvider router={routes}></RouterProvider>;
+  // window.scroll(0, 0);
+
+  return <React.Fragment>{useRoutes(routes)}</React.Fragment>;
 }

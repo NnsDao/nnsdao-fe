@@ -23,7 +23,7 @@ export default (WrappedComponent, queryFn: (...arg: any[]) => UseQueryResult) =>
     if (data.isLoading && !data.isFetched) {
       return (
         <Container maxWidth="xl" sx={{ position: 'relative' }}>
-          <Stack spacing={2}>
+          <Stack spacing={2} justifyContent="center" alignItems={'center'}>
             <Typography variant="button" display="block" gutterBottom>
               loading...
             </Typography>
@@ -34,7 +34,7 @@ export default (WrappedComponent, queryFn: (...arg: any[]) => UseQueryResult) =>
     }
     return (
       <Container maxWidth="xl" sx={{ position: 'relative' }}>
-        <Stack spacing={2} direction="row" alignItems="center">
+        <Stack spacing={2} alignItems="center">
           <Typography variant="caption" display="block" gutterBottom>
             Error Occurs!
           </Typography>

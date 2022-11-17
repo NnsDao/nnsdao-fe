@@ -61,7 +61,6 @@ export const useTotalDaoLists = () => {
     },
     {
       // refetchInterval: 6e4,
-      staleTime: 0,
       refetchOnWindowFocus: import.meta.env.PROD,
     }
   );

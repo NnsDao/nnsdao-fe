@@ -23,7 +23,7 @@ export const useNidInfo = () => {
       return Promise.reject(res.Err);
     },
     {
-      staleTime: Infinity,
+      staleTime: Number.MAX_SAFE_INTEGER,
     }
   );
 };

@@ -1,25 +1,28 @@
-import { Box } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
-import { Outlet } from 'react-router-dom';
+import { Box, Button, Container, Stack } from '@mui/material';
+import React from 'react';
 import { useTotalDaoLists } from '../../api/dao_manager';
-import Hello from '../../components/Hello';
 import LoadingWrapper from '../../components/LoadingWrapper';
 import DashBoard from './components/dashBoard/Index';
+import SelectButton from './daoList/assets/selectButton/Index';
+import List from './daoList/list/Index';
 
-export default function Home(props: any) {
-  console.log('WrappedComponent');
-  const HelloWrap = LoadingWrapper(Hello, useTotalDaoLists);
+export default function Home(props) {
+  const DaoList = LoadingWrapper(List, useTotalDaoLists);
+  const [searchStr, setSearch] = React.useState('');
   return (
-    <Grid container direction="column" alignItems="center" sx={{ background: ' #F9FAFB' }}>
-      <Grid xs={11}>
-        <DashBoard />
-      </Grid>
-      <Grid xs={11}>
-        <Box sx={{ height: '1px', width: '100%', background: '#D7D3D3' }} />
-      </Grid>
-      <Grid xs={11}>
-        <Outlet />
-      </Grid>
-    </Grid>
+    <Container maxWidth="xl">
+      <DashBoard search={setSearch} />
+      <Stack my={{ xl: 3, sm: 1 }} direction="row" alignItems="center" justifyContent="space-between">
+        <Box>
+          <span style={{ fontFamily: 'Roboto', fontWeight: 500, fontSize: '20px' }}>DAOs DAPP &nbsp;</span>
+          {/* <span style={{ fontWeight: 700, fontSize: '12px', lineHeight: '23px', color: '#A1A5B7' }}>Active</span> */}
+        </Box>
+        <Stack direction="row" alignItems="center" spacing={{ xl: 2, sm: 1 }}>
+          <SelectButton />
+          <Button variant="contained">New DAOs</Button>
+        </Stack>
+      </Stack>
+      <DaoList filterStr={searchStr}></DaoList>
+    </Container>
   );
 }

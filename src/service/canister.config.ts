@@ -1,9 +1,9 @@
-import { idlFactory as ndp_IDL } from '@nnsdao/nnsdao-kit/dip20/index';
-import { isTestCanister } from '../common/helper';
-
 import { idlFactory as dao_manager_IDL } from '@nnsdao/nnsdao-kit/dao_manager/index';
+import { idlFactory as ndp_IDL } from '@nnsdao/nnsdao-kit/dip20/index';
 import { idlFactory as nid_IDL } from '@nnsdao/nnsdao-kit/nid/index';
 import { idlFactory as nnsdao_IDL } from '@nnsdao/nnsdao-kit/nnsdao/index';
+
+export const isTestCanister = import.meta.env.__APP__canister_type === 'test';
 export { nnsdao_IDL };
 
 export const canister = {
@@ -25,10 +25,16 @@ export const canister = {
   },
 };
 
-// plug create actor whitelist
-export const canisterIdList = ['w3p32-waaaa-aaaah-aboyq-cai'];
 export default canister;
 
 export const getTotalCanisterIdList = (): string[] => {
-  return canisterIdList.concat(Object.values(canister).map(item => item.cid));
+  return Object.values(canister).map(item => item.cid);
 };
+
+export function collectUsedCanisterId() {
+  //
+  // add none  project canister id to here
+  //
+  const list: string[] = [];
+  return list.concat(getTotalCanisterIdList());
+}

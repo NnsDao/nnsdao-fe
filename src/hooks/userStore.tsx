@@ -1,7 +1,7 @@
-import { plugLogin, stoicLogin } from '@nnsdao/nnsdao-kit';
 import storage from '@nnsdao/nnsdao-kit/helper/storage';
 import { useQueryClient } from '@tanstack/react-query';
 import React, { createContext, useContext, useEffect, useReducer } from 'react';
+import { login } from '../common/helper';
 
 const defaultValue = {
   loginType: storage.get('loginType') ?? '', // plug ,stoic || ''
@@ -36,33 +36,14 @@ export function UserStoreProvider({ children }) {
 
   useEffect(() => {
     console.log('login_userInfo', userInfo);
-    if (userInfo.loginType) {
+    // auto login
+    if (userInfo.loginType && !userInfo?.isLogin) {
       autoLogin(userInfo.loginType);
-    } else {
-      queryClient.invalidateQueries();
     }
   }, [userInfo.loginType]);
 
   async function autoLogin(loginType: string) {
-    let loginRes = null as any;
-
-    if (loginType == 'plug') {
-      // FIXME
-      const whiteList = ['xx'];
-      loginRes = await plugLogin(whiteList);
-    } else if (loginType == 'stoic') {
-      loginRes = await stoicLogin();
-    }
-    if (!loginRes) return;
-    console.log(`auto login res`, loginRes);
-    const loginInfo = {
-      loginType: loginType ?? '',
-      principalId: loginRes.principalId,
-      accountId: loginRes.accountId,
-      isLogin: true,
-    };
-    // @ts-ignore
-    storage.set('userInfo', loginInfo);
+    const loginInfo = await login(loginType);
     dispatch({
       type: 'login',
       data: loginInfo,
