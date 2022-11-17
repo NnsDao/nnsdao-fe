@@ -13,7 +13,7 @@ export default function List(props) {
   const data: DaoInfo[] = props.data;
   const navigate = useNavigate();
   const toDaoDetail = item => {
-    navigate(`/daoDetail/${item.name}`);
+    navigate(`/dao/${item.name}`);
   };
   const list = filterStr ? data.filter(info => new RegExp(filterStr, 'i').test(info.tags.join(' '))) : data;
   return (
@@ -29,6 +29,7 @@ export default function List(props) {
 
 const Card = ({ metadata }) => {
   const cid = metadata.canister_id.toText();
+  const controller = metadata.controller.map(principal => principal.toText());
   // console.log('card,cid', cid);
   const [userInfo, dispatch] = useUserStore();
   const info = useGetDaoInfo(cid);
@@ -40,15 +41,18 @@ const Card = ({ metadata }) => {
   const [globalState, dispatchAction] = useGlobalState();
 
   useEffect(() => {
-    console.log('globalState.joinedDaoList', globalState);
-
-    if (info.data && !globalState.joinedDaoList?.find(item => item?.canister_id == userInfo.principalId)) {
+    if (
+      info.data &&
+      hasJoin(userInfo.principalId) &&
+      !globalState.joinedDaoList?.find(item => item?.canister_id.toText() == cid)
+    ) {
+      // console.log('globalState.joinedDaoList', globalState);
       dispatchAction({
         type: 'changeDaoList',
-        data: [...globalState.joinedDaoList, info.data],
+        data: [...globalState.joinedDaoList, { ...info.data, ...metadata }],
       });
     }
-  }, [info.data]);
+  }, [info.data, userInfo.principalId]);
 
   function joinDao(e) {
     e.stopPropagation();
@@ -71,7 +75,7 @@ const Card = ({ metadata }) => {
     return !!daoMember.data?.find(member => member.principal.toText() === userInfo.principalId);
   }
   return (
-    <Paper elevation={3} sx={{ height: '100%' }} onClick={() => navigate('/daoDetail/cid')}>
+    <Paper elevation={3} sx={{ height: '100%' }} onClick={() => navigate(`/dao/${cid}`)}>
       <Stack spacing={{ sm: 2 }} p={'25px'}>
         <Stack direction="row" justifyContent="space-between" alignItems={'center'}>
           <Avatar

@@ -8,7 +8,7 @@ export default function Proposals() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const toDaoDetail = item => {
-    navigate(`/daoDetail/${item.name}`);
+    navigate(`/dao/${item.name}`);
   };
   return (
     <Grid container xs={12}>

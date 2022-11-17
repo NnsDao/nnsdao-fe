@@ -1,4 +1,4 @@
-import { Box, Button, Container, Stack } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import React from 'react';
 import { useTotalDaoLists } from '../../api/dao_manager';
 import LoadingWrapper from '../../components/LoadingWrapper';
@@ -10,7 +10,7 @@ export default function Home(props) {
   const DaoList = LoadingWrapper(List, useTotalDaoLists);
   const [searchStr, setSearch] = React.useState('');
   return (
-    <Container maxWidth="xl">
+    <React.Fragment>
       <DashBoard search={setSearch} />
       <Stack my={{ xl: 3, sm: 1 }} direction="row" alignItems="center" justifyContent="space-between">
         <Box>
@@ -23,6 +23,6 @@ export default function Home(props) {
         </Stack>
       </Stack>
       <DaoList filterStr={searchStr}></DaoList>
-    </Container>
+    </React.Fragment>
   );
 }

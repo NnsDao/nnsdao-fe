@@ -3,6 +3,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Avatar, Box, Stack, Tooltip, Zoom } from '@mui/material';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useToggle } from 'usehooks-ts';
 import { useUserStore } from '../../hooks/userStore';
 import LoginDialog from '../LoginDialog';
@@ -10,10 +11,10 @@ import JoinedDao from './joinedDao/Index';
 
 export default function LeftSidePanel(props) {
   // const JoinedDaoWrap = LoadingWrapper(joinedDao, useTotalDaoLists);
-  // const navigate = useNavigate();
-  // const toHome = () => {
-  //   navigate(`/home`);
-  // };
+  const navigate = useNavigate();
+  const toHome = () => {
+    navigate(`/`);
+  };
   const [userInfo, dispatch] = useUserStore();
   const [open, toggleOpen] = useToggle(false);
 
@@ -28,7 +29,7 @@ export default function LeftSidePanel(props) {
             height: 60,
             cursor: 'pointer',
           }}
-          // onClick={toHome}
+          onClick={toHome}
         />
         <Box sx={{ height: 'calc( 100% - 100px)', overflow: 'hidden' }}>
           <JoinedDao />

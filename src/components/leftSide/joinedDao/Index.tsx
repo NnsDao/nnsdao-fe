@@ -7,7 +7,7 @@ export default function JoinedDao() {
   const [globalState, dispatchAction] = useGlobalState();
   const navigate = useNavigate();
   const toDetailPage = item => {
-    item.canister_id && navigate(`/daoDetail/:${item.canister_id}`);
+    item.canister_id && navigate(`/dao/:${item.canister_id}`);
   };
   const placeHoder = [
     {

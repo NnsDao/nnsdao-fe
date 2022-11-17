@@ -4,11 +4,11 @@ import NavLeft from './components/navLeft/Index';
 
 export default function DaoDetail() {
   return (
-    <Grid container paddingTop="64px" paddingBottom="21px">
-      <Grid xs={2.5}>
+    <Grid container my={{ xl: 6, sm: 2 }} spacing={{ md: 6, sm: 2, xs: 1 }}>
+      <Grid md={1} sm={1.8} justifySelf="flex-start" sx={{ position: 'relative' }} minWidth={160}>
         <NavLeft />
       </Grid>
-      <Grid xs={9.5}>
+      <Grid md={11} sm={9} flexShrink={1} ml={{ sm: 1, md: 8 }} alignItems="stretch">
         <Outlet></Outlet>
       </Grid>
     </Grid>

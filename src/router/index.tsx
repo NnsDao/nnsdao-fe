@@ -3,12 +3,13 @@ import React from 'react';
 
 import { RouteObject, useRoutes } from 'react-router-dom';
 import Home from '../pages/home';
+import DaoDetail from '../pages/home/daoDetail/Index';
 const Activity = React.lazy(() => import('@/pages/home/daoDetail/activity/Index'));
 const Budget = React.lazy(() => import('@/pages/home/daoDetail/budget/Index'));
 const BudgetSet = React.lazy(() => import('@/pages/home/daoDetail/budgetSet/Index'));
 const Chat = React.lazy(() => import('@/pages/home/daoDetail/chat/Index'));
 const Create = React.lazy(() => import('@/pages/home/daoDetail/create/Index'));
-const DaoDetail = React.lazy(() => import('@/pages/home/daoDetail/Index'));
+// const DaoDetail = React.lazy(() => import('@/pages/home/daoDetail/Index'));
 const Nfts = React.lazy(() => import('@/pages/home/daoDetail/nfts/Index'));
 const Proposals = React.lazy(() => import('@/pages/home/daoDetail/proposals/Index'));
 const ProposalsCreate = React.lazy(() => import('@/pages/home/daoDetail/proposalsCreate/Index'));
@@ -27,7 +28,7 @@ const routes: RouteObject[] = [
     index: true,
   },
   {
-    path: '/daoDetail/:cid',
+    path: '/dao/:cid',
     element: <DaoDetail />,
     children: [
       { index: true, element: <OverView /> },

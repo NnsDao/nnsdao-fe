@@ -1,4 +1,5 @@
 import Grid from '@mui/material/Unstable_Grid2';
+import { Container } from '@mui/system';
 import { Outlet } from 'react-router-dom';
 import './App.css';
 import LeftSidePanel from './components/leftSide/LeftSidePanel';
@@ -14,8 +15,10 @@ export default function App() {
         <LeftSidePanel />
       </Grid>
       <Grid xs={10} lg={11}>
-        <AppRouter></AppRouter>
-        <Outlet></Outlet>
+        <Container maxWidth="xl">
+          <AppRouter></AppRouter>
+          <Outlet></Outlet>
+        </Container>
       </Grid>
     </Grid>
   );

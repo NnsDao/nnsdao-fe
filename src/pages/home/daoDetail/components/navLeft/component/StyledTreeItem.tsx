@@ -22,8 +22,8 @@ export default function StyledTreeItem(props: StyledTreeItemProps) {
     color: theme.palette.text.secondary,
     [`& .${treeItemClasses.content}`]: {
       color: theme.palette.text.secondary,
-      borderTopRightRadius: theme.spacing(2),
-      borderBottomRightRadius: theme.spacing(2),
+      // borderTopRightRadius: theme.spacing(2),
+      // borderBottomRightRadius: theme.spacing(2),
       // paddingRight: theme.spacing(1),
       marginBottom: '8px',
       fontWeight: theme.typography.fontWeightMedium,
