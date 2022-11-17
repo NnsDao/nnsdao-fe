@@ -1,3 +1,4 @@
+import { idlFactory as ndp_IDL } from '@nnsdao/nnsdao-kit/dip20/index';
 import { isTestCanister } from '../common/helper';
 
 import { idlFactory as dao_manager_IDL } from '@nnsdao/nnsdao-kit/dao_manager/index';
@@ -15,8 +16,12 @@ export const canister = {
     idl: dao_manager_IDL,
   },
   nid: {
-    cid: 'nfawh-syaaa-aaaah-abtpq-cai',
+    cid: 'vgqnj-miaaa-aaaal-qaapa-cai',
     idl: nid_IDL,
+  },
+  ndp: {
+    cid: 'vgqnj-miaaa-aaaal-qaapa-cai',
+    idl: ndp_IDL,
   },
 };
 

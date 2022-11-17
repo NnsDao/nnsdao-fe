@@ -2,7 +2,7 @@ import OverView from '@/pages/home/daoDetail/overView/Index';
 import React from 'react';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Home from '../pages/home';
+import Home from '../pages/home/Index';
 const Activity = React.lazy(() => import('@/pages/home/daoDetail/activity/Index'));
 const Budget = React.lazy(() => import('@/pages/home/daoDetail/budget/Index'));
 const BudgetSet = React.lazy(() => import('@/pages/home/daoDetail/budgetSet/Index'));
