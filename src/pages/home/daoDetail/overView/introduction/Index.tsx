@@ -69,7 +69,7 @@ export default function Introduction() {
                 </Box>
               </Box>
             </Stack>
-            <Stack container mr={1}>
+            <Stack>
               <Box sx={{ border: '1px dashed grey', padding: '9px 33px 10px 13px' }}>
                 <Box
                   sx={{
@@ -94,7 +94,7 @@ export default function Introduction() {
                 </Box>
               </Box>
             </Stack>{' '}
-            <Stack container mr={1}>
+            <Stack>
               <Box sx={{ border: '1px dashed grey', padding: '9px 33px 10px 13px' }}>
                 <Box
                   sx={{

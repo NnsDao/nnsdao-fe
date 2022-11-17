@@ -43,6 +43,7 @@ const Card = ({ metadata }) => {
   useEffect(() => {
     if (
       info.data &&
+      userInfo.isLogin &&
       hasJoin(userInfo.principalId) &&
       !globalState.joinedDaoList?.find(item => item?.canister_id.toText() == cid)
     ) {

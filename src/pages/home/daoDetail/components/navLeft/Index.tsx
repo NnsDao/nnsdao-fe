@@ -11,7 +11,7 @@ export default function NavLeft() {
     navigate(`${item.labelText}`);
   };
   return (
-    <Paper sx={{ background: '#fff', position: 'sticky' }}>
+    <Paper sx={{ background: '#fff', position: 'sticky', top: '10px' }}>
       <TreeView
         aria-label="gmail"
         defaultExpanded={['1']}
