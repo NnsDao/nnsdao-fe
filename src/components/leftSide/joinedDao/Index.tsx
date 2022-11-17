@@ -11,7 +11,7 @@ export default function JoinedDao() {
   };
   const placeHoder = [
     {
-      name: 'Join Dao...',
+      name: 'Not yet joined',
     },
   ];
   const data = (globalState.joinedDaoList?.length && globalState.joinedDaoList) || placeHoder;

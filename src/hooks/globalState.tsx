@@ -7,7 +7,7 @@ const initialState = {
 const StateContext = createContext(null as any);
 
 type TState = typeof initialState;
-const reducer = (state: TState, action: { type: string; data: any }) => TState => {
+const reducer = (state, action) => {
   switch (action.type) {
     case 'changeDaoList':
       return {
