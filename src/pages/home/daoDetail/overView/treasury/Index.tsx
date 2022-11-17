@@ -1,5 +1,5 @@
 import { Avatar, AvatarGroup, Button, Card, CardContent } from '@mui/material';
-import { Box } from '@mui/system';
+import { Box, Stack } from '@mui/system';
 
 export default function Treasury() {
   return (
@@ -35,10 +35,10 @@ export default function Treasury() {
           <Avatar></Avatar>
           <Avatar></Avatar>
         </AvatarGroup>
-        <Box>
+        <Stack spacing={{ lg: 2, sm: 1 }} direction="row">
           <Button variant="contained">Invite Contributors</Button>
           <Button>Invite New</Button>
-        </Box>
+        </Stack>
       </CardContent>
     </Card>
   );
