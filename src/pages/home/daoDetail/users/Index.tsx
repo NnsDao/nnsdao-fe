@@ -15,7 +15,7 @@ export default function Users() {
   const { cid } = useParams();
   const [showType, setShowType] = React.useState('table');
   const [orderType, setOrderType] = React.useState('Most active');
-  const List = LoadingWrapper(UserCard, () => useMemberList(cid));
+  const List = LoadingWrapper(UserCard, () => useMemberList(cid as unknown as string));
   return (
     <React.Fragment>
       <TopMenu></TopMenu>
@@ -26,17 +26,24 @@ export default function Users() {
   function UserCard(props) {
     const data: MemberItems[] = props.data;
     return (
-      <Grid container my={{ sm: 2, md: 4 }} spacing={{ sm: 2 }} alignItems="stretch">
+      <Grid
+        container
+        my={{ sm: 2, md: 4 }}
+        columns={showType == 'linear' ? { xs: 11, sm: 2, md: 3 } : undefined}
+        spacing={{ sm: 2 }}
+        alignItems="stretch">
         {data.map(member => {
           return (
-            <Grid xs={12} sm={2} md={3} key={member.principal.toText()}>
+            <Grid xs={11} sm={2} md={3} key={member.principal.toText()}>
               <Card elevation={1} sx={{ height: '100%' }}>
                 <Stack p={{ sm: 1, lg: 2 }} spacing={{ sm: 1 }} justifyContent="center" alignItems={'center'}>
                   <Avatar sizes="medium" src={member.avatar}></Avatar>
-                  <Typography variant="h5" textOverflow="ellipsis">
+                  <Typography variant="h5" textOverflow="ellipsis" maxWidth={'100%'} overflow="hidden">
                     {member.nickname}
                   </Typography>
-                  <Typography variant="body2">{member.intro}</Typography>
+                  <Typography variant="body2" textOverflow="ellipsis" maxWidth={'100%'} overflow="hidden">
+                    {member.intro}
+                  </Typography>
                   <Stack direction={'row'} justifyContent="space-between">
                     <Box sx={{ border: '1px dashed #E4E6EF', padding: '6px 8px ', borderRadius: '8px' }}>
                       <Typography lineHeight={1.5} variant="subtitle1">
@@ -59,6 +66,7 @@ export default function Users() {
   function handleChange(e) {
     setOrderType(e.target.value);
   }
+
   function TopMenu() {
     return (
       <Stack direction="row" justifyContent={'space-between'} alignItems="center">
@@ -67,16 +75,20 @@ export default function Users() {
             User&nbsp;
           </Typography>
           <Typography component="span" variant="body1" color="gray">
-            by xxx
+            by {orderType}
           </Typography>
         </Box>
         <Stack direction={'row'} spacing={0.5} alignItems="center">
-          <IconButton size="medium" onClick={() => setShowType('table')} color={getShowTypeColor(showType, 'table')}>
-            <WidgetsOutlinedIcon></WidgetsOutlinedIcon>
-          </IconButton>
-          <IconButton size="medium" onClick={() => setShowType('linear')} color={getShowTypeColor(showType, 'linear')}>
-            <TocOutlinedIcon></TocOutlinedIcon>
-          </IconButton>
+          {menuList.map(menu => {
+            return (
+              <IconButton
+                size="medium"
+                onClick={() => setShowType(menu.value)}
+                color={getShowTypeColor(showType, menu.value)}>
+                {menu.icon}
+              </IconButton>
+            );
+          })}
           <FormControl sx={{ bgcolor: '#fff' }} size="small">
             <Select value={orderType} onChange={handleChange} input={<OutlinedInput />}>
               {orderList.map(name => (
@@ -101,3 +113,13 @@ function getShowTypeColor(
   }
   return 'default';
 }
+const menuList = [
+  {
+    icon: <WidgetsOutlinedIcon></WidgetsOutlinedIcon>,
+    value: 'table',
+  },
+  {
+    icon: <TocOutlinedIcon></TocOutlinedIcon>,
+    value: 'linear',
+  },
+];
