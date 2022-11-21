@@ -13,10 +13,10 @@ export default function OverView() {
           <ActiveUser></ActiveUser>
         </Grid>
         <Grid sm={12} lg={4}>
-          <NewsMember></NewsMember>
+          <Treasury></Treasury>
         </Grid>
         <Grid sm={12} lg={4}>
-          <Treasury></Treasury>
+          <NewsMember></NewsMember>
         </Grid>
       </Grid>
       <Introduction></Introduction>

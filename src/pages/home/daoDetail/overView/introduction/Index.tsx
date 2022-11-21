@@ -4,10 +4,15 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import { Avatar, Button, LinearProgress, Paper, Stack } from '@mui/material';
+import { Avatar, Button, LinearProgress, Link, Paper, Stack } from '@mui/material';
 
 import { Box } from '@mui/system';
-export default function Introduction() {
+import { DaoInfo } from '@nnsdao/nnsdao-kit/nnsdao/types';
+import { useParams } from 'react-router-dom';
+import { useGetDaoInfo } from '../../../../../api/nnsdao';
+import LoadingWrapper from '../../../../../components/LoadingWrapper';
+function Introduction(props) {
+  const info: DaoInfo = props.data;
   const activeStep = 66;
   return (
     <Paper>
@@ -17,7 +22,7 @@ export default function Introduction() {
         alignItems="center"
         p={{ lg: 4, sm: 2 }}
         spacing={{ lg: 4, sm: 2 }}>
-        <Avatar sx={{ width: '150px', height: '150px' }}></Avatar>
+        <Avatar sx={{ width: '150px', height: '150px' }} src={info.avatar}></Avatar>
         <Stack
           sx={{
             fontFamily: 'Roboto',
@@ -27,7 +32,7 @@ export default function Introduction() {
             color: '#B5B5C3',
           }}>
           <Box sx={{ fontFamily: 'Roboto', fontWeight: '700', fontSize: '19px', lineHeight: '22px', color: '#3F4254' }}>
-            NnsDa inprogress |
+            {info.name}
           </Box>
           <Box sx={{ display: 'flex', my: '14px', mb: '25px' }}>
             <Box sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
@@ -137,10 +142,22 @@ export default function Introduction() {
         </Stack>
       </Stack>
       <Box sx={{ mt: '30px', pl: '30px' }}>
-        <GitHubIcon sx={{ cursor: 'pointer' }}></GitHubIcon>
-        <TwitterIcon sx={{ ml: '34px', cursor: 'pointer' }} htmlColor="#3191e7"></TwitterIcon>
-        <TelegramIcon sx={{ ml: '34px', cursor: 'pointer' }} htmlColor="#3B9Ee2"></TelegramIcon>
+        <Link href={info.option?.shares?.github}>
+          <GitHubIcon sx={{ cursor: 'pointer' }}></GitHubIcon>
+        </Link>
+        <Link href={info.option?.shares?.twitter}>
+          <TwitterIcon sx={{ ml: '34px', cursor: 'pointer' }} htmlColor="#3191e7"></TwitterIcon>
+        </Link>
+        <Link href={info.option?.shares?.telegram}>
+          <TelegramIcon sx={{ ml: '34px', cursor: 'pointer' }} htmlColor="#3B9Ee2"></TelegramIcon>
+        </Link>
       </Box>
     </Paper>
   );
+}
+
+export default function wrapIntro() {
+  const { cid } = useParams();
+  const Component = LoadingWrapper(Introduction, () => useGetDaoInfo(cid as string));
+  return <Component></Component>;
 }

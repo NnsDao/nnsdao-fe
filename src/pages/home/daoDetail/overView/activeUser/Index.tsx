@@ -1,7 +1,13 @@
 import { Card, CardContent } from '@mui/material';
 import { Box } from '@mui/system';
+import { MemberItems } from '@nnsdao/nnsdao-kit/nnsdao/types';
+import { useParams } from 'react-router-dom';
+import { useMemberList } from '../../../../../api/nnsdao';
+import LoadingWrapper from '../../../../../components/LoadingWrapper';
 
-export default function ActiveUser() {
+function ActiveUser(props) {
+  const list: MemberItems[] = props.data;
+
   return (
     <Card sx={{ height: '100%' }}>
       <CardContent>
@@ -13,7 +19,7 @@ export default function ActiveUser() {
             lineHeight: '40px',
             color: '#181C32',
           }}>
-          271
+          {list.length}
         </Box>
         <Box
           sx={{
@@ -30,4 +36,10 @@ export default function ActiveUser() {
       </CardContent>
     </Card>
   );
+}
+
+export default function WrapperActiveUser() {
+  const { cid } = useParams();
+  const User = LoadingWrapper(ActiveUser, () => useMemberList(cid as string));
+  return <User></User>;
 }

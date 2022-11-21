@@ -1,7 +1,14 @@
-import { Card, CardContent } from '@mui/material';
-import { Box } from '@mui/system';
-
-export default function NewsMember() {
+import { Avatar, AvatarGroup, Button, Card, CardContent } from '@mui/material';
+import { Box, Stack } from '@mui/system';
+import { MemberItems } from '@nnsdao/nnsdao-kit/nnsdao/types';
+import { useParams } from 'react-router-dom';
+import { useMemberList } from '../../../../../api/nnsdao';
+import LoadingWrapper from '../../../../../components/LoadingWrapper';
+function NewsMember(props) {
+  const memberList: MemberItems[] = props.data;
+  let now = Date.now();
+  // latest 3 days
+  const newCome = memberList.filter(member => now - (member?.join_at / 1e6 || now) <= 36e5 * 24 * 3);
   return (
     <Card sx={{ height: '100%' }}>
       <CardContent>
@@ -13,7 +20,7 @@ export default function NewsMember() {
             lineHeight: '40px',
             color: '#181C32',
           }}>
-          $898989
+          {newCome.length}
         </Box>
         <Box
           sx={{
@@ -22,100 +29,25 @@ export default function NewsMember() {
             fontSize: '16px',
             lineHeight: '30px',
             color: '#B5B5C3',
-            marginBottom: '23px',
           }}>
-          NewsMember
+          New Member
         </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <Box
-            sx={{
-              fontFamily: 'Roboto',
-              fontStyle: 'normal',
-              fontWeight: '500',
-              fontSize: '14px',
-              lineHeight: '16px',
-              color: '#5E6278',
-            }}>
-            Avg. Project Budget
-          </Box>
-          <Box
-            sx={{
-              fontFamily: 'Roboto',
-              fontStyle: 'normal',
-              fontWeight: '700',
-              fontSize: '14px',
-              lineHeight: '16px',
-              color: '#181C33',
-            }}>
-            $6,570
-          </Box>
-        </Box>
-        <Box sx={{ margin: '14px 0 11px 0', width: '100%', borderTop: '1px dotted #D7D3D3' }} />
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <Box
-            sx={{
-              fontFamily: 'Roboto',
-              fontStyle: 'normal',
-              fontWeight: '500',
-              fontSize: '14px',
-              lineHeight: '16px',
-              color: '#5E6278',
-            }}>
-            Lowest Project Check
-          </Box>
-          <Box
-            sx={{
-              fontFamily: 'Roboto',
-              fontStyle: 'normal',
-              fontWeight: '700',
-              fontSize: '14px',
-              lineHeight: '16px',
-              color: '#181C33',
-            }}>
-            $6,570
-          </Box>
-        </Box>
-        <Box sx={{ margin: '14px 0 11px 0', width: '100%', borderTop: '1px dotted #D7D3D3' }} />
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <Box
-            sx={{
-              fontFamily: 'Roboto',
-              fontStyle: 'normal',
-              fontWeight: '500',
-              fontSize: '14px',
-              lineHeight: '16px',
-              color: '#5E6278',
-            }}>
-            Sponor
-          </Box>
-          <Box
-            sx={{
-              fontFamily: 'Roboto',
-              fontStyle: 'normal',
-              fontWeight: '700',
-              fontSize: '14px',
-              lineHeight: '16px',
-              color: '#181C33',
-            }}>
-            $6,570
-          </Box>
-        </Box>
+        <AvatarGroup max={6} sx={{ justifyContent: 'flex-end', py: '16px' }}>
+          {memberList.map(member => {
+            return <Avatar key={member.principal.toHex()} src={member.avatar}></Avatar>;
+          })}
+        </AvatarGroup>
+        <Stack spacing={{ lg: 2, sm: 1 }} direction="row">
+          <Button variant="contained">Invite Contributors</Button>
+          <Button>Invite New</Button>
+        </Stack>
       </CardContent>
     </Card>
   );
+}
+
+export default function wrapMember() {
+  const { cid } = useParams();
+  const NewMember = LoadingWrapper(NewsMember, () => useMemberList(cid as string));
+  return <NewMember></NewMember>;
 }
