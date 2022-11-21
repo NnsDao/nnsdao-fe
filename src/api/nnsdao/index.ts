@@ -2,11 +2,13 @@ import type {
   DaoInfo,
   JoinDaoParams,
   MemberItems,
+  Proposal,
   ProposalContent,
   UserVoteArgs,
 } from '@nnsdao/nnsdao-kit/nnsdao/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React from 'react';
+import { useUserStore } from '../../hooks/userStore';
 import { getNnsdaoActor } from '../../service';
 import { nnsdaoKeys } from './queries';
 
@@ -92,7 +94,7 @@ export const getProposalList = async ({ queryKey }) => {
  *  Hooks
  */
 
-export const useGetProposalList = (cid: string, selector?: (data) => any) => {
+export const useGetProposalList = (cid: string, selector?: (data) => [bigint, Proposal][]) => {
   const defaultSelector = data => data;
   const queryClient = useQueryClient();
   return useQuery(nnsdaoKeys.proposal_lists(cid), getProposalList, {
@@ -186,7 +188,11 @@ export const useMemberList = (cid: string, selector?: (data: MemberItems[]) => M
   });
 };
 export const useJoin = (cid: string) => {
+  const [user] = useUserStore();
   return useMutation((params: JoinDaoParams) => {
+    if (!user.isLogin) {
+      return Promise.reject('Please log in first!');
+    }
     return join({ ...params, cid });
   });
 };
