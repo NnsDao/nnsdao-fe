@@ -2,6 +2,7 @@ export const isDev = import.meta.env.DEV;
 
 import { plugLogin, stoicLogin } from '@nnsdao/nnsdao-kit';
 import storage from '@nnsdao/nnsdao-kit/helper/storage';
+import type { Proposal } from '@nnsdao/nnsdao-kit/nnsdao/types';
 import { collectUsedCanisterId } from '../service/canister.config';
 
 type QueryItemType = Record<string, any>;
@@ -33,4 +34,20 @@ export async function login(loginType: string) {
   // @ts-ignore
   storage.set('userInfo', loginInfo);
   return loginInfo;
+}
+
+export function proposalStateToChipColor(item: Proposal['proposal_state']) {
+  const state: string = Object.keys(item)?.[0];
+  if (/Accepted|Succeeded/.test(state)) {
+    return 'success';
+  }
+  if (/Failed|Rejected/.test(state)) {
+    return 'error';
+  }
+  if (/Executing/.test(state)) {
+    return 'warning';
+  }
+
+  return 'secondary';
+  //
 }

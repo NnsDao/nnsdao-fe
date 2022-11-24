@@ -1,79 +1,41 @@
-import { Avatar } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
-import { Box } from '@mui/system';
+import { Avatar, AvatarGroup, Button, Chip, Divider, Paper, Typography } from '@mui/material';
+import { Stack } from '@mui/system';
+import { Proposal } from '@nnsdao/nnsdao-kit/nnsdao/types';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-export default function List() {
+export default function List(props) {
+  const data: [bigint, Proposal][] = props.list;
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const data = Array.from({ length: 10 }).map((item, i) => ({
-    TARGET: i + 1,
-    SECTION: i + 1,
-    DUEDATE: i + 1,
-    MEMBERS: i + 1,
-    STATUS: i + 1,
-  }));
+  const menu = ['TARGET', 'DUE DATE', 'MEMBERS', 'STATUS', ''];
   return (
-    <Grid>
-      <Grid container>
-        <Grid xs={4}>TARGET</Grid>
-        <Grid xs={1.5}>SECTION</Grid>
-        <Grid xs={1.5}>DUE DATE</Grid>
-        <Grid xs={2.5}>MEMBERS</Grid>
-        <Grid xs={1.5}>STATUS</Grid>
-        <Grid xs={1}></Grid>
-      </Grid>
-      {data.map(item => (
-        <Grid container key={item.DUEDATE}>
-          <Box sx={{ margin: '14px 0 11px 0', width: '100%', borderTop: '1px dotted #D7D3D3' }} />
-          <Grid container alignItems="center" sx={{ paddingY: '16px' }} xs={12}>
-            <Grid
-              container
-              alignItems="center"
-              xs={4}
-              sx={{
-                fontSamily: 'Roboto',
-                fontStyle: 'normal',
-                fontWeight: '500',
-                fontSize: '18px',
-                lineHeight: '30px',
-                letterSpacing: '-0.02em',
-                color: '#181C32',
-              }}>
-              GR15 Round Structure
-            </Grid>
-            <Grid container alignItems="center" xs={1.5}>
-              grants
-            </Grid>
-            <Grid
-              container
-              alignItems="center"
-              xs={1.5}
-              sx={{
-                fontSamily: 'Roboto',
-                fontStyle: 'normal',
-                fontWeight: '500',
-                fontSize: '18px',
-                lineHeight: '30px',
-                letterSpacing: '-0.02em',
-                color: '#181C32',
-              }}>
-              Jan 9, 2023
-            </Grid>
-            <Grid container direction="row" alignItems="center" xs={2.5}>
-              <Avatar></Avatar>
-              <Avatar></Avatar>
-              <Avatar></Avatar>
-            </Grid>
-            <Grid container alignItems="center" xs={1.5}>
-              Active
-            </Grid>
-            <Grid container alignItems="center" xs={1}>
-              View
-            </Grid>
-          </Grid>
-        </Grid>
+    <Paper sx={{ padding: '8px' }}>
+      <Stack direction={'row'} my={{ sm: 1 }} justifyContent="space-between">
+        {menu.map(text => {
+          return (
+            <Typography key={text} variant="subtitle1" color={'GrayText'}>
+              {text}
+            </Typography>
+          );
+        })}
+      </Stack>
+      {data.map(([id, item]) => (
+        <Stack key={Number(id)} spacing={0.5}>
+          <Divider sx={{ borderStyle: 'dotted' }}></Divider>
+          <Stack direction={'row'} justifyContent="space-between" alignItems="center">
+            <Typography variant="subtitle1">{item.title}</Typography>
+            {/* <Chip variant="filled" color="default" label={item.property['']}></Chip> */}
+            <Typography variant="subtitle2">{new Date(Number(item.end_time) / 1e6).toLocaleDateString()}</Typography>
+            <AvatarGroup max={3}>
+              {item.vote_data.map(vote => {
+                return <Avatar key={vote[0].toHex()}></Avatar>;
+              })}
+            </AvatarGroup>
+            <Chip label={Object.keys(item.proposal_state)?.[0]}></Chip>
+            <Button>View</Button>
+          </Stack>
+        </Stack>
       ))}
-    </Grid>
+    </Paper>
   );
 }

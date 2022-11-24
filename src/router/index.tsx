@@ -4,6 +4,7 @@ import React from 'react';
 import { RouteObject, useRoutes } from 'react-router-dom';
 import Home from '../pages/home';
 import DaoDetail from '../pages/home/daoDetail/Index';
+import Proposals from '../pages/home/daoDetail/proposals/Index';
 import Users from '../pages/home/daoDetail/users/Index';
 const Activity = React.lazy(() => import('@/pages/home/daoDetail/activity/Index'));
 const Budget = React.lazy(() => import('@/pages/home/daoDetail/budget/Index'));
@@ -12,9 +13,9 @@ const Chat = React.lazy(() => import('@/pages/home/daoDetail/chat/Index'));
 const Create = React.lazy(() => import('@/pages/home/daoDetail/create/Index'));
 // const DaoDetail = React.lazy(() => import('@/pages/home/daoDetail/Index'));
 const Nfts = React.lazy(() => import('@/pages/home/daoDetail/nfts/Index'));
-const Proposals = React.lazy(() => import('@/pages/home/daoDetail/proposals/Index'));
+
 const ProposalsCreate = React.lazy(() => import('@/pages/home/daoDetail/proposalsCreate/Index'));
-const ProposalsDetail = React.lazy(() => import('@/pages/home/daoDetail/proposalsDetail/Index'));
+
 const Setting = React.lazy(() => import('@/pages/home/daoDetail/setting/Index'));
 const Task = React.lazy(() => import('@/pages/home/daoDetail/task/Index'));
 const TimeLine = React.lazy(() => import('@/pages/home/daoDetail/timeLine/Index'));
@@ -44,7 +45,7 @@ const routes: RouteObject[] = [
       { path: 'Create', element: <Create /> },
       { path: 'Nfts', element: <Nfts /> },
       { path: 'ProposalsCreate', element: <ProposalsCreate /> },
-      { path: 'ProposalsDetail', element: <ProposalsDetail /> },
+      { path: 'ProposalsDetail/:id', element: <ProposalsDetail /> },
       { path: 'Setting', element: <Setting /> },
       { path: 'Task', element: <Task /> },
       { path: 'TimeLine', element: <TimeLine /> },

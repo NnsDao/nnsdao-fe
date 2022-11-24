@@ -1,27 +1,25 @@
-import { Box, Pagination, Stack } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
-import { useLocation, useNavigate } from 'react-router-dom';
-import List from './list/Index';
+import { Avatar, AvatarGroup, Box, Button, Chip, Divider, Pagination, Paper, Stack, Typography } from '@mui/material';
+import { Proposal } from '@nnsdao/nnsdao-kit/src/nnsdao/types';
+import React from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useGetProposalList, useMemberList } from '../../../../api/nnsdao';
+import { proposalStateToChipColor } from '../../../../common/helper';
+import LoadingWrapper from '../../../../components/LoadingWrapper';
 import SelectButton from './selectButton/Index';
 
 export default function Proposals() {
-  const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { cid } = useParams();
   const toDaoDetail = item => {
     navigate(`/dao/${item.name}`);
   };
+  const [page, setPage] = React.useState(1);
+  const [searchFilter, setSearchFilter] = React.useState('');
+
+  const ListWrapper = LoadingWrapper(MainList, () => useGetProposalList(cid as string));
   return (
-    <Grid container xs={12}>
-      <Grid
-        xs={12}
-        sx={{
-          fontFamily: 'Roboto',
-          fontStyle: 'normal',
-          fontWeight: '500',
-          fontSize: '14px',
-          lineHeight: '16px',
-          color: ' #5E6278',
-        }}>
+    <React.Fragment>
+      <Stack spacing={2}>
         <Box
           sx={{
             width: '100%',
@@ -30,40 +28,106 @@ export default function Proposals() {
             alignItems: 'center',
           }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Box
-              sx={{
-                fontFamily: 'Roboto',
-                fontStyle: 'normal',
-                fontWeight: '500',
-                fontSize: '20px',
-                lineHeight: '23px',
-                color: '#181C32',
-                mr: '10px',
-              }}>
-              Proposals
-            </Box>
-            by Recent Updates ↓
+            <Typography component="span" variant="h6">
+              Proposals&ensp;
+            </Typography>
+            <Typography component="span" variant="body2" color={'GrayText'}>
+              by {'xxx'}
+            </Typography>
           </Box>
-          <SelectButton></SelectButton>
+          <SelectButton onchange={setSearchFilter}></SelectButton>
         </Box>
-        <Box sx={{ background: '#fff', my: '25px', borderRadius: '12px', padding: '26px 30px' }}>
-          <List></List>
-        </Box>
-        <Box
-          sx={{
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <Box>Showing 1 to 7 of 50 entries</Box>
+        <ListWrapper></ListWrapper>
+      </Stack>
+    </React.Fragment>
+  );
+
+  function MainList(props) {
+    const list: [bigint, Proposal][] = props.data;
+
+    function pageChange(e, value) {
+      setPage(value);
+    }
+    const pageSize = 10;
+    const pageCount = Math.ceil(list.length / 10);
+    return (
+      <React.Fragment>
+        <List></List>
+        <Stack direction={'row'} justifyContent="space-between" mt={{ md: 3, sm: 2 }}>
+          <Box>
+            Showing {(page - 1) * pageSize + 1} to {Math.min(pageSize * page, list.length)} of {list.length} entries
+          </Box>
           <Box>
             <Stack spacing={2}>
-              <Pagination count={10} variant="outlined" color="primary" />
+              <Pagination
+                showFirstButton={pageCount > 2}
+                showLastButton={pageCount > 2}
+                page={page}
+                onChange={pageChange}
+                count={pageCount}
+                variant="outlined"
+                color="primary"
+              />
             </Stack>
           </Box>
-        </Box>
-      </Grid>
-    </Grid>
-  );
+        </Stack>
+      </React.Fragment>
+    );
+
+    function List() {
+      const menu = ['TARGET', 'DUE DATE', 'MEMBERS', 'STATUS', ''];
+      const member = useMemberList(cid as string);
+      let combinedList = list;
+      if (member.data) {
+        const memberMap = member.data.reduce((acc, item) => {
+          acc[item.principal.toText()] = item;
+          return acc;
+        }, {});
+        combinedList = list.map(item => {
+          const [id, proposal] = item;
+          proposal.vote_data = proposal.vote_data.map(data => {
+            data[0] = memberMap[data[0].toText()];
+            return data;
+          });
+          return item;
+        });
+      }
+
+      return (
+        <Paper sx={{ padding: '8px' }}>
+          <Stack direction={'row'} my={{ sm: 1 }} justifyContent="space-between">
+            {menu.map(text => {
+              return (
+                <Typography key={text} variant="subtitle1" color={'GrayText'}>
+                  {text}
+                </Typography>
+              );
+            })}
+          </Stack>
+          {combinedList.map(([id, item]) => (
+            <Stack key={Number(id)} spacing={0.5}>
+              <Divider sx={{ borderStyle: 'dotted' }}></Divider>
+              <Stack direction={'row'} justifyContent="space-between" alignItems="center">
+                <Typography variant="subtitle1">{item.title}</Typography>
+                {/* <Chip variant="filled" color="default" label={item.property['']}></Chip> */}
+                <Typography variant="subtitle2">
+                  {new Date(Number(item.end_time) / 1e6).toLocaleDateString()}
+                </Typography>
+                <AvatarGroup max={3}>
+                  {item.vote_data.map(info => {
+                    // @ts-ignore
+                    return <Avatar key={info?.principal?.toText()} src={info?.avatar}></Avatar>;
+                  })}
+                </AvatarGroup>
+                <Chip
+                  label={Object.keys(item.proposal_state)?.[0]}
+                  color={proposalStateToChipColor(item.proposal_state)}></Chip>
+                <Button onClick={() => navigate(`ProposalsDetail/${Number(id)}`)}>View</Button>
+              </Stack>
+            </Stack>
+          ))}
+        </Paper>
+      );
+    }
+  }
 }

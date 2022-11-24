@@ -18,7 +18,7 @@ function Introduction(props) {
     <Paper>
       <Stack
         justifyContent={'space-between'}
-        direction={'row'}
+        direction={{sm:'column',md:'row'}}
         alignItems="center"
         p={{ lg: 4, sm: 2 }}
         spacing={{ lg: 4, sm: 2 }}>

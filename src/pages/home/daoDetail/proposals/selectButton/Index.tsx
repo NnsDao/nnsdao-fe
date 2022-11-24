@@ -1,17 +1,25 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Button, Fade, Menu, MenuItem } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import React from 'react';
-export default function SelectButton() {
+import { Proposal } from '@nnsdao/nnsdao-kit/nnsdao/types';
+import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { useGetProposalList } from '../../../../../api/nnsdao';
+export default function SelectButton(props) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const totalList = { data: [] };
-  const [searchFilter, setSearchFilter] = React.useState('');
+  const { cid } = useParams();
+  const proposalList = useGetProposalList(cid as string);
+  const totalList: [bigint, Proposal][] = proposalList.data || [];
+
   const [selectedIndex, setSelectedIndex] = React.useState(0);
-  let MenuItemConfig: any = totalList.data?.length
-    ? // @ts-ignore
-      [...new Set(totalList.data.map(item => item.tags).flat(Infinity))]
-    : ['Acticve', 'In Progress', 'to do', 'Overdue', 'Completed'];
+  let MenuItemConfig: any = ['All'].concat([
+    ...new Set(totalList.map(([id, item]) => Object.keys(item.proposal_state)?.[0])),
+  ]);
   const open = Boolean(anchorEl);
+
+  useEffect(() => {
+    props.onchange(MenuItemConfig[selectedIndex]);
+  }, [selectedIndex]);
 
   const handleClose = () => {
     setAnchorEl(null);
