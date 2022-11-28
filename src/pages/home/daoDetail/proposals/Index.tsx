@@ -10,9 +10,6 @@ import SelectButton from './selectButton/Index';
 export default function Proposals() {
   const navigate = useNavigate();
   const { cid } = useParams();
-  const toDaoDetail = item => {
-    navigate(`/dao/${item.name}`);
-  };
   const [page, setPage] = React.useState(1);
   const [searchFilter, setSearchFilter] = React.useState('');
 
@@ -122,7 +119,7 @@ export default function Proposals() {
                 <Chip
                   label={Object.keys(item.proposal_state)?.[0]}
                   color={proposalStateToChipColor(item.proposal_state)}></Chip>
-                <Button onClick={() => navigate(`ProposalsDetail/${Number(id)}`)}>View</Button>
+                <Button onClick={() => navigate(`/dao/${cid}/ProposalDetail/${Number(id)}`)}>View</Button>
               </Stack>
             </Stack>
           ))}

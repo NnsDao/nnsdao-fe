@@ -66,16 +66,13 @@ const RichText = ({ initialValue, onChange }: RichTextProps) => {
     <Box
       sx={{
         border: readOnly ? null : '1px solid #282828',
-        color: '#fff',
         minHeight: '120px',
         overflow: 'hidden',
-        padding: '16px',
         '&:hover': { border: readOnly ? null : '1px solid #818994' },
       }}>
       <Slate editor={editor} value={initialValue} onChange={onChange}>
         {readOnly ? null : <Menu />}
         <Editable
-          style={{ color: '#fff' }}
           readOnly={readOnly}
           renderElement={renderElement}
           renderLeaf={renderLeaf}

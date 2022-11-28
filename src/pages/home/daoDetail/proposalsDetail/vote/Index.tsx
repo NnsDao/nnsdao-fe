@@ -1,7 +1,7 @@
 import { Principal } from '@dfinity/principal';
-import { Box, LinearProgress } from '@mui/material';
+import { LinearProgress, Stack, Typography } from '@mui/material';
 import { Votes } from '@nnsdao/nnsdao-kit/src/nnsdao/types';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 export default function VoteProgress({ voteData }) {
   const vote = useMemo(() => tempVote(voteData), [voteData]);
@@ -32,25 +32,31 @@ export default function VoteProgress({ voteData }) {
     };
   }
   return (
-    <Box sx={{ paddingTop: '15px' }}>
-      <LinearProgress
-        sx={{ border: '5px', marginY: '5px' }}
-        variant="determinate"
-        value={vote.yesPercent}
-        color={'primary'}></LinearProgress>
-      <Box className="flex justify-between items-center" sx={{ fontWeight: '700', marginY: '8px' }}>
-        <Box>YES {vote.yes} NDP </Box>
-        <Box>{vote.yesPercent || 0}%</Box>
-      </Box>
-      <LinearProgress
-        sx={{ border: '5px', marginY: '5px' }}
-        variant="determinate"
-        value={vote.noPercent}
-        color={'primary'}></LinearProgress>
-      <Box className="flex justify-between items-center" sx={{ fontWeight: '700', marginY: '5px' }}>
-        <Box>NO {vote.no} NDP </Box>
-        <Box>{vote.noPercent || 0}%</Box>
-      </Box>
-    </Box>
+    <Stack spacing={-0.5} mt={1}>
+      <Stack direction={'row'} alignItems="center">
+        <LinearProgress
+          sx={{ flex: 1 }}
+          variant="determinate"
+          value={vote.yesPercent}
+          color={'primary'}></LinearProgress>
+        <Typography color={'text.secondary'}>&ensp;&ensp;{vote.yesPercent || 0}%</Typography>
+      </Stack>
+      <Stack direction={'row'} justifyContent="space-between">
+        <Typography variant="subtitle1">YES</Typography>
+        <Typography color={'text.secondary'}>{vote.yes} NDP</Typography>
+      </Stack>
+      <Stack direction={'row'} alignItems="center">
+        <LinearProgress
+          sx={{ flex: 1 }}
+          variant="determinate"
+          value={vote.noPercent}
+          color={'primary'}></LinearProgress>
+        <Typography color={'text.secondary'}>&ensp;&ensp;{vote.noPercent || 0}%</Typography>
+      </Stack>
+      <Stack direction={'row'} justifyContent="space-between">
+        <Typography variant="subtitle1">NO</Typography>
+        <Typography variant="subtitle1">{vote.no} NDP </Typography>
+      </Stack>
+    </Stack>
   );
 }

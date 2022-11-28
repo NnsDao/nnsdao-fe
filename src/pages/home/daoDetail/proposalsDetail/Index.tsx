@@ -1,36 +1,51 @@
-import { useGetProposal, useMemberList } from '@/api/nnsdao';
+import { useGetProposal, useMemberList, useVote } from '@/api/nnsdao';
 import RichText from '@/components/RichText';
 import { getNDPActor } from '@/service';
 import { principalToAccountIdentifier } from '@dfinity/nns';
 import { Principal } from '@dfinity/principal';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-import { Avatar, Box, Button, CircularProgress, Dialog, DialogActions, Divider, InputBase } from '@mui/material';
+import {
+  Alert,
+  Avatar,
+  Box,
+  Button,
+  Card,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  TextField,
+  Typography,
+} from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2/Grid2';
+import { Stack } from '@mui/system';
+import { Proposal } from '@nnsdao/nnsdao-kit/nnsdao/types';
 import React, { useEffect } from 'react';
-import { toast, Toaster } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
-// import { useGetProposal, useMemberList, useVote } from '../../../api/nnsdao';
-// import RichText from '../../../components/RichText';
-// import { useUserStore } from '../../../hooks/userStore';
-// import { getNICPActor } from '../../../service';
-// import { principalToAccountIdentifier } from '../../../utils/account';
-import ProposalActive from './proposalActive/Index';
+import { useToggle } from 'usehooks-ts';
+import { proposalStateToChipColor } from '../../../../common/helper';
+import LoadingWrapper from '../../../../components/LoadingWrapper';
+import LoginDialog from '../../../../components/LoginDialog';
+import { useUserStore } from '../../../../hooks/userStore';
 import VoteProgress from './vote/Index';
 
-export default function ProposalDetail() {
+function ProposalDetail({ data }) {
+  const Proposal: Proposal = data;
   const navigate = useNavigate();
   const { cid = '', id = '' } = useParams();
+
   // const voteMutation = useVote();
-  const Proposal = useGetProposal(cid, id);
   const StructureList = ['1', '2', '3'];
   const [open, setOpen] = React.useState(false);
   const [voteType, setVoteType] = React.useState('');
-  const [NDP, setNDP] = React.useState(0);
-  const [inputValue, setInput] = React.useState(0);
+  const pendingRef = React.useRef(false);
 
-  // const userStore = useUserStore();
-  // const isLogin = userStore.isLogin;
-  const isLogin = false;
+  const [userStore, dispatch] = useUserStore();
+  const isLogin = userStore.isLogin;
 
   const handleClickOpen = string => {
     setVoteType(string);
@@ -38,83 +53,20 @@ export default function ProposalDetail() {
   };
 
   const handleClose = () => {
+    if (pendingRef.current) {
+      toast.error('The current poll is still in progress, please wait for the operation to complete and close');
+      return;
+    }
     setOpen(false);
   };
 
   const goLogin = () => {
     navigate('/login', { replace: true });
   };
-  // let principal = userStore.principalId;
-  let principal = '';
-  const getBalance = async () => {
-    const NDPActor = await getNDPActor(true);
-    console.log(NDPActor, 'NICPActor');
-    const balanceNICP = await NDPActor.balanceOf(Principal.fromText(principal)).then(r => {
-      return r;
-    });
-    console.log(balanceNICP, 'balanceNICP');
-    setNDP((Number(balanceNICP) / 1e8) >> 0);
-    // const getBalanceParams = {
-    //   token: 'NDP',
-    //   user: { address: userStore.accountId },
-    // };
-    // try {
-    //   const NDP = await NdpService.getBalance(getBalanceParams);
-    //   setNDP(Number(new BigNumber(NDP.ok.toString()).div(new BigNumber('100000000')).toString()));
-    // } catch (error) {
-    //   console.error('getBalance', error);
-    // }
-  };
 
-  const confirm = async () => {
-    // step
-    // 1 isLogin
-    // 2 check Balance
-    // 2 approve
-    // 3 vote
-    if (!isLogin) {
-      return goLogin();
-    }
-    if (Number(inputValue) > NDP) {
-      toast.error(`You can provide up to your balance ${NDP}`);
-      return;
-    }
-    const toastID = toast.loading('Awaiting approve...');
-    const NDPActor = await getNDPActor(true);
-    const approve = await NDPActor.approve(Principal.fromText(cid), BigInt(Number(inputValue) * 1e8));
-    console.log('approve', approve);
-    toast.loading('Updating...', { id: toastID });
-    // voteMutation.mutate(
-    //   {
-    //     cid,
-    //     id: BigInt(+id),
-    //     principal: [],
-    //     vote: voteType == 'yes' ? { Yes: BigInt(inputValue) } : { No: BigInt(inputValue) },
-    //   },
-    //   {
-    //     onSuccess(data, variables, context) {
-    //       toast.success('Successfully voted', { id: toastID });
-    //     },
-    //     onError(error: any, variables, context) {
-    //       toast.error(error.toString(), { id: toastID });
-    //     },
-    //   }
-    // );
-  };
   const goBack = () => {
-    navigate(-1);
+    navigate(`/dao/${cid}/Proposals`, { replace: true });
   };
-  useEffect(() => {
-    getBalance();
-  }, []);
-
-  if (Proposal.isFetching) {
-    return (
-      <Box key="loading" className="flex justify-center items-center" sx={{ textAlign: 'center' }}>
-        <CircularProgress size={24} />
-      </Box>
-    );
-  }
 
   const MemberInfo = ({ principalID }) => {
     const user = useMemberList(
@@ -123,175 +75,156 @@ export default function ProposalDetail() {
         return data.filter(item => item?.principal?.toText() === principalID);
       }, [])
     );
-    //@ts-ignore
-    let address = principalToAccountIdentifier(principalID, 0);
+    let address = principalToAccountIdentifier(Principal.fromText(principalID));
     address = address.slice(0, 6) + '...' + address.slice(-6);
     return (
       <>
         <Avatar sx={{ width: 18, height: 18, marginX: '10px', cursor: 'pointer' }} src={user.data?.avatar}></Avatar>
-        <Box sx={{ cursor: 'pointer' }}>{address}</Box>
+        <Box component={'span'} sx={{ cursor: 'pointerern' }}>
+          {address}
+        </Box>
       </>
     );
   };
   return (
-    <Box key="data">
-      <Box className="flex justify-between pt-10 pb-20 w-1000px">
-        <Box sx={{ width: '620px', marginRight: '20px' }}>
-          <Box
-            sx={{
-              color: '#8b949e',
-              cursor: 'pointer',
-              fontSize: 32,
-              '&:hover': {
-                color: '#fff',
-              },
-            }}
-            onClick={goBack}>
-            <ArrowBackIcon
-              sx={{ width: '20px', height: '20px', marginRight: '6px', fontSize: 'large' }}></ArrowBackIcon>
-            return
-          </Box>
-          <Box className="">
-            <Box sx={{ paddingY: '15px', fontSize: '26px', wordWrap: 'break-word' }}>{Proposal.data?.title}</Box>
-            <Box className="flex justify-between py-20 ">
-              <Box className="flex items-center">
-                <ProposalActive state={Object.keys(Proposal.data?.proposal_state || {})[0]}></ProposalActive>
-                <MemberInfo
-                  key={Proposal.data?.proposer.toText()}
-                  principalID={Proposal.data?.proposer.toText()}></MemberInfo>
-              </Box>
-              <Box className="cursor-pointer">
-                <Button variant="text">share</Button>
-              </Box>
-            </Box>
-            {/* <Box sx={{ color: '#8b949e', fontSize: '18px', wordWrap: 'break-word' }}></Box> */}
-            <RichText initialValue={JSON.parse(Proposal?.data.content)}></RichText>
-          </Box>
-          <Box sx={{ marginTop: '90px', border: '1px solid #282828', borderRadius: '10px' }}>
-            <Box sx={{ paddingY: '18px', paddingX: '25px', fontWeight: '900' }}>Cast Your Vote</Box>
-            <Divider sx={{ height: '1px', width: '618px', background: '#282828' }} orientation="vertical" />
-            <Box sx={{ padding: '24px' }}>
-              <Button
-                sx={{
-                  paddingY: '9px',
-                  textAlign: 'center',
-                  fontWeight: '600',
+    <React.Fragment>
+      <Grid container columnSpacing={2} rowSpacing={1} columns={{ xs: 8, md: 12 }}>
+        <Grid sm={8}>
+          <Stack bgcolor={'#fff'} spacing={2} padding={1}>
+            <Stack
+              direction={'row'}
+              spacing={2}
+              onClick={goBack}
+              sx={{
+                ':hover': {
+                  bgcolor: '#1976d2',
                   cursor: 'pointer',
-                  border: '1px solid #282828',
-                  marginBottom: '20px',
-                  borderRadius: '22px',
-                  color: '#fff',
-                  width: '100%',
-                  '&:hover': { border: '1px solid #818994' },
-                }}
-                onClick={() => handleClickOpen('yes')}>
-                Agree
+                },
+              }}>
+              <ArrowBackIcon></ArrowBackIcon>
+              <Box component={'span'}>Go Back</Box>
+            </Stack>
+            <Box>{Proposal?.title}</Box>
+            <Stack direction={'row'} justifyContent="space-between" alignItems="center">
+              <Chip
+                label={Object.keys(Proposal?.proposal_state || {})[0]}
+                color={proposalStateToChipColor(Proposal?.proposal_state)}></Chip>
+              <MemberInfo key={Proposal?.proposer.toText()} principalID={Proposal?.proposer.toText()}></MemberInfo>
+              <Box flex={1}></Box>
+              <Button variant="text">share</Button>
+            </Stack>
+            <RichText initialValue={JSON.parse(Proposal?.content) || 'Blank!'}></RichText>
+            <Stack justifyContent={'center'} alignItems="stretch" spacing={2}>
+              <Typography variant="subtitle1" textAlign={'center'}>
+                Cast Your Vote
+              </Typography>
+              <Divider />
+              <Button variant="outlined" onClick={() => handleClickOpen('yes')}>
+                YES
               </Button>
-
-              <Button
-                sx={{
-                  paddingY: '9px',
-                  textAlign: 'center',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  border: '1px solid #282828',
-                  marginBottom: '20px',
-                  borderRadius: '22px',
-                  color: '#fff',
-                  width: '100%',
-                  '&:hover': { border: '1px solid #818994' },
-                }}
-                onClick={() => handleClickOpen('no')}>
-                Disagree
+              <Button variant="outlined" onClick={() => handleClickOpen('no')}>
+                NO
               </Button>
-            </Box>
-          </Box>
-          <Box sx={{ marginTop: '90px', border: '1px solid #282828', borderRadius: '10px' }}>
-            <Box sx={{ paddingY: '18px', paddingX: '25px', fontWeight: '900' }}>Votes</Box>
-            {Proposal.data?.vote_data.map(([principal, vote]) => (
-              <Box key={principal.toText()}>
-                <Divider sx={{ height: '1px', width: '618px', background: '#282828' }} orientation="vertical" />
-                <Box className="flex justify-between items-center p-14" sx={{ fontWeight: '600' }}>
-                  <Box className="flex items-center">
-                    {/* <Avatar
-                      sx={{ width: 18, height: 18, marginRight: '10px', cursor: 'pointer' }}
-                      src={'avatar'}></Avatar>
-                    <Box sx={{ cursor: 'pointer' }}>name</Box> */}
-                    <MemberInfo key={principal.toText()} principalID={principal.toText()}></MemberInfo>
-                  </Box>
-                  <Box>{Object.keys(vote || {})?.[0]}</Box>
-                  <Box>{Number(Object.values(vote || {})?.[0])} NDP </Box>
-                </Box>
-              </Box>
-            ))}
-          </Box>
-        </Box>
-        <Box className="flex-1">
-          <Box sx={{ border: '1px solid #282828', borderRadius: '10px', width: '320px' }}>
-            <Box sx={{ paddingY: '18px', paddingX: '25px', fontWeight: '900' }}>Information</Box>
-            <Divider sx={{ height: '1px', width: '318px', background: '#282828' }} orientation="vertical" />
-            <Box sx={{ padding: '24px' }}>
-              <Box className="flex justify-between items-center">
-                <Box className="py-4 text-gray-500 font-bold">Strategy</Box>
-                <Box>0</Box>
-              </Box>
-              <Box className="flex justify-between items-center">
-                <Box className="py-4 text-gray-500 font-bold">Voting system</Box>
-                <Box>Basic NDP voting</Box>
-              </Box>
-              <Box className="flex justify-between items-center">
-                <Box className="py-4 text-gray-500 font-bold">Start date</Box>
-                <Box>Sep 9, 2022, 9:14 AM</Box>
-              </Box>
-              <Box className="flex justify-between items-center">
-                <Box className="py-4 text-gray-500 font-bold">End date</Box>
-                <Box>Sep 20, 2022, 9:14 AM</Box>
-              </Box>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              border: '1px solid #282828',
-              borderRadius: '10px',
-              width: '320px',
-              marginTop: '50px',
-              paddingX: '25px',
-            }}>
-            <Box sx={{ paddingY: '18px', fontWeight: '900' }}>Vote Result</Box>
-            <Divider sx={{ height: '1px', width: '100%', background: '#282828' }} orientation="vertical" />
-            <VoteProgress voteData={Proposal.data.vote_data}></VoteProgress>
-          </Box>
-        </Box>
-      </Box>
-      <Dialog open={open} onClose={handleClose}>
-        <Box sx={{ width: '450px', padding: '20px', margin: '0 auto', background: '#000' }}>
-          <Box sx={{ paddingY: '10px', textAlign: 'center' }}>Polling overview</Box>
-          <Box>
-            <Box className="flex justify-between items-center">
-              <Box>Options: </Box>
-              <Box>{voteType.toUpperCase()}</Box>
-            </Box>
-            <Box className="flex justify-between items-center" sx={{ lineHeight: 2 }}>
-              <Box>Vote Weights: </Box>
-              <Box>
-                <InputBase
-                  sx={{ border: '1px solid #282828', '&:hover': { border: '1px solid #818994' }, padding: '8px' }}
-                  type="number"
-                  onChange={e => setInput(parseInt(e.target.value) ?? 0)}></InputBase>{' '}
-                NDP
-              </Box>
-            </Box>
-            {/* <Box>
-              <InputBase
-                onChange={e => setInput(e.target.value)}
-                sx={{ ml: 1, flex: 1, color: '#fff', marginLeft: '0px' }}
-                placeholder="Search for dao of interest"
-                inputProps={{ 'aria-label': 'search google maps' }}
-              />
-            </Box> */}
-          </Box>
+            </Stack>
+            <VoteDataList></VoteDataList>
+          </Stack>
+        </Grid>
+        <Grid sm={4}>
+          <Stack spacing={2}>
+            <InformationCard></InformationCard>
+            <VoteInfoCard />
+          </Stack>
+        </Grid>
+      </Grid>
+      <VoteDialog></VoteDialog>
+    </React.Fragment>
+  );
 
-          <DialogActions sx={{ marginTop: '20px' }}>
+  function VoteDialog() {
+    const [NDP, setNDP] = React.useState(0);
+    const [inputValue, setInput] = React.useState(0);
+    const [openLogin, toggleOpenLogin] = useToggle(false);
+    const voteMutation = useVote();
+    let principal = userStore.principalId;
+
+    useEffect(() => {
+      !!principal && getBalance();
+    }, [principal]);
+
+    const getBalance = async () => {
+      const NDPActor = await getNDPActor(true);
+      const balanceNDP = await NDPActor.balanceOf(Principal.fromText(principal)).then(res => {
+        return res;
+      });
+      console.log('balanceNDP', balanceNDP);
+      setNDP((Number(balanceNDP) / 1e8) >> 0);
+    };
+
+    const confirm = async () => {
+      // step
+      // 1 isLogin
+      // 2 check Balance
+      // 2 approve
+      // 3 vote
+      if (!isLogin) {
+        toast.error('Login first please!');
+        toggleOpenLogin();
+        return;
+      }
+      if (Number(inputValue) > NDP) {
+        toast.error(`You can provide up to your balance ${NDP}`);
+        return;
+      }
+      const toastID = toast.loading('Awaiting approve...');
+      pendingRef.current = true;
+      const NDPActor = await getNDPActor(true);
+      const approve = await NDPActor.approve(Principal.fromText(cid), BigInt(Number(inputValue) * 1e8));
+      console.log('approve', approve);
+      toast.loading('Updating...', { id: toastID });
+      voteMutation.mutate(
+        {
+          cid,
+          id: BigInt(+id),
+          principal: [],
+          vote: voteType == 'yes' ? { Yes: BigInt(inputValue) } : { No: BigInt(inputValue) },
+        },
+        {
+          onSettled(data, error, variables, context) {
+            pendingRef.current = false;
+          },
+          onSuccess(data, variables, context) {
+            toast.success('Successfully voted', { id: toastID });
+          },
+          onError(error: any, variables, context) {
+            toast.error(error.toString(), { id: toastID });
+          },
+        }
+      );
+    };
+    return (
+      <React.Fragment>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle textAlign={'center'}>Polling Overview</DialogTitle>
+          <DialogContent sx={{ minWidth: '450px' }}>
+            <Stack direction={'row'} justifyContent="space-between" alignItems={'center'}>
+              <Typography variant="subtitle1">Options: </Typography>
+              <Alert sx={{ border: 'none' }} variant="outlined" severity={/yes/.test(voteType) ? 'success' : 'error'}>
+                {voteType.toUpperCase()}
+              </Alert>
+              {/* <Box>{voteType.toUpperCase()}</Box> */}
+            </Stack>
+            <Stack direction={'row'} justifyContent="space-between" alignItems={'center'}>
+              <Typography variant="subtitle1">Vote Weights: </Typography>
+              <TextField
+                required
+                type="number"
+                label="NDP Amount"
+                helperText="Vote Weight / NDP Amount = 1:1"
+                variant="standard"
+                onChange={e => setInput(parseInt(e.target.value) ?? 0)}></TextField>
+            </Stack>
+          </DialogContent>
+          <DialogActions>
             <Button variant="outlined" onClick={confirm}>
               Confirm
             </Button>
@@ -299,9 +232,79 @@ export default function ProposalDetail() {
               Close
             </Button>
           </DialogActions>
-        </Box>
-      </Dialog>
-      <Toaster></Toaster>
-    </Box>
-  );
+        </Dialog>
+        <LoginDialog open={openLogin} toggleOpen={toggleOpenLogin}></LoginDialog>
+      </React.Fragment>
+    );
+  }
+
+  function VoteDataList() {
+    if (!Proposal?.vote_data?.length) {
+      return null;
+    }
+    return (
+      <Stack>
+        <Typography variant="subtitle1" textAlign={'center'}>
+          Votes Data
+        </Typography>
+        <Divider variant="middle"></Divider>
+        {Proposal?.vote_data.map(([principal, vote]) => (
+          <Stack key={principal.toText()}>
+            <Divider sx={{ height: '1px', width: '618px', background: '#282828' }} orientation="vertical" />
+            <Stack direction="row" justifyContent={'space-evenly'}>
+              <MemberInfo key={principal.toText()} principalID={principal.toText()}></MemberInfo>
+              <Box>{Object.keys(vote || {})?.[0]}</Box>
+              <Box>{Number(Object.values(vote || {})?.[0])} NDP </Box>
+            </Stack>
+          </Stack>
+        ))}
+      </Stack>
+    );
+  }
+
+  function VoteInfoCard() {
+    return (
+      <Card sx={{ padding: 2, pt: 0 }}>
+        <Typography variant="subtitle1" lineHeight={3} textAlign="center">
+          Vote Result
+        </Typography>
+        <Divider />
+        <VoteProgress voteData={Proposal.vote_data}></VoteProgress>
+      </Card>
+    );
+  }
+
+  function InformationCard() {
+    return (
+      <Card sx={{ padding: 2, pt: 0 }}>
+        <Typography lineHeight={3} variant="subtitle1" textAlign={'center'}>
+          Information
+        </Typography>
+        <Divider />
+        <Stack spacing={1.5} pt={1}>
+          <Stack direction={'row'} justifyContent="space-between">
+            <Box>Strategy</Box>
+            <Box>0</Box>
+          </Stack>
+          <Stack direction={'row'} justifyContent="space-between">
+            <Box className="py-4 text-gray-500 font-bold">Voting system</Box>
+            <Box>Basic NDP Voting</Box>
+          </Stack>
+          <Stack direction={'row'} justifyContent="space-between">
+            <Box className="py-4 text-gray-500 font-bold">Start date</Box>
+            <Box>{new Date(Number(Proposal.timestamp) / 1e6).toLocaleString()}</Box>
+          </Stack>
+          <Stack direction={'row'} justifyContent="space-between">
+            <Box className="py-4 text-gray-500 font-bold">End date</Box>
+            <Box>{new Date(Number(Proposal.end_time) / 1e6).toLocaleString()}</Box>
+          </Stack>
+        </Stack>
+      </Card>
+    );
+  }
+}
+export default function DetailWrapper() {
+  const { cid = '', id = '' } = useParams();
+  const Wrapper = LoadingWrapper(ProposalDetail, () => useGetProposal(cid, id));
+  return <Wrapper />;
 }
