@@ -88,9 +88,9 @@ function ProposalDetail({ data }) {
   };
   return (
     <React.Fragment>
-      <Grid container columnSpacing={2} rowSpacing={1} columns={{ xs: 8, md: 12 }}>
-        <Grid sm={8}>
-          <Stack bgcolor={'#fff'} spacing={2} padding={1}>
+      <Grid container columnSpacing={2} rowSpacing={1} columns={{ xs: 8, md: 12 }} minHeight="100%">
+        <Grid sm={8} minHeight="100%">
+          <Stack bgcolor={'#fff'} minHeight="100%" spacing={2} padding={1}>
             <Stack
               direction={'row'}
               spacing={2}
@@ -102,7 +102,7 @@ function ProposalDetail({ data }) {
                 },
               }}>
               <ArrowBackIcon></ArrowBackIcon>
-              <Box component={'span'}>Go Back</Box>
+              <Box component={'span'}>Back</Box>
             </Stack>
             <Box>{Proposal?.title}</Box>
             <Stack direction={'row'} justifyContent="space-between" alignItems="center">

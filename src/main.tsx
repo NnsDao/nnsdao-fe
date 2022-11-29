@@ -10,7 +10,6 @@ import { isDev } from './common/helper';
 import GlobalStateProvider from './hooks/globalState';
 import { UserStoreProvider } from './hooks/userStore';
 import './index.css';
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

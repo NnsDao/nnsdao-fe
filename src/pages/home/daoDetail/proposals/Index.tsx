@@ -24,15 +24,17 @@ export default function Proposals() {
             justifyContent: 'space-between',
             alignItems: 'center',
           }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Stack direction={'row'} justifyContent="center">
             <Typography component="span" variant="h6">
               Proposals&ensp;
             </Typography>
-            <Typography component="span" variant="body2" color={'GrayText'}>
-              by {'xxx'}
-            </Typography>
-          </Box>
-          <SelectButton onchange={setSearchFilter}></SelectButton>
+          </Stack>
+          <Stack spacing={3} direction="row" alignItems={'center'}>
+            <SelectButton onchange={setSearchFilter}></SelectButton>
+            <Button variant="contained" onClick={() => navigate(`/dao/${cid}/Proposals/create`)}>
+              New Proposal
+            </Button>
+          </Stack>
         </Box>
         <ListWrapper></ListWrapper>
       </Stack>
@@ -119,7 +121,7 @@ export default function Proposals() {
                 <Chip
                   label={Object.keys(item.proposal_state)?.[0]}
                   color={proposalStateToChipColor(item.proposal_state)}></Chip>
-                <Button onClick={() => navigate(`/dao/${cid}/ProposalDetail/${Number(id)}`)}>View</Button>
+                <Button onClick={() => navigate(`/dao/${cid}/Proposals/detail/${Number(id)}`)}>View</Button>
               </Stack>
             </Stack>
           ))}

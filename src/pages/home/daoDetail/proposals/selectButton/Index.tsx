@@ -34,24 +34,7 @@ export default function SelectButton(props) {
 
   return (
     <Grid container>
-      <Button
-        sx={{
-          height: 34,
-          display: 'flex',
-          alignItems: 'center',
-          borderRadius: '6px',
-          background: '#FFFFFF',
-          color: '#A1A5B7',
-          border: 'none',
-          paddingX: '4px',
-          fontWeight: 700,
-          fontSize: '12px',
-          lineHeight: '14px',
-        }}
-        endIcon={<KeyboardArrowDownIcon />}
-        variant="outlined"
-        id="basic-button"
-        onClick={handleClick}>
+      <Button endIcon={<KeyboardArrowDownIcon />} variant="outlined" id="basic-button" onClick={handleClick}>
         {MenuItemConfig[selectedIndex]}
       </Button>
       <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClose} TransitionComponent={Fade}>

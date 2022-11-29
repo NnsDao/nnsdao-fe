@@ -82,6 +82,7 @@ export default function Users() {
           {menuList.map(menu => {
             return (
               <IconButton
+                key={menu.value}
                 size="medium"
                 onClick={() => setShowType(menu.value)}
                 color={getShowTypeColor(showType, menu.value)}>

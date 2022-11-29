@@ -11,6 +11,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@date-io/dayjs": "^2.16.0",
     "@dfinity/agent": "^0.14.1",
     "@dfinity/nns": "^0.8.1",
     "@dfinity/principal": "^0.14.1",
@@ -22,7 +23,7 @@
     "@mui/material": "^5.10.13",
     "@mui/system": "^5.10.13",
     "@mui/x-data-grid": "^5.17.10",
-    "@mui/x-date-pickers": "^5.0.7",
+    "@mui/x-date-pickers": "^5.0.9",
     "@nnsdao/nnsdao-kit": "github:NnsDao/nnsdao-kit#dev",
     "@tanstack/react-query": "^4.14.5",
     "@tanstack/react-query-devtools": "^4.14.5",

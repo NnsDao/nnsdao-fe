@@ -2,6 +2,8 @@ import storage from '@nnsdao/nnsdao-kit/helper/storage';
 import type { TotalUserInfo } from '@nnsdao/nnsdao-kit/nid/types';
 import { useQueryClient } from '@tanstack/react-query';
 import React, { createContext, useContext, useEffect, useReducer } from 'react';
+import toast from 'react-hot-toast';
+import { useNidLogin } from '../api/nid';
 import { login } from '../common/helper';
 
 const defaultValue = {
@@ -34,7 +36,7 @@ const UserStore = createContext(null as unknown as UserStoreT);
 export function UserStoreProvider({ children }) {
   const [userInfo, dispatch] = useReducer(reducer, defaultValue);
   const queryClient = useQueryClient();
-
+  const nidLoginAction = useNidLogin();
   useEffect(() => {
     console.log('login_userInfo', userInfo);
     // auto login
@@ -45,9 +47,14 @@ export function UserStoreProvider({ children }) {
 
   async function autoLogin(loginType: string) {
     const loginInfo = await login(loginType);
-    dispatch({
-      type: 'login',
-      data: loginInfo,
+    nidLoginAction.mutate(loginType, {
+      onSuccess(data, variables, context) {
+        dispatch({
+          type: 'login',
+          data: { ...loginInfo, ...data },
+        });
+        toast.success('Auto login success!');
+      },
     });
   }
   return <UserStore.Provider value={[userInfo, dispatch]}>{children}</UserStore.Provider>;

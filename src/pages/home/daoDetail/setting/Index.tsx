@@ -1,3 +1,3 @@
 export default function Setting() {
-  return <div>dao detail</div>;
+  return <div>settings</div>;
 }

@@ -44,6 +44,7 @@ function RichText({ initialValue, onChange }: RichTextProps) {
     <Box
       sx={{
         overflow: 'hidden',
+        minHeight: '120px',
         '&:hover': { borderBottom: readOnly ? null : '1px solid #1976d2' },
       }}>
       <Slate editor={editor} value={initialValue} onChange={onChange}>
@@ -53,7 +54,7 @@ function RichText({ initialValue, onChange }: RichTextProps) {
           readOnly={readOnly}
           renderElement={renderElement}
           renderLeaf={renderLeaf}
-          placeholder="Enter some rich text…"
+          placeholder="Enter text…"
           spellCheck
           autoFocus
           onKeyDown={event => {

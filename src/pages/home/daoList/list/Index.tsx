@@ -1,10 +1,12 @@
 import { Avatar, AvatarGroup, Box, Button, Chip, Paper, Stack, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import type { DaoInfo } from '@nnsdao/nnsdao-kit/src/dao_manager/types';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useGetDaoInfo, useJoin, useMemberList } from '../../../../api/nnsdao';
+import { nnsdaoKeys } from '../../../../api/nnsdao/queries';
 import { useGlobalState } from '../../../../hooks/globalState';
 import { useUserStore } from '../../../../hooks/userStore';
 
@@ -59,10 +61,18 @@ const Card = ({ metadata }) => {
     e.stopPropagation();
     e.preventDefault();
     const toastId = toast.loading('loading...');
+    const queryClient = useQueryClient();
     joinMutation.mutate(
-      {cid, nickname: userInfo.nickname, social:[], intro: userInfo.intro, avatar: userInfo.avatar},
+      { cid, nickname: userInfo.nickname, social: [], intro: userInfo.intro, avatar: userInfo.avatar },
       {
-        onSuccess(data) {
+        onSuccess(data, variables) {
+          console.log('data,var', data, variables);
+
+          const { cid } = variables;
+          const queryKey = nnsdaoKeys.member_list(cid);
+          const preList = queryClient.getQueryData(queryKey) ?? [];
+          // @ts-ignore
+          queryClient.setQueryData(queryKey, preList.concat(data));
           toast.success('Joined Successfully!', { id: toastId });
         },
         onError(error) {

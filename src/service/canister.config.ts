@@ -16,7 +16,7 @@ export const canister = {
     idl: dao_manager_IDL,
   },
   nid: {
-    cid: 'vgqnj-miaaa-aaaal-qaapa-cai',
+    cid: 'nfawh-syaaa-aaaah-abtpq-cai',
     idl: nid_IDL,
   },
   ndp: {
