@@ -187,13 +187,13 @@ export const useMemberList = (cid: string, selector?: (data: MemberItems[]) => M
     select: selector || defaultSelector,
   });
 };
-export const useJoin = (cid: string) => {
+export const useJoin = () => {
   const [user] = useUserStore();
-  return useMutation((params: JoinDaoParams) => {
+  return useMutation((params: JoinDaoParams & { cid: string }) => {
     if (!user.isLogin) {
       return Promise.reject('Please log in first!');
     }
-    return join({ ...params, cid });
+    return join(params);
   });
 };
 

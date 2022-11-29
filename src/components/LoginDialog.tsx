@@ -15,11 +15,13 @@ import {
 import { plugLogout, stoicLogout } from '@nnsdao/nnsdao-kit';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { useNidLogin } from '../api/nid';
 import { login } from '../common/helper';
 import { useUserStore } from '../hooks/userStore';
 
 function LoginDialog({ open, toggleOpen }) {
   const [userInfo, dispatch] = useUserStore();
+  const nidLoginAction = useNidLogin();
   const navigate = useNavigate();
   async function loginWith(type: string) {
     if (userInfo.loginType == 'stoic' && type == 'stoic') return;
@@ -27,13 +29,17 @@ function LoginDialog({ open, toggleOpen }) {
 
     let toastId = toast.loading('authorizing...');
     let res = await login(type);
-    dispatch({
-      type: 'login',
-      data: res,
+    nidLoginAction.mutate(type, {
+      onSuccess(data, variables, context) {
+        dispatch({
+          type: 'login',
+          data: { ...res, ...data },
+        });
+        toggleOpen();
+        toast.success('login success!', { id: toastId });
+        navigate('/');
+      },
     });
-    toggleOpen();
-    toast.success('login success!', { id: toastId });
-    navigate('/');
   }
   async function handleLogout(): Promise<void> {
     if (userInfo.loginType === 'stoic') {

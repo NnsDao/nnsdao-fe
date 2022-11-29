@@ -7,11 +7,15 @@ export default function JoinedDao() {
   const [globalState, dispatchAction] = useGlobalState();
   const navigate = useNavigate();
   const toDetailPage = item => {
-    item.canister_id && navigate(`/dao/:${item.canister_id}`);
+    if (item.canister_id) {
+      navigate(`/dao/:${item.canister_id}`);
+      return;
+    }
+    navigate(`/createDao`);
   };
   const placeHoder = [
     {
-      name: 'Not yet joined',
+      name: 'Create DAOs',
     },
   ];
   const data = (globalState.joinedDaoList?.length && globalState.joinedDaoList) || placeHoder;

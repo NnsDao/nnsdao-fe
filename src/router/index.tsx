@@ -3,6 +3,7 @@ import React from 'react';
 
 import { RouteObject, useRoutes } from 'react-router-dom';
 import Home from '../pages/home';
+import Create from '../pages/home/daoDetail/create/Index';
 import DaoDetail from '../pages/home/daoDetail/Index';
 import Proposals from '../pages/home/daoDetail/proposals/Index';
 import ProposalDetail from '../pages/home/daoDetail/proposalsDetail/Index';
@@ -11,7 +12,7 @@ const Activity = React.lazy(() => import('@/pages/home/daoDetail/activity/Index'
 const Budget = React.lazy(() => import('@/pages/home/daoDetail/budget/Index'));
 const BudgetSet = React.lazy(() => import('@/pages/home/daoDetail/budgetSet/Index'));
 const Chat = React.lazy(() => import('@/pages/home/daoDetail/chat/Index'));
-const Create = React.lazy(() => import('@/pages/home/daoDetail/create/Index'));
+
 // const DaoDetail = React.lazy(() => import('@/pages/home/daoDetail/Index'));
 const Nfts = React.lazy(() => import('@/pages/home/daoDetail/nfts/Index'));
 
@@ -31,6 +32,7 @@ const routes: RouteObject[] = [
     element: <Home></Home>,
     index: true,
   },
+  { path: 'createDao', element: <Create /> },
   {
     path: '/dao/:cid',
     element: <DaoDetail />,
@@ -43,7 +45,6 @@ const routes: RouteObject[] = [
       { path: 'Activity', element: <Activity /> },
       { path: 'Budget', element: <Budget /> },
       { path: 'BudgetSet', element: <BudgetSet /> },
-      { path: 'Create', element: <Create /> },
       { path: 'Nfts', element: <Nfts /> },
       { path: 'ProposalsCreate', element: <ProposalsCreate /> },
       { path: 'ProposalDetail/:id', element: <ProposalDetail /> },

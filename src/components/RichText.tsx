@@ -34,45 +34,22 @@ interface RichTextProps {
 }
 
 // @ts-ignore
-const RichText = ({ initialValue, onChange }: RichTextProps) => {
+function RichText({ initialValue, onChange }: RichTextProps) {
   const readOnly = typeof onChange == 'undefined';
   const renderElement = useCallback(props => <Element {...props} />, []);
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
-  const Menu = () => {
-    return (
-      <>
-        <Stack spacing={1} direction="row" sx={{ height: '26px' }}>
-          <MarkButton format="bold" icon={<FormatBoldIcon />} />
-          <MarkButton format="italic" icon={<FormatItalicIcon />} />
-          <MarkButton format="underline" icon={<FormatUnderlinedIcon />} />
-          <MarkButton format="code" icon={<CodeIcon />} />
-          <BlockButton format="heading-one" icon={<LooksOneIcon />} />
-          <BlockButton format="heading-two" icon={<LooksTwoIcon />} />
-          <BlockButton format="block-quote" icon={<FormatQuoteIcon />} />
-          <BlockButton format="numbered-list" icon={<FormatListNumberedIcon />} />
-          <BlockButton format="bulleted-list" icon={<FormatListBulletedIcon />} />
-          <BlockButton format="left" icon={<FormatAlignLeftIcon />} />
-          <BlockButton format="center" icon={<FormatAlignCenterIcon />} />
-          <BlockButton format="right" icon={<FormatAlignRightIcon />} />
-          <BlockButton format="justify" icon={<FormatAlignJustifyIcon />} />
-        </Stack>
-        <Divider sx={{ marginTop: '16px' }}></Divider>
-      </>
-    );
-  };
   return (
     <Box
       sx={{
-        border: readOnly ? null : '1px solid #282828',
-        minHeight: '120px',
         overflow: 'hidden',
-        '&:hover': { border: readOnly ? null : '1px solid #818994' },
+        '&:hover': { borderBottom: readOnly ? null : '1px solid #1976d2' },
       }}>
       <Slate editor={editor} value={initialValue} onChange={onChange}>
         {readOnly ? null : <Menu />}
         <Editable
+          style={{ minHeight: '120px' }}
           readOnly={readOnly}
           renderElement={renderElement}
           renderLeaf={renderLeaf}
@@ -92,9 +69,31 @@ const RichText = ({ initialValue, onChange }: RichTextProps) => {
       </Slate>
     </Box>
   );
-};
+}
+function Menu() {
+  return (
+    <>
+      <Stack spacing={1} direction="row" sx={{ height: '26px' }}>
+        <MarkButton format="bold" icon={<FormatBoldIcon />} />
+        <MarkButton format="italic" icon={<FormatItalicIcon />} />
+        <MarkButton format="underline" icon={<FormatUnderlinedIcon />} />
+        <MarkButton format="code" icon={<CodeIcon />} />
+        <BlockButton format="heading-one" icon={<LooksOneIcon />} />
+        <BlockButton format="heading-two" icon={<LooksTwoIcon />} />
+        <BlockButton format="block-quote" icon={<FormatQuoteIcon />} />
+        <BlockButton format="numbered-list" icon={<FormatListNumberedIcon />} />
+        <BlockButton format="bulleted-list" icon={<FormatListBulletedIcon />} />
+        <BlockButton format="left" icon={<FormatAlignLeftIcon />} />
+        <BlockButton format="center" icon={<FormatAlignCenterIcon />} />
+        <BlockButton format="right" icon={<FormatAlignRightIcon />} />
+        <BlockButton format="justify" icon={<FormatAlignJustifyIcon />} />
+      </Stack>
+      <Divider sx={{ marginTop: '16px' }}></Divider>
+    </>
+  );
+}
 
-const toggleBlock = (editor, format) => {
+function toggleBlock(editor, format) {
   const isActive = isBlockActive(editor, format, TEXT_ALIGN_TYPES.includes(format) ? 'align' : 'type');
   const isList = LIST_TYPES.includes(format);
 
@@ -125,9 +124,9 @@ const toggleBlock = (editor, format) => {
     const block = { type: format, children: [] };
     Transforms.wrapNodes(editor, block);
   }
-};
+}
 
-const toggleMark = (editor, format) => {
+function toggleMark(editor, format) {
   const isActive = isMarkActive(editor, format);
 
   if (isActive) {
@@ -135,9 +134,9 @@ const toggleMark = (editor, format) => {
   } else {
     Editor.addMark(editor, format, true);
   }
-};
+}
 
-const isBlockActive = (editor, format, blockType = 'type') => {
+function isBlockActive(editor, format, blockType = 'type') {
   const { selection } = editor;
   if (!selection) return false;
 
@@ -149,12 +148,12 @@ const isBlockActive = (editor, format, blockType = 'type') => {
   );
 
   return !!match;
-};
+}
 
-const isMarkActive = (editor, format) => {
+function isMarkActive(editor, format) {
   const marks = Editor.marks(editor);
   return marks ? marks[format] === true : false;
-};
+}
 
 const Element = ({ attributes, children, element }) => {
   const style = { textAlign: element.align };
@@ -173,25 +172,25 @@ const Element = ({ attributes, children, element }) => {
       );
     case 'heading-one':
       return (
-        <h1 style={{ ...style, color: '#fff' }} {...attributes}>
+        <h1 style={{ ...style }} {...attributes}>
           {children}
         </h1>
       );
     case 'heading-two':
       return (
-        <h2 style={{ ...style, color: '#fff' }} {...attributes}>
+        <h2 style={{ ...style }} {...attributes}>
           {children}
         </h2>
       );
     case 'list-item':
       return (
-        <li className="ml-16" style={style} {...attributes}>
+        <li style={{ ...style, marginLeft: '2px' }} {...attributes}>
           {children}
         </li>
       );
     case 'numbered-list':
       return (
-        <ol className="list-decimal ml-16" style={style} {...attributes}>
+        <ol style={{ ...style, marginLeft: '2px' }} {...attributes}>
           {children}
         </ol>
       );
@@ -224,7 +223,7 @@ const Leaf = ({ attributes, children, leaf }) => {
   return <span {...attributes}>{children}</span>;
 };
 
-const BlockButton = ({ format, icon }) => {
+function BlockButton({ format, icon }) {
   const editor = useSlate();
   const active = isBlockActive(editor, format, TEXT_ALIGN_TYPES.includes(format) ? 'align' : 'type');
   return (
@@ -239,9 +238,9 @@ const BlockButton = ({ format, icon }) => {
       {icon}
     </Button>
   );
-};
+}
 
-const MarkButton = ({ format, icon }) => {
+function MarkButton({ format, icon }) {
   const editor = useSlate();
   const active = isMarkActive(editor, format);
   return (
@@ -256,6 +255,6 @@ const MarkButton = ({ format, icon }) => {
       {icon}
     </Button>
   );
-};
+}
 
 export default RichText;

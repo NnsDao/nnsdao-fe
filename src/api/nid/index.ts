@@ -1,9 +1,8 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getNIDActor } from '../../service';
 import { NIDKeys } from './queries';
 
 // Hooks
-
 export const useNidInfo = () => {
   const queryClient = useQueryClient();
   return useQuery(
@@ -23,7 +22,20 @@ export const useNidInfo = () => {
       return Promise.reject(res.Err);
     },
     {
-      staleTime: Number.MAX_SAFE_INTEGER,
+      staleTime: Infinity,
     }
   );
 };
+
+export function useNidLogin() {
+  const queryClient = useQueryClient();
+  return useMutation(async (walletType: string) => {
+    const actor = await getNIDActor(true);
+    const res = await actor.login(walletType);
+    console.log('nid login', res);
+    if ('Ok' in res) {
+      return res.Ok;
+    }
+    return Promise.reject(res.Err);
+  });
+}

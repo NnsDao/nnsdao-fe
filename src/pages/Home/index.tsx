@@ -1,5 +1,6 @@
 import { Box, Button, Stack } from '@mui/material';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTotalDaoLists } from '../../api/dao_manager';
 import LoadingWrapper from '../../components/LoadingWrapper';
 import DashBoard from './components/dashBoard/Index';
@@ -7,6 +8,7 @@ import SelectButton from './daoList/assets/selectButton/Index';
 import List from './daoList/list/Index';
 
 export default function Home(props) {
+  const navigate = useNavigate();
   const DaoList = LoadingWrapper(List, useTotalDaoLists);
   const [searchStr, setSearch] = React.useState('');
   return (
@@ -19,7 +21,9 @@ export default function Home(props) {
         </Box>
         <Stack direction="row" alignItems="center" spacing={{ xl: 2, sm: 1 }}>
           <SelectButton />
-          <Button variant="contained">New DAOs</Button>
+          <Button variant="contained" onClick={() => navigate(`/createDao`)}>
+            New DAOs
+          </Button>
         </Stack>
       </Stack>
       <DaoList filterStr={searchStr}></DaoList>

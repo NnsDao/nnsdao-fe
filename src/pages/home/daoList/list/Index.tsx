@@ -37,7 +37,7 @@ const Card = ({ metadata }) => {
   const data = info.data;
   const chipState: string = Object.keys(metadata.status)?.[0];
   const navigate = useNavigate();
-  const joinMutation = useJoin(cid);
+  const joinMutation = useJoin();
   const [globalState, dispatchAction] = useGlobalState();
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const Card = ({ metadata }) => {
     e.preventDefault();
     const toastId = toast.loading('loading...');
     joinMutation.mutate(
-      { nickname: '', social: [], intro: 'blabla', avatar: 'https://www.baidu.com' },
+      {cid, nickname: userInfo.nickname, social:[], intro: userInfo.intro, avatar: userInfo.avatar},
       {
         onSuccess(data) {
           toast.success('Joined Successfully!', { id: toastId });

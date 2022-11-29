@@ -1,4 +1,5 @@
 import storage from '@nnsdao/nnsdao-kit/helper/storage';
+import type { TotalUserInfo } from '@nnsdao/nnsdao-kit/nid/types';
 import { useQueryClient } from '@tanstack/react-query';
 import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import { login } from '../common/helper';
@@ -25,7 +26,7 @@ function reducer(state, action) {
       };
   }
 }
-type UserStoreT = [userInfo: typeof defaultValue, dispatch: React.Dispatch<any>];
+type UserStoreT = [userInfo: typeof defaultValue & TotalUserInfo, dispatch: React.Dispatch<any>];
 
 const UserStore = createContext(null as unknown as UserStoreT);
 

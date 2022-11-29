@@ -6,5 +6,5 @@
     "source.organizeImports": true
   },
   "typescript.tsdk": "node_modules/typescript/lib",
-  "cSpell.words": ["NICP"]
+  "cSpell.words": ["daos", "NICP"]
 }
