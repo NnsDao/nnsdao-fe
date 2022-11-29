@@ -56,7 +56,7 @@ const routes: RouteObject[] = [
   },
 ];
 export default function AppRouter() {
-  // window.scroll(0, 0);
-
-  return <React.Fragment>{useRoutes(routes)}</React.Fragment>;
+  const elements = useRoutes(routes);
+  window.scroll(0, 0);
+  return <React.Fragment>{elements}</React.Fragment>;
 }

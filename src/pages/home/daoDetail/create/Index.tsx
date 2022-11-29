@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import { getPayInfo, useCreateAction } from '../../../../api/dao_manager';
 import { useJoin, useUpdateDaoInfo } from '../../../../api/nnsdao';
 import RichText from '../../../../components/RichText';
+import Upload from '../../../../components/Upload';
 import { useUserStore } from '../../../../hooks/userStore';
 const steps = [
   {
@@ -76,6 +77,7 @@ export default function CreateDao() {
     const updateAction = useUpdateDaoInfo();
     const [userStore] = useUserStore();
     const joinAction = useJoin();
+
     const initialValue = [
       {
         type: 'paragraph',
@@ -116,6 +118,10 @@ export default function CreateDao() {
     return (
       <React.Fragment>
         <Stack spacing={2}>
+          <Stack alignItems={'center'}>
+            <Upload src={form['avatar']} setSrc={val => setFormField({ key: 'avatar', value: val })}></Upload>
+            <Typography variant="h6">Avatar</Typography>
+          </Stack>
           <TextField
             variant="standard"
             required
@@ -136,7 +142,7 @@ export default function CreateDao() {
             placeholder="url"
             onChange={e => changeForm('poster', e)}
           />
-          <TextField
+          {/* <TextField
             required
             variant="standard"
             value={form.avatar}
@@ -145,7 +151,7 @@ export default function CreateDao() {
             key="Avatar"
             placeholder="IC NFTs Url"
             onChange={e => changeForm('avatar', e)}
-          />
+          /> */}
           <Divider>Tags</Divider>
           <TextField
             required
