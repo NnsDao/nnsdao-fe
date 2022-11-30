@@ -56,8 +56,10 @@ export const getDaoInfo = async ({ queryKey }) => {
   const { module, scope, cid } = queryKey[0];
   const actor = await getNnsdaoActor(cid, false);
   const res = await actor.dao_info();
-  console.log('dao_info', res);
+
   if ('Ok' in res) {
+    res.Ok.intro = JSON.parse(res.Ok.intro);
+    console.log('dao_info', res);
     return res.Ok;
   }
   return Promise.reject(null);

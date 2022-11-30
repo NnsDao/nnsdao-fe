@@ -45,6 +45,7 @@ function RichText({ initialValue, onChange }: RichTextProps) {
       sx={{
         overflow: 'hidden',
         minHeight: '120px',
+        flex: 1,
         '&:hover': { borderBottom: readOnly ? null : '1px solid #1976d2' },
       }}>
       <Slate editor={editor} value={initialValue} onChange={onChange}>

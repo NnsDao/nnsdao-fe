@@ -165,7 +165,7 @@ export default function CreateDao() {
           <Stack direction="row" spacing={1} justifyContent="flex-start" flexWrap="wrap">
             {form.tag.map((tag, index) => {
               return (
-                <Chip color="primary" label={tag} key={`${index}-${tag}`} onDelete={() => deleteLabel(tag)}></Chip>
+                <Chip color="secondary" label={tag} key={`${index}-${tag}`} onDelete={() => deleteLabel(tag)}></Chip>
               );
             })}
           </Stack>
