@@ -24,8 +24,10 @@ export const get_proposal = async ({ queryKey }) => {
 };
 export const join = async (params: JoinDaoParams & { cid: string }) => {
   const actor = await getNnsdaoActor(params.cid, true);
+  const cid = params.cid;
   Reflect.deleteProperty(params, 'cid');
   const res = await actor.join(params);
+  params.cid = cid;
   console.log('join', res);
   if ('Ok' in res) {
     return res.Ok;
@@ -58,7 +60,7 @@ export const getDaoInfo = async ({ queryKey }) => {
   const res = await actor.dao_info();
 
   if ('Ok' in res) {
-    res.Ok.intro = JSON.parse(res.Ok.intro);
+    res.Ok.intro = JSON.parse(res.Ok.intro || '[]');
     console.log('dao_info', res);
     return res.Ok;
   }
@@ -138,7 +140,7 @@ export const useGetProposal = (cid: string, id: string) => {
 
         queryClient.setQueryData(
           listKey,
-          preList
+          (preList || [])
             .slice(0, index)
             .concat([[data.id, data]])
             .concat(preList.slice(index + 1))
@@ -177,9 +179,24 @@ export const useVote = () => {
     }
   );
 };
-export const useQuit = (cid: string) => {
-  return useMutation(() => {
-    return quit(cid);
+export const useQuit = () => {
+  const [user] = useUserStore();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (cid: string) => {
+      if (!user.isLogin) {
+        return Promise.reject('Please log in first!');
+      }
+      return quit(cid);
+    },
+    onSuccess(data, cid, context) {
+      const queryKey = nnsdaoKeys.member_list(cid);
+      queryClient.setQueryData(queryKey, preList =>
+        // @ts-ignore
+        (preList || []).filter(item => item.principal.toText() !== user.principalId)
+      );
+    },
   });
 };
 
@@ -191,11 +208,21 @@ export const useMemberList = (cid: string, selector?: (data: MemberItems[]) => M
 };
 export const useJoin = () => {
   const [user] = useUserStore();
-  return useMutation((params: JoinDaoParams & { cid: string }) => {
-    if (!user.isLogin) {
-      return Promise.reject('Please log in first!');
-    }
-    return join(params);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params: JoinDaoParams & { cid: string }) => {
+      if (!user.isLogin) {
+        return Promise.reject('Please log in first!');
+      }
+      return join(params);
+    },
+    onSuccess(data, variables, context) {
+      const { cid } = variables;
+      const queryKey = nnsdaoKeys.member_list(cid);
+      // const preList = queryClient.getQueryData(queryKey) ?? [];
+      // @ts-ignore
+      queryClient.setQueryData(queryKey, preList => (preList || []).concat(data));
+    },
   });
 };
 
@@ -235,9 +262,8 @@ export const usePropose = () => {
       onSuccess(data, variables) {
         const cid = variables.cid;
         const queryKey = nnsdaoKeys.proposal_lists(cid);
-        const preList = queryClient.getQueryData(queryKey) ?? [];
         // @ts-ignore
-        queryClient.setQueryData(queryKey, preList.concat([[data.id, data]]));
+        queryClient.setQueryData(queryKey, preList => (preList || []).concat([[data.id, data]]));
       },
     }
   );

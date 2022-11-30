@@ -16,9 +16,13 @@ export default function JoinedDao() {
   const placeHoder = [
     {
       name: 'Create DAOs',
+      canister_id: '',
+      avatar: '',
     },
   ];
   const data = (globalState.joinedDaoList?.length && globalState.joinedDaoList) || placeHoder;
+  console.log('data.joinedDaoList', data);
+
   return (
     <Stack
       spacing={1}
@@ -31,7 +35,7 @@ export default function JoinedDao() {
       }}>
       {data.map((item, index) => (
         <Tooltip
-          key={item?.name}
+          key={item.canister_id + item.name + index}
           title={item.name}
           TransitionComponent={Zoom}
           placement="right"

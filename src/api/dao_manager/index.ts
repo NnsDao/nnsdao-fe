@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import type { ControllerAction, CreateDaoOptions, DaoInfo } from '@nnsdao/nnsdao-kit/dao_manager/types';
+import type { ControllerAction, CreateDaoOptions } from '@nnsdao/nnsdao-kit/dao_manager/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getDaoManagerActor } from '../../service';
 import { daoManagerKeys } from './queries';
@@ -62,7 +62,7 @@ export const useTotalDaoLists = () => {
     },
     {
       // refetchInterval: 6e4,
-      refetchOnWindowFocus: import.meta.env.PROD,
+      // refetchOnWindowFocus: import.meta.env.PROD,
       staleTime: Infinity,
     }
   );
@@ -97,13 +97,20 @@ export function useUpdateBaseDaoInfo() {
     {
       onSuccess: (data, variable, ctx) => {
         const keys = daoManagerKeys.lists();
-        const preList = queryClient.getQueryData(keys) as DaoInfo[];
-        preList.forEach(info => {
-          if (info.id == variable[0]) {
-            info = data;
-          }
-        });
-        queryClient.setQueryData(keys, preList);
+        // const preList = queryClient.getQueryData(keys) as DaoInfo[];
+        // preList.forEach(info => {
+        //   if (info.id == variable[0]) {
+        //     info = data;
+        //   }
+        // });
+        queryClient.setQueryData(keys, preList =>
+          // @ts-ignore
+          preList?.map(info => {
+            if (info.id == variable[0]) {
+              info = data;
+            }
+          })
+        );
         queryClient.invalidateQueries(daoManagerKeys.lists());
       },
     }

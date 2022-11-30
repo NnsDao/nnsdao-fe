@@ -24,7 +24,7 @@ import { useUserStore } from '../../../../hooks/userStore';
 const steps = [
   {
     label: 'Before You Create',
-    description: `Creation needs to consume icp, and the ownership belongs to the creator.`,
+    description: `Creation needs to consume ICP TOKEN, and the ownership belongs to the creator.`,
     btnText: 'Continue',
   },
   {
