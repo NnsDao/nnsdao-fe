@@ -8,7 +8,7 @@ function NewsMember(props) {
   const memberList: MemberItems[] = props.data;
   let now = Date.now();
   // latest 3 days
-  const newCome = memberList.filter(member => now - (member?.join_at / 1e6 || now) <= 36e5 * 24 * 3);
+  const newCome = memberList.filter(member => now - (Number(member?.join_at) / 1e6 || now) <= 36e5 * 24 * 3);
   return (
     <Card sx={{ height: '100%' }}>
       <CardContent>

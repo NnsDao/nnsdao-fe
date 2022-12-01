@@ -11,7 +11,9 @@ import { DaoInfo } from '@nnsdao/nnsdao-kit/nnsdao/types';
 import { useParams } from 'react-router-dom';
 import { useGetDaoInfo } from '../../../../../api/nnsdao';
 import LoadingWrapper from '../../../../../components/LoadingWrapper';
+import { JoinDaoBtn } from '../../../daoList/list/JoinDaoBtn';
 function Introduction(props) {
+  const { cid } = useParams() as { cid: string };
   const info: DaoInfo = props.data;
   const activeStep = 66;
   return (
@@ -129,7 +131,7 @@ function Introduction(props) {
 
         <Stack spacing={2}>
           <Stack direction="row" justifyContent="flex-end" spacing={2}>
-            <Button>Join </Button>
+            <JoinDaoBtn cid={cid} variant="text"></JoinDaoBtn>
             <Button variant="contained"> + Proposals</Button>
           </Stack>
           <Stack spacing={1}>
