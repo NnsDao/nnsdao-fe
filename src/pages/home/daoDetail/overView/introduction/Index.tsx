@@ -8,12 +8,15 @@ import { Avatar, Button, LinearProgress, Link, Paper, Stack } from '@mui/materia
 
 import { Box } from '@mui/system';
 import { DaoInfo } from '@nnsdao/nnsdao-kit/nnsdao/types';
-import { useParams } from 'react-router-dom';
+
+import { useNavigate, useParams } from 'react-router-dom';
 import { useGetDaoInfo } from '../../../../../api/nnsdao';
 import LoadingWrapper from '../../../../../components/LoadingWrapper';
 import { JoinDaoBtn } from '../../../daoList/list/JoinDaoBtn';
+
 function Introduction(props) {
   const { cid } = useParams() as { cid: string };
+  const navigate = useNavigate();
   const info: DaoInfo = props.data;
   const activeStep = 66;
   return (
@@ -132,7 +135,9 @@ function Introduction(props) {
         <Stack spacing={2}>
           <Stack direction="row" justifyContent="flex-end" spacing={2}>
             <JoinDaoBtn cid={cid} variant="text"></JoinDaoBtn>
-            <Button variant="contained"> + Proposals</Button>
+            <Button variant="contained" onClick={() => navigate(`/dao/${cid}/Proposals/create`)}>
+              + Proposals
+            </Button>
           </Stack>
           <Stack spacing={1}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>

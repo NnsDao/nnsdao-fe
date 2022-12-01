@@ -23,7 +23,7 @@ import {
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { Stack } from '@mui/system';
 import { Proposal } from '@nnsdao/nnsdao-kit/nnsdao/types';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { toast } from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToggle } from 'usehooks-ts';
@@ -119,12 +119,14 @@ function ProposalDetail({ data }) {
                 Cast Your Vote
               </Typography>
               <Divider />
-              <Button variant="outlined" onClick={() => handleClickOpen('yes')}>
-                YES
-              </Button>
-              <Button variant="outlined" onClick={() => handleClickOpen('no')}>
-                NO
-              </Button>
+              <Stack direction={'row'} alignItems="strech" spacing={2}>
+                <Button sx={{ flex: 1 }} variant="outlined" onClick={() => handleClickOpen('yes')}>
+                  YES
+                </Button>
+                <Button sx={{ flex: 1 }} variant="outlined" onClick={() => handleClickOpen('no')}>
+                  NO
+                </Button>
+              </Stack>
             </Stack>
             <VoteDataList></VoteDataList>
           </Stack>
@@ -141,24 +143,24 @@ function ProposalDetail({ data }) {
   );
 
   function VoteDialog() {
-    const [NDP, setNDP] = React.useState(0);
+    // const [NDP, setNDP] = React.useState(0);
     const [inputValue, setInput] = React.useState(0);
     const [openLogin, toggleOpenLogin] = useToggle(false);
     const voteMutation = useVote();
     let principal = userStore.principalId;
 
-    useEffect(() => {
-      !!principal && getBalance();
-    }, [principal]);
+    // useEffect(() => {
+    //   !!principal && getBalance();
+    // }, [principal]);
 
-    const getBalance = async () => {
-      const NDPActor = await getNDPActor(true);
-      const balanceNDP = await NDPActor.balanceOf(Principal.fromText(principal)).then(res => {
-        return res;
-      });
-      console.log('balanceNDP', balanceNDP);
-      setNDP((Number(balanceNDP) / 1e8) >> 0);
-    };
+    // const getBalance = async () => {
+    //   const NDPActor = await getNDPActor(true);
+    //   const balanceNDP = await NDPActor.balanceOf(Principal.fromText(principal)).then(res => {
+    //     return res;
+    //   });
+    //   console.log('balanceNDP', balanceNDP);
+    //   setNDP((Number(balanceNDP) / 1e8) >> 0);
+    // };
 
     const confirm = async () => {
       // step
@@ -171,10 +173,10 @@ function ProposalDetail({ data }) {
         toggleOpenLogin();
         return;
       }
-      if (Number(inputValue) > NDP) {
-        toast.error(`You can provide up to your balance ${NDP}`);
-        return;
-      }
+      // if (Number(inputValue) > NDP) {
+      //   toast.error(`You can provide up to your balance ${NDP}`);
+      //   return;
+      // }
       const toastID = toast.loading('Awaiting approve...');
       pendingRef.current = true;
       const NDPActor = await getNDPActor(true);

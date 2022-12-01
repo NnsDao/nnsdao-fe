@@ -18,19 +18,21 @@ export default function VoteProgress({ voteData }) {
     });
     let total = totalYes + totalNo;
 
-    console.log('yesPercent', totalYes / total);
+    // console.log('yesPercent', totalYes / total);
 
     function divide(num: number) {
-      return `${num}`.replace(/(?=(\B\d{3})+$)/g, ',');
+      return Number(`${num}`.replace(/(?=(\B\d{3})+$)/g, ','));
     }
     return {
       total: total,
       yes: divide(totalYes),
-      yesPercent: (totalYes / total) * 100,
+      yesPercent: total ? totalYes / total : 0,
       no: divide(totalNo),
-      noPercent: (totalNo / total) * 100,
+      noPercent: total ? totalNo / total : 0,
     };
   }
+  console.log('vote', vote);
+
   return (
     <Stack spacing={-0.5} mt={1}>
       <Stack direction={'row'} alignItems="center">

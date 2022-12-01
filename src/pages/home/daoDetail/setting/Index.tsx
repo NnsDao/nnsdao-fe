@@ -17,11 +17,17 @@ export default function Setting() {
   const updateBasicDaoAction = useUpdateBaseDaoInfo();
   const currentDaoInfo = totalDaoList.data?.find(item => item.canister_id.toText() == cid);
   const [controllerInput, setControllerInput] = React.useState('');
+  const initialValue = [
+    {
+      type: 'paragraph',
+      children: [{ text: 'xxx' }],
+    },
+  ];
   const [form, setFormField] = React.useReducer(formReducer, {
     name: '',
     avatar: '',
     tags: [],
-    intro: null,
+    intro: initialValue,
   });
   useEffect(() => {
     let toastID: string;
@@ -43,7 +49,7 @@ export default function Setting() {
   function onTagChange(e) {
     // changeForm('tag', e);
     const value = e.target.value;
-    let newList = form.tags.concat(value?.split(/\s+/).filter(val => val));
+    let newList = form.tags?.concat(value?.split(/\s+/).filter(val => val));
     if (newList.length > 3) {
       toast.error('No more then 3 tags!');
       newList = newList.slice(0, 3);
@@ -67,7 +73,7 @@ export default function Setting() {
           toast.success('Added successfully');
         },
         onError() {
-          toast.success('Added failed');
+          toast.error('Added failed');
         },
       });
     } catch (error) {
@@ -76,7 +82,8 @@ export default function Setting() {
   }
   async function confirmUpdate() {
     const toastID = toast.loading('Updating...');
-    const params = { ...DaoInfo.data, ...form,cid };
+
+    const params = { ...DaoInfo.data, ...form, intro: JSON.stringify(form.intro), cid };
     console.log('params', params);
 
     updateDaoAction.mutate(params, {
@@ -84,7 +91,7 @@ export default function Setting() {
         toast.success('Update successfully', { id: toastID });
       },
       onError() {
-        toast.success('Update failed', { id: toastID });
+        toast.error('Update failed', { id: toastID });
       },
     });
   }
@@ -127,7 +134,7 @@ export default function Setting() {
               onKeyDown={e => onEnterTag(e)}
             />
             <Stack direction="row" spacing={1} justifyContent="flex-start" flexWrap="wrap">
-              {form.tags.map((tag, index) => {
+              {form.tags?.map((tag, index) => {
                 return (
                   <Chip color="secondary" label={tag} key={`${index}-${tag}`} onDelete={() => deleteLabel(tag)}></Chip>
                 );
@@ -139,13 +146,11 @@ export default function Setting() {
           <Typography width={'20%'} variant="subtitle1">
             Project Description
           </Typography>
-          {!!form['intro'] && (
-            <RichText
-              initialValue={form['intro']}
-              onChange={val => {
-                setFormField({ type: 'set', key: 'intro', value: val });
-              }}></RichText>
-          )}
+          <RichText
+            initialValue={form['intro']}
+            onChange={val => {
+              setFormField({ type: 'set', key: 'intro', value: val });
+            }}></RichText>
         </Stack>
         <Stack direction={'row'} alignItems="center">
           <Typography width={'20%'} variant="subtitle1">

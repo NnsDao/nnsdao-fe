@@ -49,7 +49,6 @@ export default function JoinedDao() {
               height: 47,
               cursor: 'pointer',
               margin: '10px !important',
-              padding: '2px',
               border: '2px solid #fff',
               '&:hover': { border: '2px solid #39a8d3' },
             }}

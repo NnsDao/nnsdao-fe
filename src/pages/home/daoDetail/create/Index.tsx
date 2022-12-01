@@ -1,23 +1,13 @@
-import {
-  Backdrop,
-  Button,
-  Chip,
-  CircularProgress,
-  Divider,
-  Stack,
-  Step,
-  StepLabel,
-  Stepper,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Button, Chip, Divider, Stack, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
 import { payWithICP } from '@nnsdao/nnsdao-kit/helper/pay';
 import { DaoInfo } from '@nnsdao/nnsdao-kit/src/nnsdao/types';
-import React, { useReducer, useRef, useState } from 'react';
+import React, { useReducer, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { useToggle } from 'usehooks-ts';
 import { getPayInfo, useCreateAction } from '../../../../api/dao_manager';
 import { useJoin, useUpdateDaoInfo } from '../../../../api/nnsdao';
+import LoginDialog from '../../../../components/LoginDialog';
 import RichText from '../../../../components/RichText';
 import Upload from '../../../../components/Upload';
 import { useUserStore } from '../../../../hooks/userStore';
@@ -40,7 +30,10 @@ const steps = [
 ];
 
 export default function CreateDao() {
+  const [openLogin, toggleOpenLogin] = useToggle(false);
   const [activeStep, setActiveStep] = React.useState(0);
+  const [userStore, dispatch] = useUserStore();
+  const isLogin = userStore.isLogin;
 
   const handleNext = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
@@ -68,6 +61,7 @@ export default function CreateDao() {
         })}
       </Stepper>
       <ActiveContent></ActiveContent>
+      <LoginDialog open={openLogin} toggleOpen={toggleOpenLogin}></LoginDialog>
     </Stack>
   );
 
@@ -102,8 +96,6 @@ export default function CreateDao() {
       } as const
     );
 
-    const [loadingText, setLoadingText] = useState('');
-
     if (activeStep == 0) {
       return (
         <React.Fragment>
@@ -117,7 +109,7 @@ export default function CreateDao() {
 
     return (
       <React.Fragment>
-        <Stack spacing={2}>
+        <Stack spacing={2} maxWidth="450px">
           <Stack alignItems={'center'}>
             <Upload src={form['avatar']} setSrc={val => setFormField({ key: 'avatar', value: val })}></Upload>
             <Typography variant="h6">Avatar</Typography>
@@ -132,7 +124,7 @@ export default function CreateDao() {
             value={form.name}
             onChange={e => changeForm('name', e)}
           />
-          <TextField
+          {/* <TextField
             variant="standard"
             required
             id="poster"
@@ -141,7 +133,7 @@ export default function CreateDao() {
             key="Poster"
             placeholder="url"
             onChange={e => changeForm('poster', e)}
-          />
+          /> */}
           {/* <TextField
             required
             variant="standard"
@@ -184,12 +176,6 @@ export default function CreateDao() {
             Back
           </Button>
         </Stack>
-        <Backdrop sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }} open={!!loadingText}>
-          <Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
-            <CircularProgress color="inherit" />
-            <div>{loadingText}</div>
-          </Stack>
-        </Backdrop>
       </React.Fragment>
     );
 
@@ -227,8 +213,14 @@ export default function CreateDao() {
     }
 
     async function confirm() {
+      if (!isLogin) {
+        toast.error('Login first please!');
+        toggleOpenLogin();
+        return;
+      }
       // validate
       const { name, poster, avatar, tag } = form;
+      // @ts-ignore
       const params: DaoInfo = {
         name,
         poster,
@@ -238,30 +230,30 @@ export default function CreateDao() {
         option: [],
       };
       for (const key of Object.keys(params)) {
-        if (['option'].includes(key)) {
+        if (['option', 'poster'].includes(key)) {
           continue;
         }
         if (!checkField(key, params[key])) {
           return;
         }
       }
-      handleNext();
+      // handleNext();
+      const toastID = toast.loading('Getting Payment Information...');
       // console.log('confirm', params);
       try {
-        setLoadingText('Getting Payment Information...');
         const payInfo = await getPayInfo().catch(() => null);
         if (!payInfo) {
           toast.error(`Failed getPayInfo`);
           return;
         }
         // params.memo = payInfo.memo;
-        setLoadingText('Paying...');
+        toast.loading('Paying...', { id: toastID });
         // transfer
         const blockHeight = await payWithICP(payInfo.amount, payInfo.to, payInfo.memo);
         console.log('blockHeight', blockHeight);
         // params.block_height = BigInt(blockHeight);
         // create
-        setLoadingText('Initialize Canister...');
+        toast.loading('Initialize Canister...', { id: toastID });
         const data = await createAction.mutateAsync({
           tags: tag,
           memo: payInfo.memo,
@@ -269,7 +261,11 @@ export default function CreateDao() {
         });
 
         console.log('createAction onSuccess', data);
-        await updateAction.mutateAsync({ ...params, cid: data.canister_id.toText() });
+        await updateAction.mutateAsync({
+          ...params,
+          cid: data.canister_id.toText(),
+          canister_id: data.canister_id.toText(),
+        });
         // auto join current dao
 
         await joinAction.mutateAsync({
@@ -280,12 +276,13 @@ export default function CreateDao() {
           avatar: userStore.avatar,
         });
         setTimeout(() => {
-          navigator(`/daos/team/${data.canister_id.toText()}`);
+          navigator(`/dao/${data.canister_id.toText()}`);
         }, 0);
       } catch (error) {
         console.error('err', error);
+        toast.error('Failed create', { id: toastID });
       } finally {
-        setLoadingText('');
+        toast.dismiss(toastID);
       }
     }
   }

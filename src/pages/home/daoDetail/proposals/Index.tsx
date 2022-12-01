@@ -76,7 +76,7 @@ export default function Proposals() {
     function List() {
       const menu = ['TARGET', 'DUE DATE', 'MEMBERS', 'STATUS', ''];
       const member = useMemberList(cid as string);
-      let combinedList = list;
+      let combinedList = list.slice(page * pageCount, pageCount);
       if (member.data) {
         const memberMap = member.data.reduce((acc, item) => {
           acc[item.principal.toText()] = item;

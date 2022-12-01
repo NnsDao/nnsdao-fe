@@ -44,7 +44,7 @@ function Upload(props) {
   }
 
   return (
-    <IconButton disableRipple color="primary" size="large" component="label">
+    <IconButton disableRipple color="primary" size="large" component="label" sx={{ width: '88px', height: '88px' }}>
       {src ? (
         <Avatar src={src} sizes="large" sx={{ width: '88px', height: '88px' }}></Avatar>
       ) : isUploading ? (

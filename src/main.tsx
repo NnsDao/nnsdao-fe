@@ -20,6 +20,12 @@ const queryClient = new QueryClient({
   },
 });
 const root = ReactDOM.createRoot(document.getElementById('root')!);
+const tostOptions = {
+  style: {
+    background: '#00000080',
+    color: '#fff',
+  },
+};
 root.render(
   <React.StrictMode>
     <CssBaseline></CssBaseline>
@@ -29,7 +35,7 @@ root.render(
           <BrowserRouter>
             <App />
           </BrowserRouter>
-          <Toaster></Toaster>
+          <Toaster gutter={32} toastOptions={tostOptions}></Toaster>
         </GlobalStateProvider>
       </UserStoreProvider>
       <ReactQueryDevtools />

@@ -7,6 +7,7 @@ import { MemberItems } from '@nnsdao/nnsdao-kit/src/nnsdao/types';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useMemberList } from '../../../../api/nnsdao';
+import { briefName } from '../../../../common/helper';
 import LoadingWrapper from '../../../../components/LoadingWrapper';
 
 const orderList = ['Most active', 'First joined'];
@@ -39,7 +40,7 @@ export default function Users() {
                 <Stack p={{ sm: 1, lg: 2 }} spacing={{ sm: 1 }} justifyContent="center" alignItems={'center'}>
                   <Avatar sizes="medium" src={member.avatar}></Avatar>
                   <Typography variant="h5" textOverflow="ellipsis" maxWidth={'100%'} overflow="hidden">
-                    {member.nickname}
+                    {briefName(member.nickname)}
                   </Typography>
                   <Typography variant="body2" textOverflow="ellipsis" maxWidth={'100%'} overflow="hidden">
                     {member.intro}
