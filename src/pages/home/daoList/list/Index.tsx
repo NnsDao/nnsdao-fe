@@ -66,18 +66,9 @@ const Card = (props: CardT) => {
             }}>
             {data?.name}
           </Typography>
-          <Typography
-            sx={{
-              fontFamily: 'Roboto',
-              fontWeight: 500,
-              fontSize: '16px',
-              color: '#B5B5C3',
-            }}>
-            {data?.intro}
-          </Typography>
         </Box>
-        <Stack direction="row" justifyContent={'space-between'}>
-          <Box sx={{ border: '1px dashed #E4E6EF', padding: '9px 33px 10px 13px' }}>
+        <Stack direction="row" justifyContent={'space-between'} alignItems="center">
+          <Box>
             <Box
               sx={{
                 fontFamily: 'Roboto',
@@ -100,7 +91,11 @@ const Card = (props: CardT) => {
               Created At
             </Box>
           </Box>
-          <Box></Box>
+          <Stack direction={'row'} spacing={0.5}>
+            {data?.tags.map(tag => {
+              return <Chip key={tag} variant="outlined" label={tag} clickable></Chip>;
+            })}
+          </Stack>
           {/* <Box sx={{ border: '1px dashed grey', padding: '9px 33px 10px 13px' }}>
             <Box
               sx={{
