@@ -27,7 +27,7 @@ export default function Setting() {
     name: '',
     avatar: '',
     tags: [],
-    intro: initialValue,
+    intro: null,
   });
   useEffect(() => {
     let toastID: string;
@@ -146,11 +146,13 @@ export default function Setting() {
           <Typography width={'20%'} variant="subtitle1">
             Project Description
           </Typography>
-          <RichText
-            initialValue={form['intro']}
-            onChange={val => {
-              setFormField({ type: 'set', key: 'intro', value: val });
-            }}></RichText>
+          {form['intro'] && (
+            <RichText
+              initialValue={form['intro']}
+              onChange={val => {
+                setFormField({ type: 'set', key: 'intro', value: val });
+              }}></RichText>
+          )}
         </Stack>
         <Stack direction={'row'} alignItems="center">
           <Typography width={'20%'} variant="subtitle1">
