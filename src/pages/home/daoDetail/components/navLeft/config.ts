@@ -6,6 +6,7 @@ import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
 import SettingsIcon from '@mui/icons-material/Settings';
 import StarHalfIcon from '@mui/icons-material/StarHalf';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+
 export const config = [
   {
     labelType: 'text',

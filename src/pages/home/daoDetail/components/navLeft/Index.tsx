@@ -12,14 +12,7 @@ export default function NavLeft() {
   };
   return (
     <Paper sx={{ background: '#fff', position: 'sticky', top: '10px', padding: '8px' }}>
-      <TreeView
-        aria-label="gmail"
-        defaultExpanded={['1']}
-        defaultCollapseIcon={false}
-        // defaultCollapseIcon={<ArrowDropDownIcon />}
-        // defaultExpandIcon={<ArrowRightIcon />}
-        // defaultEndIcon={<div style={{ width: 24 }} />}
-        sx={{ flexGrow: 1, width: '100%', overflowY: 'auto' }}>
+      <TreeView defaultCollapseIcon={false} sx={{ flexGrow: 1, width: '100%', overflowY: 'auto' }}>
         {config.map((item, index) => (
           <StyledTreeItem
             key={item.labelText}

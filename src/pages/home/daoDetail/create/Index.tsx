@@ -7,10 +7,12 @@ import { useNavigate } from 'react-router-dom';
 import { useToggle } from 'usehooks-ts';
 import { getPayInfo, useCreateAction } from '../../../../api/dao_manager';
 import { useJoin, useUpdateDaoInfo } from '../../../../api/nnsdao';
+import { initDAOIntro } from '../../../../common/constant';
 import LoginDialog from '../../../../components/LoginDialog';
 import RichText from '../../../../components/RichText';
 import Upload from '../../../../components/Upload';
 import { useUserStore } from '../../../../hooks/userStore';
+
 const steps = [
   {
     label: 'Before You Create',
@@ -72,12 +74,6 @@ export default function CreateDao() {
     const [userStore] = useUserStore();
     const joinAction = useJoin();
 
-    const initialValue = [
-      {
-        type: 'paragraph',
-        children: [{ text: 'Please enter the introduction about this dao!' }],
-      },
-    ];
     const editorRef = useRef([]);
 
     const [form, setFormField] = useReducer(
@@ -163,9 +159,10 @@ export default function CreateDao() {
           </Stack>
           <Divider>Abstract</Divider>
           <RichText
-            initialValue={initialValue}
+            initialValue={initDAOIntro}
             onChange={val => {
               editorRef.current = val;
+              console.log('RichText', val);
             }}></RichText>
 
           <Divider sx={{ my: 4, border: 'none' }}></Divider>
@@ -193,7 +190,6 @@ export default function CreateDao() {
 
     function changeForm(key, e) {
       setFormField({ key, value: e.target.value });
-      // console.log(key, e);
     }
     function onEnterTag(e) {
       if (e.code === 'Enter') {
