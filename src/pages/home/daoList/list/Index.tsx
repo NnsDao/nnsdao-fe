@@ -12,8 +12,11 @@ export default function List(props) {
   const toDaoDetail = item => {
     navigate(`/dao/${item.name}`);
   };
-  const list = data;
-  // const list = filterStr ? data.filter(info => new RegExp(filterStr, 'i').test(info.tags.join(' '))) : data;
+  console.log('listupdate', filterStr, data);
+
+  const list =
+    // @ts-ignore
+    filterStr ? data.filter(info => new RegExp(filterStr, 'i').test(info?.tags?.join(' ') ?? '')) : data;
   return (
     <Grid container spacing={{ lg: 3, sm: 2 }}>
       {list.map(item => (

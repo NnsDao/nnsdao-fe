@@ -1,3 +1,4 @@
+import { Principal } from '@dfinity/principal';
 import type {
   DaoInfo,
   JoinDaoParams,
@@ -10,6 +11,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import { useUserStore } from '../../hooks/userStore';
 import { getNnsdaoActor } from '../../service';
+import { daoManagerKeys } from '../dao_manager/queries';
 import { nnsdaoKeys } from './queries';
 
 export const get_proposal = async ({ queryKey }) => {
@@ -155,7 +157,22 @@ export const useGetUserInfo = (cid: string) => {
 };
 
 export const useGetDaoInfo = (cid: string) => {
-  return useQuery(nnsdaoKeys.daoInfo(cid), getDaoInfo, {});
+  const queryClient = useQueryClient();
+  return useQuery(nnsdaoKeys.daoInfo(cid), getDaoInfo, {
+    onSuccess(data) {
+      queryClient.setQueryData(daoManagerKeys.lists(), preList =>
+        // @ts-ignore
+        (preList || []).map(item => {
+          const canisterId = item.canister_id == 'string' ? item.canister_id : item.canister_id.toText();
+
+          if (canisterId == data.canister_id) {
+            return { ...item, ...data, canister_id: Principal.fromText(canisterId) };
+          }
+          return item;
+        })
+      );
+    },
+  });
 };
 
 export const useVote = () => {
