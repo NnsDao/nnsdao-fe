@@ -16,6 +16,17 @@ export const daoStatus = async ({ queryKey }) => {
     return Promise.reject(null);
   }
 };
+export async function getTotalDaoList() {
+  const actor = await getDaoManagerActor(false);
+  try {
+    const res = await actor.dao_list();
+    console.log('total dao_list', res);
+    return res;
+  } catch (error) {
+    console.log('dao_list', error);
+    return Promise.reject(null);
+  }
+}
 
 export const getPayInfo = async () => {
   // const { module, scope, cid } = queryKey[0];
@@ -50,15 +61,7 @@ export const useTotalDaoLists = () => {
     daoManagerKeys.lists(),
     async ({ queryKey }) => {
       const { module, scope } = queryKey[0];
-      const actor = await getDaoManagerActor(false);
-      try {
-        const res = await actor.dao_list();
-        console.log('total dao_list', res);
-        return res;
-      } catch (error) {
-        console.log('dao_list', error);
-        return Promise.reject(null);
-      }
+      return getTotalDaoList();
     },
     {
       // refetchInterval: 6e4,

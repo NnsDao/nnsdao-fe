@@ -3,6 +3,7 @@ export const isDev = import.meta.env.DEV;
 import { plugLogin, stoicLogin } from '@nnsdao/nnsdao-kit';
 import storage from '@nnsdao/nnsdao-kit/helper/storage';
 import type { Proposal } from '@nnsdao/nnsdao-kit/nnsdao/types';
+import { getTotalDaoList } from '../api/dao_manager';
 import { collectUsedCanisterId } from '../service/canister.config';
 
 type QueryItemType = Record<string, any>;
@@ -18,8 +19,10 @@ export function composeQueryKeys(baseQuery: QueryType, params?: QueryItemType): 
 export async function login(loginType: string) {
   let loginRes = null as any;
 
+  // request all cid before connect to wallet
+  const list = await getTotalDaoList();
   if (loginType == 'plug') {
-    loginRes = await plugLogin(collectUsedCanisterId());
+    loginRes = await plugLogin(collectUsedCanisterId().concat(list.map(item => item.canister_id.toText())));
   } else if (loginType == 'stoic') {
     loginRes = await stoicLogin();
   }
