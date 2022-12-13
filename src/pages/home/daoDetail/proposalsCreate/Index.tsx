@@ -30,11 +30,12 @@ export default function ProposalsCreate() {
   const [form, setFormField] = React.useReducer(formReducer, {
     title: '',
     content: [],
+    start_time: '',
     end_time: '',
   });
 
-  const handleChange = (newValue: Dayjs | null) => {
-    setFormField({ key: 'end_time', value: newValue });
+  const handleChange = (key, newValue: Dayjs | null) => {
+    setFormField({ key, value: newValue });
   };
   async function createProposal() {
     let toastID = toast.loading('Under authorization...');
@@ -48,6 +49,7 @@ export default function ProposalsCreate() {
       const params: any = {
         title: form.title,
         content: JSON.stringify(editorRef.current),
+        start_time: BigInt(dayjs(form.start_time).valueOf() * 1e6),
         end_time: BigInt(dayjs(form.end_time).valueOf() * 1e6),
         property: [],
         cid,
@@ -76,32 +78,38 @@ export default function ProposalsCreate() {
     <Grid container columnSpacing={2} rowSpacing={1} columns={{ xs: 8, md: 12 }} minHeight="100%">
       <Grid sm={8} minHeight="100%">
         <Stack spacing={{ sm: 2, lg: 4 }}>
-          <BackArrow></BackArrow>
-          <TextField
-            value={form.title}
-            onChange={e => changeForm('title', e)}
-            helperText="Proposal Title"
-            required
-            label="Title"
-            variant="standard"
-          />
-          <RichText
-            initialValue={initialValue}
-            onChange={val => {
-              editorRef.current = val;
-            }}></RichText>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <BackArrow></BackArrow>
+            <TextField
+              value={form.title}
+              onChange={e => changeForm('title', e)}
+              helperText="Proposal Title"
+              required
+              label="Title"
+              variant="standard"
+            />
+            <RichText
+              initialValue={initialValue}
+              onChange={val => {
+                editorRef.current = val;
+              }}></RichText>
+            <DateTimePicker
+              label="Start time picker"
+              value={form['start_time']}
+              onChange={e => handleChange('start_time', e)}
+              renderInput={params => <TextField {...params} helperText="Start time" />}
+            />
             <DateTimePicker
               label="End time picker"
               value={form['end_time']}
-              onChange={handleChange}
+              onChange={e => handleChange('end_time', e)}
               renderInput={params => <TextField {...params} helperText="End time" />}
             />
-          </LocalizationProvider>
 
-          <Button variant="contained" onClick={createProposal}>
-            Create Proposal
-          </Button>
+            <Button variant="contained" onClick={createProposal}>
+              Create Proposal
+            </Button>
+          </LocalizationProvider>
         </Stack>
       </Grid>
       <Grid sm={4}> </Grid>

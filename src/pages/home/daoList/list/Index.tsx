@@ -130,7 +130,7 @@ const Card = (props: CardT) => {
               return <Avatar key={member.principal.toText()} src={member.avatar}></Avatar>;
             })}
           </AvatarGroup>
-          <JoinDaoBtn cid={cid}></JoinDaoBtn>
+          <JoinDaoBtn variant="outlined" cid={cid}></JoinDaoBtn>
         </Stack>
       </Stack>
     </Paper>

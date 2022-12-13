@@ -8,7 +8,7 @@ export default function JoinedDao() {
   const navigate = useNavigate();
   const toDetailPage = item => {
     if (item.canister_id) {
-      navigate(`/dao/:${item.canister_id}`);
+      navigate(`/dao/${item.canister_id}`);
       return;
     }
     navigate(`/createDao`);

@@ -33,6 +33,7 @@ export async function login(loginType: string) {
     principalId: loginRes.principalId,
     accountId: loginRes.accountId,
     isLogin: true,
+    lastLoginAt: Date.now(), // last login timestamp
   };
   // @ts-ignore
   storage.set('userInfo', loginInfo);
