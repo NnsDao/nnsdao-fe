@@ -40,12 +40,12 @@ export default function Users() {
                 <Stack p={{ sm: 1, lg: 2 }} spacing={{ sm: 1 }} justifyContent="center" alignItems={'center'}>
                   <Avatar sizes="medium" src={member.avatar}></Avatar>
                   <Typography variant="h5" textOverflow="ellipsis" maxWidth={'100%'} overflow="hidden">
-                    {briefName(member.nickname)}
+                    {showType == 'linear' ? member.nickname : briefName(member.nickname)}
                   </Typography>
                   <Typography variant="body2" textOverflow="ellipsis" maxWidth={'100%'} overflow="hidden">
                     {member.intro}
                   </Typography>
-                  <Stack direction={'row'} justifyContent="space-between">
+                  {/* <Stack direction={'row'} justifyContent="space-between">
                     <Box sx={{ border: '1px dashed #E4E6EF', padding: '6px 8px ', borderRadius: '8px' }}>
                       <Typography lineHeight={1.5} variant="subtitle1">
                         {'$1200'}
@@ -54,7 +54,7 @@ export default function Users() {
                         {'Earings'}
                       </Typography>
                     </Box>
-                  </Stack>
+                  </Stack> */}
                 </Stack>
               </Card>
             </Grid>

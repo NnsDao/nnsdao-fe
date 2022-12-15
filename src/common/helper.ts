@@ -1,5 +1,6 @@
 export const isDev = import.meta.env.DEV;
 
+import { Principal } from '@dfinity/principal';
 import { plugLogin, stoicLogin } from '@nnsdao/nnsdao-kit';
 import storage from '@nnsdao/nnsdao-kit/helper/storage';
 import type { Proposal } from '@nnsdao/nnsdao-kit/nnsdao/types';
@@ -58,7 +59,14 @@ export function proposalStateToChipColor(item: Proposal['proposal_state']) {
 
 export function briefName(name: string) {
   if (name.length > 8) {
-    return name.slice(0, 8) + '...' + name.slice(-8);
+    return name.slice(0, 6) + '...' + name.slice(-6);
   }
   return name;
+}
+
+export function canisterID_str(cid: Principal | string) {
+  if (typeof cid !== 'string') {
+    return cid.toText();
+  }
+  return cid;
 }

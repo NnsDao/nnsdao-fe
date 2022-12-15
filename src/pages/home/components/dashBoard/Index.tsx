@@ -1,12 +1,13 @@
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import PersonIcon from '@mui/icons-material/Person';
 import SearchIcon from '@mui/icons-material/Search';
 import { Divider, IconButton, Paper, Stack, Typography } from '@mui/material';
 import InputBase from '@mui/material/InputBase';
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDebounce } from 'usehooks-ts';
 
 export default function DashBoard({ search: setSearch }) {
+  const navigate = useNavigate();
   const [inputVal, setInputVal] = React.useState('');
   const debouncedVal = useDebounce(inputVal, 300);
   useEffect(() => {
@@ -34,8 +35,10 @@ export default function DashBoard({ search: setSearch }) {
               display: 'flex',
               alignItems: 'center',
               borderRadius: 23,
-              background: '#A8A8AC',
-              border: '1px solid #F9FAFB',
+              '&:hover': {
+                background: '#A8A8AC',
+                border: '1px solid #F9FAFB',
+              },
             }}>
             <IconButton aria-label="menu">
               <SearchIcon htmlColor="#fff" />
@@ -52,21 +55,22 @@ export default function DashBoard({ search: setSearch }) {
               onChange={search}
             />
           </Paper>
-          <NotificationsActiveIcon
+          {/* <NotificationsActiveIcon
             sx={{
               width: '40px',
               height: '40px',
               padding: '8px',
-              background: '#5BC0FA',
+              background: '#42a5f5',
               borderRadius: '12px',
               cursor: 'pointer',
-            }}></NotificationsActiveIcon>
+            }}></NotificationsActiveIcon> */}
           <PersonIcon
+            onClick={() => navigate('/user')}
             sx={{
               width: '40px',
               height: '40px',
               padding: '8px',
-              background: '#5BC0FA',
+              background: '#42a5f5',
               borderRadius: '12px',
               cursor: 'pointer',
             }}></PersonIcon>

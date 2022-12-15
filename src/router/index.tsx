@@ -10,6 +10,7 @@ import ProposalsCreate from '../pages/home/daoDetail/proposalsCreate/Index';
 import ProposalDetail from '../pages/home/daoDetail/proposalsDetail/Index';
 import Setting from '../pages/home/daoDetail/setting/Index';
 import Users from '../pages/home/daoDetail/users/Index';
+import User from '../pages/user';
 const Activity = React.lazy(() => import('@/pages/home/daoDetail/activity/Index'));
 const Budget = React.lazy(() => import('@/pages/home/daoDetail/budget/Index'));
 const BudgetSet = React.lazy(() => import('@/pages/home/daoDetail/budgetSet/Index'));
@@ -29,7 +30,8 @@ const routes: RouteObject[] = [
     element: <Home></Home>,
     index: true,
   },
-  { path: 'createDao', element: <Create /> },
+  { path: '/createDao', element: <Create /> },
+  { path: '/user', element: <User></User> },
   {
     path: '/dao/:cid',
     element: <DaoDetail />,

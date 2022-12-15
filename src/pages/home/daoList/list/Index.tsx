@@ -3,24 +3,34 @@ import Grid from '@mui/material/Unstable_Grid2';
 import type { DaoInfo } from '@nnsdao/nnsdao-kit/src/dao_manager/types';
 import { useNavigate } from 'react-router-dom';
 import { useGetDaoInfo, useMemberList } from '../../../../api/nnsdao';
+import { canisterID_str } from '../../../../common/helper';
+import { useGlobalState } from '../../../../hooks/globalState';
 import { JoinDaoBtn } from './JoinDaoBtn';
 
 export default function List(props) {
   const filterStr = props.filterStr;
+  const [globalState] = useGlobalState();
   const data: DaoInfo[] = props.data;
+  const ownerID: string = props.ownerID;
   const navigate = useNavigate();
   const toDaoDetail = item => {
     navigate(`/dao/${item.name}`);
   };
   console.log('listupdate', filterStr, data);
 
-  const list =
+  let list =
     // @ts-ignore
     filterStr ? data.filter(info => new RegExp(filterStr, 'i').test(info?.tags?.join(' ') ?? '')) : data;
+  // only list user joined dao
+  if (ownerID && globalState.joinedDaoList.length) {
+    // @ts-ignore
+    list = list.filter(info => info.owner.toText() == ownerID);
+  }
+
   return (
     <Grid container spacing={{ lg: 3, sm: 2 }}>
       {list.map(item => (
-        <Grid key={item.canister_id.toText()} xs={12} sm={6} md={4} xl={3}>
+        <Grid key={canisterID_str(item.canister_id)} xs={12} sm={6} md={4} xl={3}>
           <Card metadata={item}></Card>
         </Grid>
       ))}
@@ -33,8 +43,8 @@ type CardT = {
 };
 const Card = (props: CardT) => {
   const { metadata } = props;
-  const cid = metadata.canister_id.toText();
-  const controller = metadata.controller.map(principal => principal.toText());
+  const cid = canisterID_str(metadata.canister_id);
+  // const controller = metadata.controller.map(principal => principal.toText());
   const info = useGetDaoInfo(cid);
   const data = info.data;
 
