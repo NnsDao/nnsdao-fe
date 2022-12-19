@@ -1,7 +1,21 @@
+import { Principal } from '@dfinity/principal';
 import { Card, CardContent } from '@mui/material';
 import { Box } from '@mui/system';
+import { useParams } from 'react-router-dom';
+import { useTokenBalance } from '../../../../../api/common';
 
-export default function Treasury(props) {
+export default function Treasury() {
+  const { cid } = useParams() as { cid: string };
+  const icp = useTokenBalance('ICP', Principal.fromText(cid));
+  const ndp = useTokenBalance('NDP', Principal.fromText(cid));
+  console.log('icp,ndp', icp.data, ndp.data);
+  // console.log(AccountIdentifier.fromHex('67bzx-5iaaa-aaaam-aah5a-cai').toHex());
+  // console.log(
+  //   AccountIdentifier.fromPrincipal({
+  //     principal: Principal.fromText('67bzx-5iaaa-aaaam-aah5a-cai'),
+  //   }).toHex()
+  // );
+
   return (
     <Card sx={{ height: '100%' }}>
       <CardContent>
@@ -13,7 +27,7 @@ export default function Treasury(props) {
             lineHeight: '40px',
             color: '#181C32',
           }}>
-          {'22'}
+          {Number(icp.data || '0')} ICP
         </Box>
         <Box
           sx={{
@@ -41,7 +55,7 @@ export default function Treasury(props) {
               lineHeight: '16px',
               color: '#5E6278',
             }}>
-            Avg. Project Budget
+            ICP
           </Box>
           <Box
             sx={{
@@ -52,7 +66,7 @@ export default function Treasury(props) {
               lineHeight: '16px',
               color: '#181C33',
             }}>
-            $6,570
+            {Number(icp.data || '0')}
           </Box>
         </Box>
         <Box sx={{ margin: '14px 0 11px 0', width: '100%', borderTop: '1px dotted #D7D3D3' }} />
@@ -71,7 +85,7 @@ export default function Treasury(props) {
               lineHeight: '16px',
               color: '#5E6278',
             }}>
-            Lowest Project Check
+            NDP
           </Box>
           <Box
             sx={{
@@ -82,10 +96,10 @@ export default function Treasury(props) {
               lineHeight: '16px',
               color: '#181C33',
             }}>
-            $6,570
+            {Number(ndp.data || '0')}
           </Box>
         </Box>
-        <Box sx={{ margin: '14px 0 11px 0', width: '100%', borderTop: '1px dotted #D7D3D3' }} />
+        {/* <Box sx={{ margin: '14px 0 11px 0', width: '100%', borderTop: '1px dotted #D7D3D3' }} />
         <Box
           sx={{
             display: 'flex',
@@ -114,7 +128,7 @@ export default function Treasury(props) {
             }}>
             $6,570
           </Box>
-        </Box>
+        </Box> */}
       </CardContent>
     </Card>
   );

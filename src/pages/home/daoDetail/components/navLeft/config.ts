@@ -12,7 +12,7 @@ export const config = [
     labelType: 'text',
     labelText: 'OverView',
     labelIcon: MarkEmailUnreadIcon,
-    labelInfo: '12',
+    labelInfo: '',
     color: '#3c8039',
     bgColor: '#e6f4ea',
     nodeId: '1',

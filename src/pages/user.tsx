@@ -5,6 +5,7 @@ import { Box, Stack } from '@mui/system';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useEffectOnce, useToggle } from 'usehooks-ts';
 import { useTotalDaoLists } from '../api/dao_manager';
 import { useNidInfo } from '../api/nid';
@@ -18,6 +19,7 @@ dayjs.extend(relativeTime);
 function User() {
   const [selectedMenu, setSelectedMenu] = React.useState(0);
   const [userStore] = useUserStore();
+  const nidInfo = useNidInfo();
   const [open, toggleLogin] = useToggle();
   const DaoList = LoadingWrapper(List, useTotalDaoLists);
   function handleChange(e, val) {
@@ -33,7 +35,9 @@ function User() {
     return (
       <Box textAlign={'center'} p={3}>
         <Typography>Login first please!</Typography>
-        <Button onClick={() => toggleLogin()}>login</Button>
+        <Button variant="contained" onClick={() => toggleLogin()}>
+          login
+        </Button>
         <LoginDialog open={open} toggleOpen={toggleLogin}></LoginDialog>
       </Box>
     );
@@ -71,7 +75,7 @@ function User() {
 }
 export default User;
 
-function TwitterList({ link }) {
+export function TwitterList({ link }) {
   const account = link?.match(/https:\/\/twitter\.com\/(\w+)/)?.[1] || '';
   const twitterScript = `<a class="twitter-timeline" href="https://twitter.com/${account}?ref_src=twsrc%5Etfw">Tweets by ${account}</a>`;
   const twitter = React.useRef();
@@ -89,6 +93,7 @@ function TwitterList({ link }) {
 
 function UserCard() {
   const nidInfo = useNidInfo();
+  const navigate = useNavigate();
   const [globalStore] = useGlobalState();
   const cardList = [
     {
@@ -129,7 +134,9 @@ function UserCard() {
                 </Stack>
               </Stack>
             </Stack>
-            <Button variant="outlined">Follow</Button>
+            <Button variant="outlined" onClick={() => navigate('/createDao')}>
+              Create Dao
+            </Button>
           </Stack>
           <Stack direction={'row'} alignItems="scenter" spacing={2} pt={1}>
             {cardList.map(item => {

@@ -174,6 +174,25 @@ export const useGetDaoInfo = (cid: string) => {
     },
   });
 };
+export const useGetDaoStatus = (cid: string) => {
+  // const queryClient = useQueryClient();
+  return useQuery(
+    nnsdaoKeys.status(cid),
+    async ({ queryKey }) => {
+      const { module, scope, cid } = queryKey[0];
+      const actor = await getNnsdaoActor(cid, false);
+      const res = await actor.dao_status();
+
+      if ('Ok' in res) {
+        return res.Ok[0];
+      }
+      return Promise.reject(null);
+    },
+    {
+      staleTime: Infinity,
+    }
+  );
+};
 
 export const useVote = () => {
   const queryClient = useQueryClient();
@@ -246,8 +265,8 @@ export const useJoin = () => {
 export const useUpdateDaoInfo = () => {
   const queryClient = useQueryClient();
   return useMutation(
-    async (params: DaoInfo & { cid: string }) => {
-      const actor = await getNnsdaoActor(params.cid, true);
+    async (params: DaoInfo) => {
+      const actor = await getNnsdaoActor(params.canister_id, true);
       const res = await actor.update_dao_info(params);
       console.log(res, 'update_dao_info');
       if ('Ok' in res) {
@@ -257,7 +276,7 @@ export const useUpdateDaoInfo = () => {
     },
     {
       onSuccess(data, variables) {
-        queryClient.setQueryData(nnsdaoKeys.daoInfo(variables.cid), data);
+        queryClient.setQueryData(nnsdaoKeys.daoInfo(variables.canister_id), data);
       },
     }
   );

@@ -70,3 +70,10 @@ export function canisterID_str(cid: Principal | string) {
   }
   return cid;
 }
+
+export function arrToMap(arr: Array<[string, string]>) {
+  return arr.reduce((acc, [key, val]) => {
+    acc[key] = val;
+    return acc;
+  }, {});
+}

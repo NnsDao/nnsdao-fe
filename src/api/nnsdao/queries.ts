@@ -4,6 +4,7 @@ const module = 'nnsdao';
 
 export const nnsdaoKeys = {
   all: composeQueryKeys([{ module }]),
+  status: (cid: string) => composeQueryKeys(nnsdaoKeys.all, { scope: 'dao_status', cid }),
   userInfos: () => composeQueryKeys(nnsdaoKeys.all, { scope: 'userInfo' }),
   userInfo: (cid: string) => composeQueryKeys(nnsdaoKeys.userInfos(), { cid }),
   daoInfos: () => composeQueryKeys(nnsdaoKeys.all, { scope: 'daoInfo' }),

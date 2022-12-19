@@ -6,13 +6,14 @@ import ReactDOM from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
+import { isDev } from './common/helper';
 import GlobalStateProvider from './hooks/globalState';
 import { UserStoreProvider } from './hooks/userStore';
 import './index.css';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 3e4,
+      staleTime: isDev ? Infinity : 6e4,
       refetchOnWindowFocus: false,
       cacheTime: Infinity,
       retry: false,
@@ -35,7 +36,7 @@ root.render(
           <BrowserRouter>
             <App />
           </BrowserRouter>
-          <Toaster gutter={32} toastOptions={tostOptions}></Toaster>
+          <Toaster toastOptions={tostOptions}></Toaster>
         </GlobalStateProvider>
       </UserStoreProvider>
       <ReactQueryDevtools />

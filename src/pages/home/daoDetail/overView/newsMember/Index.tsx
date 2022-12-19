@@ -1,4 +1,4 @@
-import { Avatar, AvatarGroup, Button, Card, CardContent } from '@mui/material';
+import { Avatar, AvatarGroup, Card, CardContent, Typography } from '@mui/material';
 import { Box, Stack } from '@mui/system';
 import { MemberItems } from '@nnsdao/nnsdao-kit/nnsdao/types';
 import { useParams } from 'react-router-dom';
@@ -37,9 +37,20 @@ function NewsMember(props) {
             return <Avatar key={member.principal.toHex()} src={member.avatar}></Avatar>;
           })}
         </AvatarGroup>
-        <Stack spacing={{ lg: 2, sm: 1 }} direction="row">
-          <Button variant="contained">Invite Contributors</Button>
-          <Button>Invite New</Button>
+        <Stack spacing={{ lg: 2, sm: 1 }} direction="row" justifyContent={'space-between'}>
+          <Typography
+            sx={{
+              fontFamily: 'Roboto',
+              fontWeight: 500,
+              fontSize: '16px',
+              color: '#B5B5C3',
+            }}
+            variant="body2">
+            Total Member
+          </Typography>
+          <Typography variant="body2">{memberList.length}</Typography>
+          {/* <Button variant="contained">Invite Contributors</Button> */}
+          {/* <Button>Invite New</Button> */}
         </Stack>
       </CardContent>
     </Card>
