@@ -11,6 +11,9 @@ export default function Home(props) {
   const navigate = useNavigate();
   const DaoList = LoadingWrapper(List, useTotalDaoLists);
   const [searchStr, setSearch] = React.useState('');
+  const [statusStr, setStatusFilter] = React.useState('');
+  // console.log('setStatusFilter statusStr', searchStr, statusStr);
+
   return (
     <React.Fragment>
       <DashBoard search={setSearch} />
@@ -20,13 +23,13 @@ export default function Home(props) {
           {/* <span style={{ fontWeight: 700, fontSize: '12px', lineHeight: '23px', color: '#A1A5B7' }}>Active</span> */}
         </Box>
         <Stack direction="row" alignItems="center" spacing={{ xl: 2, sm: 1 }}>
-          <SelectButton />
+          <SelectButton onchange={setStatusFilter} />
           <Button variant="contained" onClick={() => navigate(`/createDao`)}>
             New DAOs
           </Button>
         </Stack>
       </Stack>
-      <DaoList filterStr={searchStr}></DaoList>
+      <DaoList filterStr={searchStr} statusStr={statusStr}></DaoList>
     </React.Fragment>
   );
 }

@@ -1,12 +1,13 @@
 import { Principal } from '@dfinity/principal';
 import { Alert, Button, Chip, Divider, Paper, TextField, Typography } from '@mui/material';
 import { Box, Stack } from '@mui/system';
+import { CanisterStatusResponse } from '@nnsdao/nnsdao-kit/src/nnsdao/types';
 import React, { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 import { useToggle } from 'usehooks-ts';
-import { useTotalDaoLists, useUpdateBaseDaoInfo } from '../../../../api/dao_manager';
-import { useGetDaoInfo, useUpdateDaoInfo } from '../../../../api/nnsdao';
+import { useUpdateBaseDaoInfo } from '../../../../api/dao_manager';
+import { useGetDaoInfo, useGetDaoStatus, useUpdateDaoInfo } from '../../../../api/nnsdao';
 import { initDAOIntro } from '../../../../common/constant';
 import LoginDialog from '../../../../components/LoginDialog';
 import RichText from '../../../../components/RichText';
@@ -86,7 +87,7 @@ function BasicSettings() {
         acc.push([item, form.option[item]]);
         return acc;
       }, []),
-
+      update_at: BigInt(0),
       intro: JSON.stringify(form.intro),
     };
 
@@ -208,24 +209,32 @@ function BasicSettings() {
 function AdminSettings() {
   const updateBasicDaoAction = useUpdateBaseDaoInfo();
   const { cid } = useParams();
-
-  const totalDaoList = useTotalDaoLists();
-  const currentDaoInfo = totalDaoList.data?.find(item => item.canister_id.toText() == cid);
+  const daoStatus = useGetDaoStatus(cid as string);
+  let data: CanisterStatusResponse = daoStatus.data;
   const [controllerInput, setControllerInput] = React.useState('');
   function updateController() {
     try {
       if (!controllerInput) {
-        throw Error('xx');
+        return;
       }
-      let newController = Principal.fromText(controllerInput);
-      updateBasicDaoAction.mutate([Principal.fromText(cid as string), { add: newController }], {
-        onSuccess(data, variables, context) {
-          toast.success('Added successfully');
-        },
-        onError() {
-          toast.error('Added failed');
-        },
-      });
+      let newController: Principal;
+      try {
+        newController = Principal.fromText(controllerInput);
+      } catch (error) {
+        toast.error('Invalid Principal Text!');
+        return;
+      }
+      updateBasicDaoAction.mutate(
+        { add: newController },
+        {
+          onSuccess(data, variables, context) {
+            toast.success('Added successfully');
+          },
+          onError() {
+            toast.error('Added failed');
+          },
+        }
+      );
     } catch (error) {
       toast.error('Please enter valid principal ID');
     }
@@ -244,7 +253,8 @@ function AdminSettings() {
           Controller
         </Typography>
         <Stack spacing={2} flex={1}>
-          {currentDaoInfo?.controller.map(principal => (
+          {}
+          {data?.settings?.controllers.map(principal => (
             <Typography key={principal.toHex()} variant="subtitle2">
               {principal.toText()}
             </Typography>
@@ -273,7 +283,11 @@ function formReducer(state, { type, key, value }) {
     return {
       ...state,
       ...value,
-      intro: value.intro?.length ? JSON.parse(value.intro) : initDAOIntro,
+      intro: value.intro?.length
+        ? typeof value.intro == 'string'
+          ? JSON.parse(value.intro)
+          : value.intro
+        : initDAOIntro,
       option: {
         ...op,
         ...value.option.reduce((acc, [key, val]) => {

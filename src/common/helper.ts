@@ -22,8 +22,9 @@ export async function login(loginType: string) {
 
   // request all cid before connect to wallet
   const list = await getTotalDaoList();
+
   if (loginType == 'plug') {
-    loginRes = await plugLogin(collectUsedCanisterId().concat(list.map(item => item.canister_id.toText())));
+    loginRes = await plugLogin(collectUsedCanisterId().concat(list));
   } else if (loginType == 'stoic') {
     loginRes = await stoicLogin();
   }

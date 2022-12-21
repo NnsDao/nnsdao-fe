@@ -1,16 +1,22 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Button, Fade, Menu, MenuItem } from '@mui/material';
 import React from 'react';
+import { useGlobalState } from '../../../../../hooks/globalState';
 
-export default function SelectButton() {
+export default function SelectButton(props) {
+  const [globalState] = useGlobalState();
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const totalList = { data: [] };
   const [searchFilter, setSearchFilter] = React.useState('');
   const [selectedIndex, setSelectedIndex] = React.useState(0);
-  let MenuItemConfig: any = totalList.data?.length
-    ? // @ts-ignore
-      [...new Set(totalList.data.map(item => item.tags).flat(Infinity))]
-    : ['Active', 'Stopped'];
+
+  if (!globalState.totalDaoList?.length) {
+    return null;
+  }
+
+  let MenuItemConfig: any = [...new Set(globalState.totalDaoList.map(item => Object.keys(item.status.status)?.['0']))];
+
   const open = Boolean(anchorEl);
 
   const handleClose = () => {
@@ -22,6 +28,7 @@ export default function SelectButton() {
   function handleMenuItemClick(e, index: number): void {
     setSelectedIndex(index);
     handleClose();
+    props.onchange(MenuItemConfig[index]);
   }
 
   return (

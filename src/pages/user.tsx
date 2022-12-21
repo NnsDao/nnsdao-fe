@@ -98,7 +98,7 @@ function UserCard() {
   const cardList = [
     {
       text: ' Joined Daos',
-      value: globalStore.joinedDaoList?.length || '0',
+      value: globalStore.totalDaoList?.length || '0',
     },
     {
       text: 'Reputation',

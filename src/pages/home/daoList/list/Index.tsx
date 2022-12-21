@@ -1,37 +1,56 @@
 import { Avatar, AvatarGroup, Box, Chip, Paper, Stack, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import type { DaoInfo } from '@nnsdao/nnsdao-kit/src/dao_manager/types';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useGetDaoInfo, useMemberList } from '../../../../api/nnsdao';
-import { canisterID_str } from '../../../../common/helper';
+import { useGetDaoData } from '../../../../api/nnsdao';
 import { useGlobalState } from '../../../../hooks/globalState';
 import { JoinDaoBtn } from './JoinDaoBtn';
 
 export default function List(props) {
   const filterStr = props.filterStr;
+  const statusStr = props.statusStr;
   const [globalState] = useGlobalState();
-  const data: DaoInfo[] = props.data;
+  const data: string[] = props.data;
   const ownerID: string = props.ownerID;
   const navigate = useNavigate();
   const toDaoDetail = item => {
     navigate(`/dao/${item.name}`);
   };
-  console.log('listupdate', filterStr, data);
+  // console.log('listupdate', filterStr, data);
 
-  let list =
+  let list = data;
+  // only list user owned dao
+  if (ownerID && globalState.totalDaoList?.length) {
     // @ts-ignore
-    filterStr ? data.filter(info => new RegExp(filterStr, 'i').test(info?.tags?.join(' ') ?? '')) : data;
-  // only list user joined dao
-  if (ownerID && globalState.joinedDaoList.length) {
+    list = globalState.totalDaoList.filter(data => !!data.owners.find(cid => cid == ownerID));
+  }
+  // search
+  if (filterStr) {
     // @ts-ignore
-    list = list.filter(info => info.owner.toText() == ownerID);
+    list = globalState.totalDaoList.filter(data => new RegExp(filterStr, 'i').test(data.info?.tags?.join(' ') ?? ''));
+  }
+  // status filter
+  if (statusStr) {
+    // @ts-ignore
+    list = globalState.totalDaoList.filter(data =>
+      new RegExp(statusStr, 'i').test(Object.keys(data.status.status)?.['0'] ?? '')
+    );
   }
 
+  list = list.map(item => {
+    if (typeof item == 'string') {
+      return { canister_id: item };
+    }
+    // @ts-ignore
+    return { canister_id: item.info.canister_id, ...item };
+  });
   return (
     <Grid container spacing={{ lg: 3, sm: 2 }}>
       {list.map(item => (
-        <Grid key={canisterID_str(item.canister_id)} xs={12} sm={6} md={4} xl={3}>
-          <Card metadata={item}></Card>
+        // @ts-ignore
+        <Grid key={item.canister_id} xs={12} sm={6} md={4} xl={3}>
+          {/* @ts-ignore */}
+          <Card cid={item.canister_id}></Card>
         </Grid>
       ))}
     </Grid>
@@ -39,17 +58,28 @@ export default function List(props) {
 }
 
 type CardT = {
-  metadata: DaoInfo;
+  cid: string;
 };
 const Card = (props: CardT) => {
-  const { metadata } = props;
-  const cid = canisterID_str(metadata.canister_id);
-  // const controller = metadata.controller.map(principal => principal.toText());
-  const info = useGetDaoInfo(cid);
-  const data = info.data;
+  const { cid } = props;
+  const daoData = useGetDaoData(cid);
+  const [globalState, dispatchAction] = useGlobalState();
 
-  const daoMember = useMemberList(cid);
-  const chipState: string = Object.keys(metadata.status)?.[0];
+  useEffect(() => {
+    if (daoData.data) {
+      let list = globalState.totalDaoList?.filter(item => item.info?.canister_id !== cid);
+      dispatchAction({
+        type: 'changeDaoList',
+        data: list.concat(daoData.data),
+      });
+    }
+  }, [daoData.data]);
+
+  const info = daoData?.data?.info;
+  const daoStatus = daoData?.data?.status;
+  const daoMember = daoData.data?.member_list;
+  // @ts-ignore
+  const chipState: string = Object.keys(daoStatus?.status || {})?.[0];
   const navigate = useNavigate();
 
   return (
@@ -57,7 +87,7 @@ const Card = (props: CardT) => {
       <Stack spacing={{ sm: 2 }} p={'25px'}>
         <Stack direction="row" justifyContent="space-between" alignItems={'center'}>
           <Avatar
-            src={data?.avatar}
+            src={info?.avatar}
             sx={{
               width: '46px',
               height: '46px',
@@ -65,7 +95,9 @@ const Card = (props: CardT) => {
               background: '#F5F8FA',
               borderRadius: '6px',
             }}></Avatar>
-          <Chip color={/stop/i.test(chipState) ? 'warning' : 'success'} variant="outlined" label={chipState}></Chip>
+          {chipState && (
+            <Chip color={/stop/i.test(chipState) ? 'warning' : 'success'} variant="outlined" label={chipState}></Chip>
+          )}
         </Stack>
         <Box>
           <Typography
@@ -77,7 +109,7 @@ const Card = (props: CardT) => {
               lineHeight: '30px',
               color: '#181C32',
             }}>
-            {data?.name}
+            {info?.name}
           </Typography>
         </Box>
         <Stack direction="row" justifyContent={'space-between'} alignItems="center">
@@ -91,7 +123,7 @@ const Card = (props: CardT) => {
                 color: '#5E6278',
                 paddingBottom: '3px',
               }}>
-              {new Date(Number(metadata?.created_at || 0) / 1e6).toLocaleString()}
+              {new Date(Number(info?.created_at || 0) / 1e6).toLocaleString()}
             </Box>
             <Box
               sx={{
@@ -105,7 +137,7 @@ const Card = (props: CardT) => {
             </Box>
           </Box>
           <Stack direction={'row'} spacing={0.5}>
-            {data?.tags.map(tag => {
+            {info?.tags.map(tag => {
               return <Chip key={tag} variant="outlined" label={tag} clickable></Chip>;
             })}
           </Stack>
@@ -136,7 +168,7 @@ const Card = (props: CardT) => {
 
         <Stack direction="row" justifyContent={'space-between'} alignItems="center">
           <AvatarGroup max={3}>
-            {daoMember.data?.map(member => {
+            {daoMember?.map(member => {
               return <Avatar key={member.principal.toText()} src={member.avatar}></Avatar>;
             })}
           </AvatarGroup>

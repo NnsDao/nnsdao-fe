@@ -1,5 +1,6 @@
 import { TreeItem, treeItemClasses, TreeItemProps } from '@mui/lab';
 import { Box, styled, SvgIconProps, Typography } from '@mui/material';
+import React from 'react';
 type StyledTreeItemProps = TreeItemProps & {
   labelType: string;
   bgColor?: string;
@@ -64,10 +65,10 @@ export default function StyledTreeItem(props: StyledTreeItemProps) {
     <Box sx={{ fontWeight: 700, paddingY: '10px', paddingLeft: '8px' }}>{labelText}</Box>
   ) : (
     <StyledTreeItemRoot
-      // style={{
-      //   '--tree-view-color': color,
-      //   '--tree-view-bg-color': bgColor,
-      // }}
+      style={{
+        '--tree-view-color': color,
+        '--tree-view-bg-color': bgColor,
+      }}
       label={
         <Box
           sx={{

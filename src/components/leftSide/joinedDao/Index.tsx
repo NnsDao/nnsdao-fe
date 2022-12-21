@@ -1,27 +1,37 @@
 import { Avatar, Stack, Tooltip, Zoom } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalState } from '../../../hooks/globalState';
+import { useUserStore } from '../../../hooks/userStore';
 // const observer = new QueryObserver(queryClient, { queryKey: daoManagerKeys.lists() });
 
 export default function JoinedDao() {
   const [globalState, dispatchAction] = useGlobalState();
+  const [userStore] = useUserStore();
   const navigate = useNavigate();
   const toDetailPage = item => {
-    if (item.canister_id) {
-      navigate(`/dao/${item.canister_id}`);
+    if (item.info.canister_id) {
+      navigate(`/dao/${item.info.canister_id}`);
       return;
     }
     navigate(`/createDao`);
   };
-  const placeHoder = [
+  const placeHolder = [
     {
-      name: 'Create DAOs',
-      canister_id: '',
-      avatar: '',
+      info: {
+        name: 'Create DAOs',
+        canister_id: 'xxx',
+        avatar: '',
+      },
     },
   ];
-  const data = (globalState.joinedDaoList?.length && globalState.joinedDaoList) || placeHoder;
-  console.log('data.joinedDaoList', data);
+  let data: any = [];
+  if (globalState.totalDaoList?.length) {
+    data = globalState.totalDaoList.filter(item =>
+      item.member_list.find(data => data.principal.toText() == userStore?.principalId)
+    );
+  }
+  console.log('data.totalDaoList', data);
+  data = data?.length ? data : placeHolder;
 
   return (
     <Stack
@@ -35,14 +45,14 @@ export default function JoinedDao() {
       }}>
       {data.map((item, index) => (
         <Tooltip
-          key={item.canister_id + item.name + index}
-          title={item.name}
+          key={item.info.canister_id}
+          title={item.info.name}
           TransitionComponent={Zoom}
           placement="right"
           TransitionProps={{ timeout: 200 }}>
           <Avatar
             alt="Remy Sharp"
-            src={item.avatar}
+            src={item.info.avatar}
             onClick={() => toDetailPage(item)}
             sx={{
               width: 47,

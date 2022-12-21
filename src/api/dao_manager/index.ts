@@ -1,4 +1,3 @@
-import { Principal } from '@dfinity/principal';
 import type { ControllerAction, CreateDaoOptions } from '@nnsdao/nnsdao-kit/dao_manager/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getDaoManagerActor } from '../../service';
@@ -8,7 +7,7 @@ export const daoStatus = async ({ queryKey }) => {
   const { module, scope, cid } = queryKey[0];
   const actor = await getDaoManagerActor(false);
   try {
-    const res = await actor.dao_status(cid);
+    const res = await actor.canister_status();
     console.log('dao_status', res);
     return res;
   } catch (error) {
@@ -71,9 +70,7 @@ export const useTotalDaoLists = () => {
   );
 };
 export const useDaoStatus = (cid: string) => {
-  return useQuery(daoManagerKeys.status(cid), daoStatus, {
-    refetchOnWindowFocus: import.meta.env.PROD,
-  });
+  return useQuery(daoManagerKeys.status(cid), daoStatus);
 };
 
 export const useCreateAction = () => {
@@ -89,9 +86,9 @@ export const useCreateAction = () => {
 export function useUpdateBaseDaoInfo() {
   const queryClient = useQueryClient();
   return useMutation(
-    async (params: [Principal, ControllerAction]) => {
+    async (params: ControllerAction) => {
       const actor = await getDaoManagerActor(true);
-      const res = await actor.update_dao_controller(params[0], params[1]);
+      const res = await actor.update_dao_controller(params);
       if ('Err' in res) {
         return Promise.reject(res.Err);
       }

@@ -68,21 +68,6 @@ export const getDaoInfo = async ({ queryKey }) => {
   }
   return Promise.reject(null);
 };
-export const user_info = async ({ queryKey }) => {
-  const { module, scope, cid } = queryKey[0];
-
-  if (!cid) {
-    return Promise.reject(null);
-  }
-  const actor = await getNnsdaoActor(cid, true);
-  // can also get someone other than caller`s user info
-  const res = await actor.user_info([]);
-  console.log('user_info', res);
-  if ('Ok' in res) {
-    return res.Ok;
-  }
-  return null;
-};
 
 export const getProposalList = async ({ queryKey }) => {
   const { module, scope, cid } = queryKey[0];
@@ -153,7 +138,25 @@ export const useGetProposal = (cid: string, id: string) => {
 };
 
 export const useGetUserInfo = (cid: string) => {
-  return useQuery(nnsdaoKeys.userInfo(cid), user_info, {});
+  return useQuery(
+    nnsdaoKeys.userInfo(cid),
+    async ({ queryKey }) => {
+      const { module, scope, cid } = queryKey[0];
+
+      if (!cid) {
+        return Promise.reject(null);
+      }
+      const actor = await getNnsdaoActor(cid, true);
+      // can also get someone other than caller`s user info
+      const res = await actor.user_info();
+      console.log('user_info', res);
+      if ('Ok' in res) {
+        return res.Ok;
+      }
+      return null;
+    },
+    {}
+  );
 };
 
 export const useGetDaoInfo = (cid: string) => {
@@ -174,7 +177,52 @@ export const useGetDaoInfo = (cid: string) => {
     },
   });
 };
+
+export const useGetDaoData = (cid: string) => {
+  const queryClient = useQueryClient();
+  return useQuery(
+    nnsdaoKeys.daoData(cid),
+    async ({ queryKey }) => {
+      const { module, scope, cid } = queryKey[0];
+      const actor = await getNnsdaoActor(cid, false);
+      const res = await actor.dao_data();
+
+      if ('Ok' in res) {
+        return res.Ok;
+      }
+      return Promise.reject(null);
+    },
+    {
+      onSuccess(data) {
+        queryClient.setQueryData(nnsdaoKeys.daoInfo(data.info.canister_id), data.info);
+        queryClient.setQueryData(nnsdaoKeys.member_list(data.info.canister_id), data.member_list);
+        queryClient.setQueryData(nnsdaoKeys.owners(data.info.canister_id), data.owners);
+        queryClient.setQueryData(nnsdaoKeys.status(data.info.canister_id), data.status);
+      },
+    }
+  );
+};
 export const useGetDaoStatus = (cid: string) => {
+  // const queryClient = useQueryClient();
+  return useQuery(
+    nnsdaoKeys.status(cid),
+    async ({ queryKey }) => {
+      const { module, scope, cid } = queryKey[0];
+      const actor = await getNnsdaoActor(cid, false);
+      const res = await actor.dao_status();
+
+      if ('Ok' in res) {
+        return res.Ok[0];
+      }
+      return Promise.reject(null);
+    },
+    {
+      staleTime: Infinity,
+    }
+  );
+};
+
+export const useGetOwners = (cid: string) => {
   // const queryClient = useQueryClient();
   return useQuery(
     nnsdaoKeys.status(cid),

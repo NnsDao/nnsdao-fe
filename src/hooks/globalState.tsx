@@ -1,8 +1,8 @@
-import type { DaoInfo as TDaoInfo } from '@nnsdao/nnsdao-kit/src/nnsdao/types';
+import type { DaoData } from '@nnsdao/nnsdao-kit/nnsdao/types';
 import { createContext, useContext, useReducer } from 'react';
 
 const initialState = {
-  joinedDaoList: [] as TDaoInfo[],
+  totalDaoList: [] as DaoData[],
 };
 const StateContext = createContext(null as any);
 
@@ -12,7 +12,7 @@ const reducer = (state, action) => {
     case 'changeDaoList':
       return {
         ...state,
-        joinedDaoList: action.data,
+        totalDaoList: action.data,
       };
   }
 };
