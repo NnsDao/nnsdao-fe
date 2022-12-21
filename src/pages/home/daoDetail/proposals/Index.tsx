@@ -1,4 +1,20 @@
-import { Avatar, AvatarGroup, Box, Button, Chip, Divider, Pagination, Paper, Stack, Typography } from '@mui/material';
+import {
+  Avatar,
+  AvatarGroup,
+  Box,
+  Button,
+  Chip,
+  Pagination,
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material';
 import { Proposal } from '@nnsdao/nnsdao-kit/src/nnsdao/types';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -74,7 +90,7 @@ export default function Proposals() {
     );
 
     function List() {
-      const menu = ['TARGET', 'DUE DATE', 'MEMBERS', 'STATUS', ''];
+      const menu = ['TARGET', 'DUE DATE', 'MEMBERS', 'STATUS', 'VIEW'];
       const member = useMemberList(cid as string);
       let combinedList = list.slice(page * pageCount, pageCount);
       if (member.data) {
@@ -93,39 +109,43 @@ export default function Proposals() {
       }
 
       return (
-        <Paper sx={{ padding: '8px' }}>
-          <Stack direction={'row'} my={{ sm: 1 }} justifyContent="space-between">
-            {menu.map(text => {
-              return (
-                <Typography key={text} variant="subtitle1" color={'GrayText'}>
-                  {text}
-                </Typography>
-              );
-            })}
-          </Stack>
-          {combinedList.map(([id, item]) => (
-            <Stack key={Number(id)} spacing={0.5}>
-              <Divider sx={{ borderStyle: 'dotted' }}></Divider>
-              <Stack direction={'row'} justifyContent="space-between" alignItems="center">
-                <Typography variant="subtitle1">{item.title}</Typography>
-                {/* <Chip variant="filled" color="default" label={item.property['']}></Chip> */}
-                <Typography variant="subtitle2">
-                  {new Date(Number(item.end_time) / 1e6).toLocaleDateString()}
-                </Typography>
-                <AvatarGroup max={3}>
-                  {item.vote_data.map(info => {
-                    // @ts-ignore
-                    return <Avatar key={info?.principal?.toText()} src={info?.avatar}></Avatar>;
-                  })}
-                </AvatarGroup>
-                <Chip
-                  label={Object.keys(item.proposal_state)?.[0]}
-                  color={proposalStateToChipColor(item.proposal_state)}></Chip>
-                <Button onClick={() => navigate(`/dao/${cid}/Proposals/detail/${Number(id)}`)}>View</Button>
-              </Stack>
-            </Stack>
-          ))}
-        </Paper>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                {menu.map(item => {
+                  return <TableCell>{item}</TableCell>;
+                })}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {combinedList.map(([id, row]) => (
+                <TableRow key={row.title} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                  <TableCell component="th" scope="row" sx={{ flex: 0 }}>
+                    {row.title}
+                  </TableCell>
+                  <TableCell align="right"> {new Date(Number(row.end_time) / 1e6).toLocaleDateString()}</TableCell>
+                  <TableCell align="right">
+                    <AvatarGroup max={3} total={row.vote_data?.length}>
+                      {row.vote_data.map(info => {
+                        // @ts-ignore
+                        return <Avatar key={info?.principal?.toText()} src={info?.avatar}></Avatar>;
+                      })}
+                    </AvatarGroup>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Chip
+                      label={Object.keys(row.proposal_state)?.[0]}
+                      color={proposalStateToChipColor(row.proposal_state)}></Chip>{' '}
+                  </TableCell>
+                  <TableCell align="right">
+                    <Button onClick={() => navigate(`/dao/${cid}/Proposals/detail/${Number(id)}`)}>View</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       );
     }
   }
