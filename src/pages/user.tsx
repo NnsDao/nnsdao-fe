@@ -102,7 +102,7 @@ function UserCard() {
     },
     {
       text: 'Reputation',
-      value: nidInfo.data?.credit || '0',
+      value: Number(nidInfo.data?.credit || '0'),
     },
     // {
     //   text: 'Followers',

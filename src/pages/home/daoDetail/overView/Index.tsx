@@ -19,7 +19,7 @@ export default function OverView() {
   const navigate = useNavigate();
   const daoInfo = useGetDaoInfo(cid as string);
   // @ts-ignore
-  const option = arrToMap(daoInfo.data?.option || []);
+  const option: any = arrToMap(daoInfo.data?.option || []);
   const WrapDaoStatus = LoadingWrapper(DaoStatus, () => useGetDaoStatus(cid as string));
   return (
     <Stack spacing={{ lg: 4, sm: 2 }}>
@@ -37,21 +37,18 @@ export default function OverView() {
       <Introduction></Introduction>
       <Grid container alignItems="stretch" justifyContent={'space-between'} spacing={0} columnGap={{ xl: 1, sm: 3 }}>
         <Grid sm={12} lg={7}>
-          {
-            // @ts-ignore
-            option?.twitter ? (
-              <TwitterList link={option?.twitter}></TwitterList>
-            ) : (
-              <Paper sx={{ p: 2 }}>
-                <Stack spacing={2}>
-                  <Alert severity="warning">You don't bind your twitter social account — check it out!</Alert>
-                  <Button variant="text" onClick={() => navigate(`/dao/${cid}/Setting`)}>
-                    Go settings
-                  </Button>
-                </Stack>
-              </Paper>
-            )
-          }
+          {option?.twitter ? (
+            <TwitterList link={option?.twitter}></TwitterList>
+          ) : (
+            <Paper sx={{ p: 2 }}>
+              <Stack spacing={2}>
+                <Alert severity="warning">You don't bind your twitter social account — check it out!</Alert>
+                <Button variant="text" onClick={() => navigate(`/dao/${cid}/Setting`)}>
+                  Go settings
+                </Button>
+              </Stack>
+            </Paper>
+          )}
         </Grid>
         <Grid sm={12} lg={4}>
           <WrapDaoStatus></WrapDaoStatus>
@@ -65,8 +62,8 @@ export function DaoStatus(props) {
   const data: CanisterStatusResponse = props.data;
   const [, copy] = useCopyToClipboard();
   const { cid } = useParams();
-  const list = [
-    ['Status:', Object.keys(data.status)],
+  const list: Array<[string, string | number]> = [
+    ['Status:', Object.keys(data.status)?.[0]],
     ['Memory size:', Number(data.memory_size)],
     ['Freezing threshold:', Number(data.settings.freezing_threshold)],
     ['Memory allocation:', Number(data.settings.memory_allocation)],

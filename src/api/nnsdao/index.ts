@@ -212,7 +212,7 @@ export const useGetDaoStatus = (cid: string) => {
       const res = await actor.dao_status();
 
       if ('Ok' in res) {
-        return res.Ok[0];
+        return res.Ok;
       }
       return Promise.reject(null);
     },

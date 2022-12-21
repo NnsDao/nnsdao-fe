@@ -210,6 +210,7 @@ function AdminSettings() {
   const updateBasicDaoAction = useUpdateBaseDaoInfo();
   const { cid } = useParams();
   const daoStatus = useGetDaoStatus(cid as string);
+  // @ts-ignore
   let data: CanisterStatusResponse = daoStatus.data;
   const [controllerInput, setControllerInput] = React.useState('');
   function updateController() {
