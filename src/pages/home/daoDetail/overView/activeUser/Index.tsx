@@ -4,10 +4,13 @@ import { MemberItems } from '@nnsdao/nnsdao-kit/nnsdao/types';
 import EChartsReact from 'echarts-for-react';
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { useMemberList } from '../../../../../api/nnsdao';
+import { useGetUserInfo, useMemberList } from '../../../../../api/nnsdao';
 import LoadingWrapper from '../../../../../components/LoadingWrapper';
 
 function ActiveUser(props) {
+  const { cid } = useParams() as { cid: string };
+  // update last_visit_at
+  useGetUserInfo(cid);
   const list: MemberItems[] = props.data;
   const recent3days = () => {
     const duration = 36e5 * 24 * 3;

@@ -1,10 +1,9 @@
-import { useGetProposal, useMemberList, useVote } from '@/api/nnsdao';
+import { useCommentProposal, useGetProposal, useMemberList, useVote } from '@/api/nnsdao';
 import RichText from '@/components/RichText';
 import { getNDPActor } from '@/service';
 import { principalToAccountIdentifier } from '@dfinity/nns';
 import { Principal } from '@dfinity/principal';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-
 import {
   Alert,
   Avatar,
@@ -17,12 +16,13 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
+  TextareaAutosize,
   TextField,
   Typography,
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { Stack } from '@mui/system';
-import { Proposal } from '@nnsdao/nnsdao-kit/nnsdao/types';
+import { Comment, Proposal } from '@nnsdao/nnsdao-kit/nnsdao/types';
 import React from 'react';
 import { toast } from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -43,7 +43,9 @@ function ProposalDetail({ data }) {
   const [open, setOpen] = React.useState(false);
   const [voteType, setVoteType] = React.useState('');
   const pendingRef = React.useRef(false);
-
+  // const commentRef = React.useRef('');
+  const [commentText, setCommentText] = React.useState('');
+  const commentAction = useCommentProposal();
   const [userStore, dispatch] = useUserStore();
   const isLogin = userStore.isLogin;
 
@@ -51,6 +53,31 @@ function ProposalDetail({ data }) {
     setVoteType(string);
     setOpen(true);
   };
+  async function comment() {
+    if (!commentText) {
+      return toast.error('Please enter valid characters');
+    }
+    const toastID = toast.loading('Updating...');
+    commentAction.mutate(
+      {
+        id,
+        cid,
+        content: commentText,
+        like: Proposal.comment.l,
+        principal: Principal.fromText(userStore.principalId),
+        update_at: BigInt(0),
+      },
+      {
+        onSuccess() {
+          setCommentText('');
+          toast.success('Comment Successfully !', { id: toastID });
+        },
+        onError() {
+          toast.error('Comment Failed !', { id: toastID });
+        },
+      }
+    );
+  }
 
   const handleClose = () => {
     if (pendingRef.current) {
@@ -58,10 +85,6 @@ function ProposalDetail({ data }) {
       return;
     }
     setOpen(false);
-  };
-
-  const goLogin = () => {
-    navigate('/login', { replace: true });
   };
 
   const goBack = () => {
@@ -130,6 +153,21 @@ function ProposalDetail({ data }) {
             </Stack>
             <VoteDataList></VoteDataList>
           </Stack>
+          <Stack marginTop={2} bgcolor={'#fff'} spacing={2} p={1}>
+            <TextareaAutosize
+              value={commentText}
+              onChange={e => setCommentText(e.currentTarget.value)}
+              placeholder="Input your idea"
+              style={{ minHeight: '66px', border: '1px solid #0000001f' }}
+            />
+            <Button variant="contained" onClick={comment}>
+              Comment
+            </Button>
+            <Box mt={'32px'}></Box>
+            {Proposal.comment.map(item => {
+              return <CommentRow key={item.content} data={item} />;
+            })}
+          </Stack>
         </Grid>
         <Grid sm={4}>
           <Stack spacing={2}>
@@ -138,9 +176,47 @@ function ProposalDetail({ data }) {
           </Stack>
         </Grid>
       </Grid>
+
       <VoteDialog></VoteDialog>
     </React.Fragment>
   );
+
+  function CommentRow(props) {
+    const item: Comment = props.data;
+    const selector = React.useCallback(data => {
+      for (const el of data) {
+        if (el.principal.toText() === item.principal.toText()) {
+          return el;
+        }
+      }
+    }, []);
+
+    const member = useMemberList(cid, selector);
+    const info: any = member?.data;
+
+    return (
+      <Stack key={item.content} direction="row" spacing={2}>
+        <Avatar src={info?.avatar}></Avatar>
+        <Stack spacing={1} width="100%">
+          <Typography variant="body2">{item.content}</Typography>
+          <Stack direction={'row'} justifyContent={'space-between'} alignItems="center">
+            <Typography variant="body2" color={'darkgray'}>
+              ID:{info?.nickname}
+            </Typography>
+
+            {/* <Stack alignItems={'center'} direction="row" justifyContent={'center'} spacing={1}>
+              <Typography marginTop={'4px'} variant="caption">
+                {item.like?.length}
+              </Typography>
+              <IconButton onClick={comment}> 
+                <ThumbUpIcon></ThumbUpIcon>
+              </IconButton>
+            </Stack> */}
+          </Stack>
+        </Stack>
+      </Stack>
+    );
+  }
 
   function VoteDialog() {
     // const [NDP, setNDP] = React.useState(0);

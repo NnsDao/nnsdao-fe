@@ -114,7 +114,7 @@ export default function Proposals() {
             <TableHead>
               <TableRow>
                 {menu.map(item => {
-                  return <TableCell>{item}</TableCell>;
+                  return <TableCell key={item}>{item}</TableCell>;
                 })}
               </TableRow>
             </TableHead>

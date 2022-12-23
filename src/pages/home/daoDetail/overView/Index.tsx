@@ -18,6 +18,7 @@ export default function OverView() {
   const { cid } = useParams();
   const navigate = useNavigate();
   const daoInfo = useGetDaoInfo(cid as string);
+
   // @ts-ignore
   const option: any = arrToMap(daoInfo.data?.option || []);
   const WrapDaoStatus = LoadingWrapper(DaoStatus, () => useGetDaoStatus(cid as string));

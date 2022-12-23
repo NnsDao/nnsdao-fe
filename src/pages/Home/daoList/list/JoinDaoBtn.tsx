@@ -1,6 +1,8 @@
 import { Button } from '@mui/material';
+import { useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { useJoin, useMemberList, useQuit } from '../../../../api/nnsdao';
+import { useGetDaoData, useJoin, useMemberList, useQuit } from '../../../../api/nnsdao';
+import { useGlobalState } from '../../../../hooks/globalState';
 import { useUserStore } from '../../../../hooks/userStore';
 
 type JoinBtnProps = {
@@ -13,7 +15,18 @@ export function JoinDaoBtn(props: JoinBtnProps) {
   const daoMember = useMemberList(cid);
   const joinMutation = useJoin();
   const quitAction = useQuit();
+  const [globalState, dispatchAction] = useGlobalState();
+  const daoData = useGetDaoData(cid);
+  useEffect(() => {
+    if (!!daoMember.data && !!daoData.data) {
+      let list = globalState.totalDaoList?.filter(item => item.info?.canister_id !== cid);
 
+      dispatchAction({
+        type: 'changeDaoList',
+        data: list.concat({ ...daoData.data, member_list: daoMember.data }),
+      });
+    }
+  }, [daoMember.data, daoData.data]);
   function joinDao(e) {
     e.stopPropagation();
     e.preventDefault();

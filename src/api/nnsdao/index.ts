@@ -1,5 +1,5 @@
-import { Principal } from '@dfinity/principal';
 import type {
+  Comment,
   DaoInfo,
   JoinDaoParams,
   MemberItems,
@@ -11,7 +11,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import { useUserStore } from '../../hooks/userStore';
 import { getNnsdaoActor } from '../../service';
-import { daoManagerKeys } from '../dao_manager/queries';
 import { nnsdaoKeys } from './queries';
 
 export const get_proposal = async ({ queryKey }) => {
@@ -48,7 +47,7 @@ export const member_list = async ({ queryKey }) => {
 };
 
 export const quit = async (cid: string) => {
-  const actor = await getNnsdaoActor(cid, false);
+  const actor = await getNnsdaoActor(cid, true);
   const res = await actor.quit();
   console.log('quit', res);
   if ('Ok' in res) {
@@ -162,19 +161,19 @@ export const useGetUserInfo = (cid: string) => {
 export const useGetDaoInfo = (cid: string) => {
   const queryClient = useQueryClient();
   return useQuery(nnsdaoKeys.daoInfo(cid), getDaoInfo, {
-    onSuccess(data) {
-      queryClient.setQueryData(daoManagerKeys.lists(), preList =>
-        // @ts-ignore
-        (preList || []).map(item => {
-          const canisterId = item.canister_id == 'string' ? item.canister_id : item.canister_id.toText();
-
-          if (canisterId == data.canister_id) {
-            return { ...item, ...data, canister_id: Principal.fromText(canisterId) };
-          }
-          return item;
-        })
-      );
-    },
+    // onSuccess(data) {
+    //   queryClient.setQueryData(daoManagerKeys.lists(), preList =>
+    //     // @ts-ignore
+    //     (preList || []).map(item => {
+    //       debugger;
+    //       const canisterId = item.canister_id == 'string' ? item.canister_id : item.canister_id.toText();
+    //       if (canisterId == data.canister_id) {
+    //         return { ...item, ...data, canister_id: Principal.fromText(canisterId) };
+    //       }
+    //       return item;
+    //     })
+    //   );
+    // },
   });
 };
 
@@ -242,6 +241,27 @@ export const useGetOwners = (cid: string) => {
   );
 };
 
+export const useCommentProposal = () => {
+  const queryClient = useQueryClient();
+  return useMutation(
+    async (params: Comment & { id: string; cid: string }) => {
+      const actor = await getNnsdaoActor(params.cid, true);
+      // @ts-ignore
+      const res = await actor.comment_proposal(BigInt(params.id - 0), params);
+      if ('Ok' in res) {
+        return res.Ok;
+      }
+      return Promise.reject(res.Err);
+    },
+    {
+      onSuccess(data, variables) {
+        const { cid, id } = variables;
+        const queryKey = nnsdaoKeys.proposal(cid, Number(id) + '');
+        queryClient.setQueryData(queryKey, data);
+      },
+    }
+  );
+};
 export const useVote = () => {
   const queryClient = useQueryClient();
   return useMutation(

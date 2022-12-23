@@ -13,6 +13,6 @@ export const nnsdaoKeys = {
   member_lists: () => composeQueryKeys(nnsdaoKeys.all, { scope: 'member_lists' }),
   member_list: (cid: string) => composeQueryKeys(nnsdaoKeys.member_lists(), { cid }),
   proposal_lists: (cid: string) => composeQueryKeys(nnsdaoKeys.all, { scope: 'proposal_lists', cid }),
-  proposal: (cid: string, id: string) => composeQueryKeys(nnsdaoKeys.all, { scope: 'proposal_lists', cid, id }),
+  proposal: (cid: string, id: string) => composeQueryKeys(nnsdaoKeys.all, { scope: 'proposal', cid, id }),
   owners: (cid: string) => composeQueryKeys(nnsdaoKeys.all, { scope: 'owners', cid }),
 };

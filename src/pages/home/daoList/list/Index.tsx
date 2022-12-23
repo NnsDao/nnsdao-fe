@@ -1,6 +1,5 @@
 import { Avatar, AvatarGroup, Box, Chip, Paper, Stack, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGetDaoData } from '../../../../api/nnsdao';
 import { useGlobalState } from '../../../../hooks/globalState';
@@ -63,17 +62,17 @@ type CardT = {
 const Card = (props: CardT) => {
   const { cid } = props;
   const daoData = useGetDaoData(cid);
-  const [globalState, dispatchAction] = useGlobalState();
+  // const [globalState, dispatchAction] = useGlobalState();
 
-  useEffect(() => {
-    if (daoData.data) {
-      let list = globalState.totalDaoList?.filter(item => item.info?.canister_id !== cid);
-      dispatchAction({
-        type: 'changeDaoList',
-        data: list.concat(daoData.data),
-      });
-    }
-  }, [daoData.data]);
+  // useEffect(() => {
+  //   if (daoData.data) {
+  //     let list = globalState.totalDaoList?.filter(item => item.info?.canister_id !== cid);
+  //     dispatchAction({
+  //       type: 'changeDaoList',
+  //       data: list.concat(daoData.data),
+  //     });
+  //   }
+  // }, [daoData.data]);
 
   const info = daoData?.data?.info;
   const daoStatus = daoData?.data?.status;
