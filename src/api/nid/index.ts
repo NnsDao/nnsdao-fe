@@ -1,3 +1,4 @@
+import { BasicUserInfo } from '@nnsdao/nnsdao-kit/src/nid/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getNIDActor } from '../../service';
 import { NIDKeys } from './queries';
@@ -39,3 +40,24 @@ export function useNidLogin() {
     return Promise.reject(res.Err);
   });
 }
+
+export const useUpdateNID = () => {
+  const queryClient = useQueryClient();
+  return useMutation(
+    async (params: BasicUserInfo) => {
+      const actor = await getNIDActor(true);
+      const res = await actor.update_user_info(params);
+      if ('Ok' in res) {
+        return res.Ok;
+      }
+      return Promise.reject(res.Err);
+    },
+    {
+      onSuccess(data, variables) {
+        // const { cid } = variables;
+        const queryKey = NIDKeys.userInfo();
+        queryClient.setQueriesData(queryKey, data);
+      },
+    }
+  );
+};

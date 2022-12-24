@@ -1,16 +1,20 @@
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import TwitterIcon from '@mui/icons-material/Twitter';
 import VerifiedIcon from '@mui/icons-material/Verified';
-import { Avatar, Button, Card, Divider, Paper, Tab, Tabs, Typography } from '@mui/material';
+import { Alert, Button, Card, Divider, Paper, Tab, Tabs, TextField, Typography } from '@mui/material';
 import { Box, Stack } from '@mui/system';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import React from 'react';
+import React, { useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useEffectOnce, useToggle } from 'usehooks-ts';
 import { useTotalDaoLists } from '../api/dao_manager';
-import { useNidInfo } from '../api/nid';
+import { useNidInfo, useUpdateNID } from '../api/nid';
+import { arrToMap } from '../common/helper';
 import LoadingWrapper from '../components/LoadingWrapper';
 import LoginDialog from '../components/LoginDialog';
+import Upload from '../components/Upload';
 import { useGlobalState } from '../hooks/globalState';
 import { useUserStore } from '../hooks/userStore';
 import List from './home/daoList/list/Index';
@@ -20,6 +24,8 @@ function User() {
   const [selectedMenu, setSelectedMenu] = React.useState(0);
   const [userStore] = useUserStore();
   const nidInfo = useNidInfo();
+  const social: any = arrToMap(nidInfo?.data?.social || []);
+
   const [open, toggleLogin] = useToggle();
   const DaoList = LoadingWrapper(List, useTotalDaoLists);
   function handleChange(e, val) {
@@ -53,7 +59,7 @@ function User() {
         </Tabs>
         <Divider></Divider>
         <TabPanel selectedIndex={selectedMenu} index={0}>
-          <TwitterList link={'https://twitter.com/heyibinance'}></TwitterList>
+          {social.twitter ? <TwitterList link={social.twitter}></TwitterList> : <Alert>Bind your twitter first!</Alert>}
         </TabPanel>
         <TabPanel selectedIndex={selectedMenu} index={1}>
           <DaoList ownerID={userStore.principalId}></DaoList>
@@ -94,7 +100,45 @@ export function TwitterList({ link }) {
 function UserCard() {
   const nidInfo = useNidInfo();
   const navigate = useNavigate();
+  const nidUpdateAction = useUpdateNID();
   const [globalStore] = useGlobalState();
+  useEffect(() => {
+    if (nidInfo.data) {
+      const social: any = arrToMap(nidInfo?.data?.social || []);
+
+      setFormField({
+        type: 'reset',
+        value: {
+          avatar: nidInfo.data.avatar,
+          twitter: social?.twitter || '',
+        },
+      });
+    }
+  }, [nidInfo.data]);
+  const [form, setFormField] = React.useReducer(formReducer, {
+    avatar: '',
+    twitter: '',
+  });
+  async function updateNID() {
+    console.log('form', form);
+    const id = toast.loading('Updating...');
+    const params: any = {
+      nickname: nidInfo.data?.nickname || '',
+      social: [nidInfo.data?.social.filter(([key, val]) => key !== 'twitter').concat(['twitter', form.twitter])] || [],
+      intro: '',
+      avatar: form['avatar'],
+    };
+    console.log('params', params);
+
+    nidUpdateAction.mutate(params, {
+      onSuccess(data, variables, context) {
+        toast.success('Update Successfullly !', { id });
+      },
+      onError() {
+        toast.error('Failed !', { id });
+      },
+    });
+  }
   const cardList = [
     {
       text: ' Joined Daos',
@@ -109,11 +153,13 @@ function UserCard() {
     //   value: 1,
     // },
   ];
-
   return (
     <Paper sx={{ padding: 3, marginTop: 3 }}>
       <Stack direction={'row'} alignItems="center">
-        <Avatar variant="rounded" src={nidInfo?.data?.avatar ?? ''} sx={{ width: '160px', height: '160px' }}></Avatar>
+        <Upload
+          src={form['avatar']}
+          setSrc={val => setFormField({ type: 'update', key: 'avatar', value: val })}></Upload>
+        {/* <Avatar variant="rounded" src={nidInfo?.data?.avatar ?? ''} sx={{ width: '160px', height: '160px' }}></Avatar> */}
         <Box pl={3} flex={1}>
           <Stack direction={'row'} alignItems="center" justifyContent={'space-between'}>
             <Stack spacing={0.5}>
@@ -132,11 +178,28 @@ function UserCard() {
                     last seen: {dayjs(Number(nidInfo?.data?.last_login_at ?? 0) / 1e6).fromNow()}
                   </Typography>
                 </Stack>
+                <Stack direction={'row'} alignItems="center" spacing={0.5}>
+                  <TwitterIcon fontSize="small"></TwitterIcon>
+                  {/* <Typography variant="body2" color={'GrayText'}>
+                    {social?.twitter || ''}
+                  </Typography> */}
+
+                  <TextField
+                    placeholder="https://twitter.com/xxx"
+                    value={form['twitter']}
+                    onChange={e => setFormField({ type: 'update', key: 'twitter', value: e.target.value })}
+                    variant="standard"></TextField>
+                </Stack>
               </Stack>
             </Stack>
-            <Button variant="outlined" onClick={() => navigate('/createDao')}>
-              Create Dao
-            </Button>
+            <Stack spacing={2}>
+              <Button variant="outlined" onClick={() => navigate('/createDao')}>
+                Create Dao
+              </Button>
+              <Button variant="contained" onClick={updateNID}>
+                Update NID
+              </Button>
+            </Stack>
           </Stack>
           <Stack direction={'row'} alignItems="scenter" spacing={2} pt={1}>
             {cardList.map(item => {
@@ -156,4 +219,16 @@ function UserCard() {
       </Stack>
     </Paper>
   );
+}
+
+function formReducer(state, action) {
+  if (action.type == 'update') {
+    return {
+      ...state,
+      [action.key]: action.value,
+    };
+  }
+  if (action.type == 'reset') {
+    return { ...action.value };
+  }
 }

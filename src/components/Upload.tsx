@@ -44,14 +44,14 @@ function Upload(props) {
   }
 
   return (
-    <IconButton disableRipple color="primary" size="large" component="label" sx={{ width: '88px', height: '88px' }}>
+    <IconButton disableRipple color="primary" size="large" component="label" sx={{ width: '108px', height: '108px' }}>
       {src ? (
-        <Avatar src={src} sizes="large" sx={{ width: '88px', height: '88px' }}></Avatar>
+        <Avatar src={src} sizes="large" sx={{ width: '108px', height: '108px' }}></Avatar>
       ) : isUploading ? (
         <UploadingProgress></UploadingProgress>
       ) : (
-        <Avatar sx={{ width: '88px', height: '88px' }}>
-          <CloudUploadOutlined sx={{ width: '32px', height: '32px' }}></CloudUploadOutlined>
+        <Avatar sx={{ width: '108px', height: '108px' }}>
+          <CloudUploadOutlined sx={{ width: '48px', height: '48px' }}></CloudUploadOutlined>
         </Avatar>
       )}
       <input
