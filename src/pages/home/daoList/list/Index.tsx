@@ -78,7 +78,7 @@ const Card = (props: CardT) => {
   const daoStatus = daoData?.data?.status;
   const daoMember = daoData.data?.member_list;
   // @ts-ignore
-  const chipState: string = Object.keys(daoStatus?.status || {})?.[0];
+  const chipState: string = daoData.isError ? 'Stopped' : Object.keys(daoStatus?.status || {})?.[0];
   const navigate = useNavigate();
 
   return (
