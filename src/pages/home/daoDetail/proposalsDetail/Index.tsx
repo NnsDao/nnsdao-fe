@@ -63,7 +63,7 @@ function ProposalDetail({ data }) {
         id,
         cid,
         content: commentText,
-        like: Proposal.comment.l,
+        like: [],
         principal: Principal.fromText(userStore.principalId),
         update_at: BigInt(0),
       },

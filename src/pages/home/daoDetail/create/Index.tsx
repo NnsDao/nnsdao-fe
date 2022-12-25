@@ -251,7 +251,6 @@ export default function CreateDao() {
         // create
         toast.loading('Initialize Canister...', { id: toastID });
         const data = await createAction.mutateAsync({
-          tags: tag,
           memo: payInfo.memo,
           block_height: BigInt(blockHeight),
         });
@@ -259,20 +258,20 @@ export default function CreateDao() {
         console.log('createAction onSuccess', data);
         await updateAction.mutateAsync({
           ...params,
-          cid: data.canister_id.toText(),
-          canister_id: data.canister_id.toText(),
+          canister_id: data,
+          created_at: BigInt(0),
         });
         // auto join current dao
 
         await joinAction.mutateAsync({
-          cid: data.canister_id.toText(),
+          cid: data,
           nickname: userStore.nickname,
           social: [],
           intro: userStore.intro,
           avatar: userStore.avatar,
         });
         setTimeout(() => {
-          navigator(`/dao/${data.canister_id.toText()}`);
+          navigator(`/dao/${data}`);
         }, 0);
       } catch (error) {
         console.error('err', error);
