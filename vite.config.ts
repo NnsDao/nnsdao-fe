@@ -27,6 +27,7 @@ export default defineConfig(({ command, mode }) => {
     ],
     resolve: {
       alias: {
+        // './runtimeConfig': './runtimeConfig.browser',
         // Here we tell Vite the "fake" modules that we want to define
         '@': path.resolve(__dirname, './src'),
         '@common': path.resolve(__dirname, './src/common'),
@@ -58,11 +59,13 @@ export default defineConfig(({ command, mode }) => {
       fs: {
         strict: false,
       },
+      port: 3000,
       // proxy: {
-      //   '/api/v2': {
-      //     target: 'https://ic0.app',
+      //   '/public/file': 'http://localhost:3003',
+      //   '/public/': {
+      //     target: 'http://localhost:3003',
       //     changeOrigin: true,
-      //     rewrite: path => path.replace(/^api\//, '/api/v2/canister'),
+      //     // rewrite: path => path.replace(/^api\//, '/api/v2/canister'),
       //   },
       // },
     },

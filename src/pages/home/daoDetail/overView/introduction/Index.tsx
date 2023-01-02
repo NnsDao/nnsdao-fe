@@ -19,7 +19,7 @@ function Introduction(props) {
   const proposalList = useGetProposalList(cid);
 
   const info: DaoInfo = props.data;
-  const option =
+  const option: any =
     // @ts-ignore
     info.option?.reduce((acc, [key, val]) => {
       acc[key] = val;

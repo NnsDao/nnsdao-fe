@@ -92,7 +92,7 @@ function ProposalDetail({ data }) {
   };
 
   const MemberInfo = ({ principalID }) => {
-    const user = useMemberList(
+    const user: any = useMemberList(
       cid,
       React.useCallback(data => {
         return data.filter(item => item?.principal?.toText() === principalID);

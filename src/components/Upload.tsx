@@ -1,4 +1,3 @@
-import fleekStorage from '@fleekhq/fleek-storage-js';
 import { CloudUploadOutlined } from '@mui/icons-material';
 import { Avatar, CircularProgress, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
@@ -19,26 +18,33 @@ function Upload(props) {
   const uploaderRef = React.useRef<any>();
   const [progress, setProgress] = React.useState(0);
   const [isUploading, toggleIsUploading] = useToggle(false);
+  // useEffect(() => {
+  //   fetch('https://napi.icmarket.ooo/public/file/upload', { method: 'post' })
+  //     .then(res => res.json())
+  //     .then(res => {
+  //       console.log('res', res);
+  //     });
+  // }, []);
   async function uploadFile() {
     setSrc('');
     toggleIsUploading();
-    const file = uploaderRef.current.files[0];
-    const buffer = await readFileContents(file);
-
-    const uploadedFile = await fleekStorage.upload({
-      apiKey: 'tY/tQQtffm+CEqHFHmQXqQ==',
-      apiSecret: 'fgjadsHiuaBA5kT1QSlVIcemrp97XZWW9sEBL6YS3+E=',
-      key: (Date.now() * Math.random() * 1e6).toString(16),
-      // @ts-ignore
-      ContentType: file.type,
-      data: buffer,
-      httpUploadProgressCallback: event => {
-        setProgress(Math.round((event.loaded / event.total) * 100));
-      },
+    const form = new FormData();
+    [...uploaderRef.current.files].map(file => {
+      form.append('file', file);
     });
-    //
-    setSrc(`${uploadedFile.publicUrl}?hash=${uploadedFile.hash}`);
-    console.log('file url', uploadedFile);
+    // const file = uploaderRef.current.files[0];
+    // const buffer: any = await readFileContents(file);
+    let uploadedFile = await fetch('https://napi.icmarket.ooo/public/file/upload', {
+      body: form,
+      method: 'POST',
+    });
+    uploadedFile = await uploadedFile.json();
+    // @ts-ignore
+    const fileURL = uploadedFile.data?.data?.[0];
+
+    // @ts-ignore
+    console.log('file url', uploadedFile, fileURL);
+    setSrc(fileURL);
     toggleIsUploading();
     setProgress(0);
   }
@@ -56,6 +62,7 @@ function Upload(props) {
       )}
       <input
         type="file"
+        multiple
         name="uploader"
         ref={uploaderRef}
         id="uploader"
