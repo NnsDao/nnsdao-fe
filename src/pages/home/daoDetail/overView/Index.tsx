@@ -3,7 +3,6 @@ import { Alert, Button, Card, IconButton, Paper, Typography } from '@mui/materia
 import Grid from '@mui/material/Unstable_Grid2';
 import { Stack } from '@mui/system';
 import { CanisterStatusResponse } from '@nnsdao/nnsdao-kit/nnsdao/types';
-import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCopyToClipboard } from 'usehooks-ts';
 import { useGetDaoInfo, useGetDaoStatus } from '../../../../api/nnsdao';
@@ -71,9 +70,10 @@ export function DaoStatus(props) {
     ['Compute allocation:', Number(data.settings.compute_allocation)],
   ];
   async function addCycle() {
-    toast('Under Development!', {
-      icon: '🛠 ',
-    });
+    // toast('Under Development!', {
+    //   icon: '🛠 ',
+    // });
+    window.open('https://nns.ic0.app/canisters/?u=qoctq-giaaa-aaaaa-aaaea-cai', '_blank');
   }
   return (
     <Card sx={{ py: 1, px: 1.5 }}>
