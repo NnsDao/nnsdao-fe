@@ -24,6 +24,7 @@ function LoginDialog({ open, toggleOpen }) {
   const nidLoginAction = useNidLogin();
   const navigate = useNavigate();
   async function loginWith(type: string) {
+    // user have been already log in
     if (userInfo.loginType == 'stoic' && type == 'stoic') return;
     if (userInfo.loginType == 'plug' && type == 'plug') return;
 
@@ -97,6 +98,38 @@ function LoginDialog({ open, toggleOpen }) {
               </ListItemIcon>
               <ListItemText>Stoic Identity</ListItemText>
               {userInfo.loginType == 'stoic' && userInfo.isLogin && <CheckCircleIcon color="primary"></CheckCircleIcon>}
+            </ListItemButton>
+          </ListItem>
+          <ListItem>
+            <ListItemButton onClick={() => loginWith('metamask')}>
+              <ListItemIcon>
+                <div
+                  style={{
+                    marginLeft: 8,
+                    width: 48,
+                    height: 48,
+                    background: 'url("/metamask.svg") center/contain no-repeat',
+                  }}></div>
+              </ListItemIcon>
+              <ListItemText>&ensp;MetaMask Wallet</ListItemText>
+              {userInfo.loginType == 'metamask' && userInfo.isLogin && (
+                <CheckCircleIcon color="primary"></CheckCircleIcon>
+              )}
+            </ListItemButton>
+          </ListItem>
+          <ListItem>
+            <ListItemButton onClick={() => loginWith('petra')}>
+              <ListItemIcon>
+                <div
+                  style={{
+                    marginLeft: 8,
+                    width: 48,
+                    height: 48,
+                    background: 'url("/petra.png") center/contain no-repeat',
+                  }}></div>
+              </ListItemIcon>
+              <ListItemText>&ensp;Petra Wallet</ListItemText>
+              {userInfo.loginType == 'petra' && userInfo.isLogin && <CheckCircleIcon color="primary"></CheckCircleIcon>}
             </ListItemButton>
           </ListItem>
         </List>

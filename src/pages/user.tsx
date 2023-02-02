@@ -193,10 +193,10 @@ function UserCard() {
               </Stack>
             </Stack>
             <Stack spacing={2}>
-              <Button variant="outlined" onClick={() => navigate('/createDao')}>
-                Create Dao
+              <Button variant="contained" onClick={() => navigate('/createDao')}>
+                Bind Wallet
               </Button>
-              <Button variant="contained" onClick={updateNID}>
+              <Button variant="outlined" onClick={updateNID}>
                 Update NID
               </Button>
             </Stack>
