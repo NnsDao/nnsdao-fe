@@ -6,6 +6,6 @@
     "source.organizeImports": true
   },
   "typescript.tsdk": "node_modules/typescript/lib",
-  "cSpell.words": ["Autosize", "daos", "NICP"],
+  "cSpell.words": ["aptos", "Autosize", "daos", "NICP"],
   "markdown.extension.preview.autoShowPreviewToSide": true
 }

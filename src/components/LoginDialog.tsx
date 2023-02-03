@@ -100,7 +100,7 @@ function LoginDialog({ open, toggleOpen }) {
               {userInfo.loginType == 'stoic' && userInfo.isLogin && <CheckCircleIcon color="primary"></CheckCircleIcon>}
             </ListItemButton>
           </ListItem>
-          <ListItem>
+          {/* <ListItem>
             <ListItemButton onClick={() => loginWith('metamask')}>
               <ListItemIcon>
                 <div
@@ -131,7 +131,7 @@ function LoginDialog({ open, toggleOpen }) {
               <ListItemText>&ensp;Petra Wallet</ListItemText>
               {userInfo.loginType == 'petra' && userInfo.isLogin && <CheckCircleIcon color="primary"></CheckCircleIcon>}
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
         </List>
         {userInfo.isLogin ? (
           <>

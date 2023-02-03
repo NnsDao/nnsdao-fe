@@ -119,6 +119,11 @@ function UserCard() {
     avatar: '',
     twitter: '',
   });
+  async function bindWallet() {
+    // select wallet
+    // click && login using selected wallet
+    // store address to NID
+  }
   async function updateNID() {
     console.log('form', form);
     const id = toast.loading('Updating...');
@@ -193,7 +198,7 @@ function UserCard() {
               </Stack>
             </Stack>
             <Stack spacing={2}>
-              <Button variant="contained" onClick={() => navigate('/createDao')}>
+              <Button variant="contained" onClick={bindWallet}>
                 Bind Wallet
               </Button>
               <Button variant="outlined" onClick={updateNID}>

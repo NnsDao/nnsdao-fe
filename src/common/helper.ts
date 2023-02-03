@@ -4,6 +4,7 @@ import { Principal } from '@dfinity/principal';
 import { plugLogin, stoicLogin } from '@nnsdao/nnsdao-kit';
 import storage from '@nnsdao/nnsdao-kit/helper/storage';
 import type { Proposal } from '@nnsdao/nnsdao-kit/nnsdao/types';
+import toast from 'react-hot-toast';
 import { getTotalDaoList } from '../api/dao_manager';
 import { collectUsedCanisterId } from '../service/canister.config';
 
@@ -40,6 +41,33 @@ export async function login(loginType: string) {
   // @ts-ignore
   storage.set('userInfo', loginInfo);
   return loginInfo;
+}
+export async function connectWallet(walletType: string) {
+  if (walletType == 'plug') {
+    const res = await plugLogin([]);
+    return res?.principalId;
+  }
+  if (walletType == 'stoic') {
+    const res = await stoicLogin();
+    return res?.principalId;
+  }
+
+  if (walletType == 'metamask') {
+    if (!globalThis?.ethereum?.isMetaMask) {
+      toast.error('Please install MetaMask Wallet first!');
+    }
+    const accounts = await globalThis?.ethereum.request({ method: 'eth_requestAccounts' });
+    const account = accounts[0];
+    return account;
+  }
+  if (walletType == 'petra') {
+    if (!('aptos' in globalThis)) {
+      return toast.error('Please install Petra Aptos Wallet first!');
+    }
+    const res = await globalThis?.aptos?.connect();
+    // console.log(response); // { address: string, address: string }
+    return res.address;
+  }
 }
 
 export function proposalStateToChipColor(item: Proposal['proposal_state']) {
