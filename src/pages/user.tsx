@@ -331,11 +331,11 @@ function Ether() {
   }
 }
 
-function EtherWalletBalance({ wallet }: { wallet: any[] }) {
+function EtherWalletBalance({ wallet }: { wallet: any }) {
   const [walletBalance, setBalance] = useState([]);
   useEffect(() => {
     getTotalBalance(wallet).then(res => setBalance(res));
-  }, wallet);
+  }, wallet || []);
 
   if (!wallet?.length) {
     return <Typography>Please bind your ETH wallet first!</Typography>;
