@@ -61,3 +61,41 @@ export const useUpdateNID = () => {
     }
   );
 };
+export const useGetBoundWallet = () => {
+  // const queryClient = useQueryClient();
+
+  return useQuery(
+    NIDKeys.boundWallet(),
+    async () => {
+      const actor = await getNIDActor(true);
+      const res = await actor.get_bind_wallet();
+      console.log('bound wallet', res);
+
+      return res;
+    },
+    {
+      staleTime: Infinity,
+    }
+  );
+};
+export const useBindWallet = () => {
+  const queryClient = useQueryClient();
+  return useMutation(
+    async (params: [string, string, string]) => {
+      const actor = await getNIDActor(true);
+      const res = await actor.bind_wallet(params);
+      if ('Ok' in res) {
+        return res.Ok;
+      }
+      return Promise.reject(res.Err);
+    },
+    {
+      onSuccess(data, variables) {
+        const queryKey = NIDKeys.boundWallet();
+        queryClient.invalidateQueries(queryKey);
+        // reset etherdata
+        queryClient.invalidateQueries(['etherdata']);
+      },
+    }
+  );
+};

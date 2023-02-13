@@ -1,4 +1,5 @@
 export const isDev = import.meta.env.DEV;
+import Web3 from 'web3';
 
 import { Principal } from '@dfinity/principal';
 import { plugLogin, stoicLogin } from '@nnsdao/nnsdao-kit';
@@ -105,4 +106,29 @@ export function arrToMap(arr: Array<[string, string]>) {
     acc[key] = val;
     return acc;
   }, {});
+}
+
+export function getETHBalance(address: string) {
+  // Initialize a Web3 instance
+  const web3 = new Web3(Web3.givenProvider);
+  return web3.eth
+    .getBalance(address)
+    .then(balance => {
+      console.log(`Balance: ${web3.utils.fromWei(balance, 'ether')} ETH`);
+      return balance;
+    })
+    .catch(error => {
+      console.error(error);
+      return null;
+    });
+}
+
+export async function getTotalBalance(wallet: string[]) {
+  console.log('address,wallet', wallet);
+
+  let res: any = wallet.map(str => getETHBalance(str));
+  res = await Promise.all(res);
+  console.log('total balance', res);
+
+  return res;
 }

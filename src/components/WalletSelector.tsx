@@ -10,25 +10,23 @@ import {
   ListItemText,
 } from '@mui/material';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
-import { useNidLogin } from '../api/nid';
+import { useBindWallet, useNidInfo } from '../api/nid';
 import { connectWallet } from '../common/helper';
 
-export default function LoginDialog({ open, toggleOpen }) {
-  const nidLoginAction = useNidLogin();
-  const navigate = useNavigate();
+export default function WalletSelector({ open, toggleOpen }) {
+  const bindAction = useBindWallet();
+  const nidInfo = useNidInfo();
+
   async function bindWith(type: string) {
     let toastId = toast.loading('authorizing...');
     let res = await connectWallet(type);
-    nidLoginAction.mutate(type, {
+    console.log('address', res);
+
+    // @ts-ignore
+    bindAction.mutate([nidInfo?.data?.nid, type, res], {
       onSuccess(data, variables, context) {
-        dispatch({
-          type: 'login',
-          data: { ...res, ...data },
-        });
         toggleOpen();
-        toast.success('login success!', { id: toastId });
-        navigate('/');
+        toast.success('Bound success!', { id: toastId });
       },
     });
   }
@@ -36,9 +34,9 @@ export default function LoginDialog({ open, toggleOpen }) {
   return (
     <Dialog maxWidth="lg" onClose={toggleOpen} open={open}>
       <DialogTitle textAlign="center">
-        Select Identity
+        Select Wallet
         <IconButton
-          onClick={toggleOpen}
+          onClick={() => toggleOpen() && toast.dismiss()}
           sx={{
             position: 'absolute',
             right: 8,
