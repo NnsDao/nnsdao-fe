@@ -21,7 +21,7 @@ export default function DashBoard({ search: setSearch }) {
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Stack paddingY={'30px'}>
           <Typography sx={{ fontFamily: 'Poppins', fontWeight: 600, fontSize: '24px', lineHeight: '36px' }}>
-            Dashboard
+            Dashboard - testnet!
           </Typography>
           <Typography sx={{ fontFamily: 'Poppins', fontWeight: 500, fontSize: '14px', lineHeight: '21px' }}>
             Create a DAO for DAOs.
