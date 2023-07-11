@@ -1,4 +1,5 @@
 export const isDev = import.meta.env.DEV;
+export const starfishCanister = 'vcpye-qyaaa-aaaak-qafjq-cai';
 import Web3 from 'web3';
 
 import { Principal } from '@dfinity/principal';

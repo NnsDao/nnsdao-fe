@@ -1,5 +1,6 @@
 import { idlFactory as dao_manager_IDL } from '@nnsdao/nnsdao-kit/dao_manager/index';
 import { idlFactory as ndp_IDL } from '@nnsdao/nnsdao-kit/dip20/index';
+import { idlFactory as market_IDL } from '@nnsdao/nnsdao-kit/market/index';
 import { idlFactory as nid_IDL } from '@nnsdao/nnsdao-kit/nid/index';
 import { idlFactory as nnsdao_IDL } from '@nnsdao/nnsdao-kit/nnsdao/index';
 
@@ -22,6 +23,10 @@ export const canister = {
   ndp: {
     cid: 'vgqnj-miaaa-aaaal-qaapa-cai',
     idl: ndp_IDL,
+  },
+  market: {
+    cid: 'rdj7q-xaaaa-aaaaj-qabja-cai',
+    idl: market_IDL,
   },
 };
 

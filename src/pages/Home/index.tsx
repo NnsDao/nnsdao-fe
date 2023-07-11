@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Stack } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTotalDaoLists } from '../../api/dao_manager';
@@ -30,9 +30,9 @@ export default function Home(props) {
         </Stack>
       </Stack>
       <DaoList filterStr={searchStr} statusStr={statusStr}></DaoList>
-      <Alert severity="warning">
+      {/* <Alert severity="warning">
         This version is only for testing, soon we will release the full version, the beta data will be deleted.
-      </Alert>
+      </Alert> */}
     </React.Fragment>
   );
 }

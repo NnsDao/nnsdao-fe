@@ -15,6 +15,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
+import ImageListItemBar from '@mui/material/ImageListItemBar';
 import { Box, Stack } from '@mui/system';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -24,8 +27,9 @@ import { useNavigate } from 'react-router-dom';
 import { useBoolean, useEffectOnce, useToggle } from 'usehooks-ts';
 import { useEtherData } from '../api/common';
 import { useTotalDaoLists } from '../api/dao_manager';
+import { useMarkeftNftList } from '../api/market';
 import { useGetBoundWallet, useNidInfo, useUpdateNID } from '../api/nid';
-import { arrToMap, briefName, getTotalBalance } from '../common/helper';
+import { arrToMap, briefName, getTotalBalance, starfishCanister } from '../common/helper';
 import { LoadingIndicator } from '../components/loading';
 import LoadingWrapper from '../components/LoadingWrapper';
 import LoginDialog from '../components/LoginDialog';
@@ -35,6 +39,14 @@ import { useGlobalState } from '../hooks/globalState';
 import { useUserStore } from '../hooks/userStore';
 import RwoDaoList from './home/daoList/list/Index';
 dayjs.extend(relativeTime);
+
+type listParamsType = {
+  canister: string;
+  id: string;
+  index: string | number;
+  listing: { price: { ICP?: BigInt; NDP?: BigInt } };
+  metadata: boolean;
+};
 
 function User() {
   const [selectedMenu, setSelectedMenu] = React.useState(0);
@@ -52,6 +64,7 @@ function User() {
     { key: 'Created DAOs', value: 1 },
     { key: 'Bound Wallet', value: 2 },
     { key: 'Ether', value: 3 },
+    { key: 'Starfish', value: 4 },
   ];
 
   if (!userStore.isLogin) {
@@ -86,6 +99,9 @@ function User() {
         </TabPanel>
         <TabPanel selectedIndex={selectedMenu} index={3}>
           <Ether></Ether>
+        </TabPanel>
+        <TabPanel selectedIndex={selectedMenu} index={4}>
+          <Starfish></Starfish>
         </TabPanel>
       </Paper>
     </React.Fragment>
@@ -250,6 +266,68 @@ function UserCard() {
       </Paper>
       <WalletSelector open={open} toggleOpen={toggleOpen}></WalletSelector>
     </>
+  );
+}
+
+function Starfish() {
+  const [userStore] = useUserStore();
+
+  const dataList = useMarkeftNftList(userStore.accountId, [starfishCanister]);
+  let dataNft = dataList.data;
+  console.log(dataNft, 'debug nft list');
+
+  const itemData = [
+    {
+      img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
+      title: 'Breakfast',
+      author: '@bkristastucchio',
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
+      title: 'Burger',
+      author: '@rollelflex_graphy726',
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
+      title: 'Camera',
+      author: '@helloimnik',
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
+      title: 'Coffee',
+      author: '@nolanissac',
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
+      title: 'Hats',
+      author: '@hjrc33',
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
+      title: 'Honey',
+      author: '@arwinneil',
+    },
+  ];
+
+  return (
+    <ImageList sx={{ width: '100%', height: 960, margin: 'auto' }} gap={8} cols={3}>
+      {
+        //@ts-ignore
+        dataNft[0]?.[1].map((item, index) => (
+          <ImageListItem key={index}>
+            <a href={`https://${dataNft[0]?.[0]}.raw.ic0.app/?tokenindex=${item[0]}`} target="_blank" rel="noreferrer">
+              <img
+                src={`https://${dataNft[0]?.[0]}.raw.ic0.app/?cc=0&type=thumbnail&tokenindex=${item[0]}`}
+                srcSet={`https://${dataNft[0]?.[0]}.raw.ic0.app/?cc=0&type=thumbnail&tokenindex=${item[0]}`}
+                loading="lazy"
+              />
+            </a>
+
+            <ImageListItemBar title={'Starfish #' + item[0]} subtitle={<span>by: NnsDAO</span>} position="below" />
+          </ImageListItem>
+        ))
+      }
+    </ImageList>
   );
 }
 

@@ -1,6 +1,7 @@
 import { _SERVICE as DaoManagerActor } from '@nnsdao/nnsdao-kit/dao_manager/types';
 import NDPActor from '@nnsdao/nnsdao-kit/dip20/types';
 import { getActor } from '@nnsdao/nnsdao-kit/helper/agent';
+import { _SERVICE as MarketActor } from '@nnsdao/nnsdao-kit/market/types';
 import { _SERVICE as NIDActor } from '@nnsdao/nnsdao-kit/nid/types';
 import { _SERVICE as nnsdaoActor } from '@nnsdao/nnsdao-kit/nnsdao/types';
 import canister from './canister.config';
@@ -18,3 +19,6 @@ export const getNIDActor = async (needAuth?: boolean) => getActor<NIDActor>({ ne
 
 // ndp
 export const getNDPActor = async (needAuth?: boolean) => getActor<NDPActor>({ needAuth, ...canister.ndp });
+
+//starfish
+export const getMarketActor = async (needAuth?: boolean) => getActor<MarketActor>({ needAuth, ...canister.market });
